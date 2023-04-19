@@ -26,7 +26,9 @@ public class HomeController : ControllerBase
         _configuration = configuration;
         _httpContextAccessor=httpContextAccessor;
     }
-    [AllowAnonymous]
+
+    //房東專用
+    /*[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "publisher")]
     [HttpGet("RentalIndex")]
     public IActionResult Index(int Page = 1)
     {
@@ -40,15 +42,19 @@ public class HomeController : ControllerBase
         {
             // 宣告一個新陣列內物件
             RentaldetailViewModel newBlock = new RentaldetailViewModel();
-            // 藉由 Service 取得商品資料
+            //newBlock.AllData.publisher=_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
             newBlock.AllData = _homeDBService.GetDataById(Id);
-            if(newBlock.AllData.isDelete==false){
-                Data.RentalBlock.Add(newBlock);
-            }
-            
+            //if(newBlock.AllData.isDelete==false){}
+            Data.RentalBlock.Add(newBlock);
         }
         return Ok(Data);
-    }
+    }*/
+
+
+    
+    //上架
+    //下架
+    //審核中
 
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "publisher")]
@@ -109,7 +115,7 @@ public class HomeController : ControllerBase
 
 
 
-    [AllowAnonymous]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "publisher")]
 
     [HttpGet("{id}")]
     public IActionResult ReadImg(Guid Id)
@@ -144,7 +150,7 @@ public class HomeController : ControllerBase
     {
         var data = _homeDBService.GetDataById(Id);
 
-        if (data.isDelete==true || data==null)
+        if (data.isDelete==true)
         {
             return Ok("查無此資訊");
         }

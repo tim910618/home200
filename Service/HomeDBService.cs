@@ -16,7 +16,7 @@ namespace api1.Service
         {
             SetMaxPaging(Paging);
             List<Guid> IdList = new List<Guid>();
-            string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by rental_id desc) AS sort,* FROM RENTAL ) m WHERE m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
+            string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by rental_id desc) AS sort,* FROM RENTAL WHERE tenant = 1 ) m WHERE m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
             try
             {
                 conn.Open();
@@ -71,7 +71,7 @@ namespace api1.Service
         {
             Rental Data = new Rental();
             //string sql = "SELECT * FROM RENTAL WHERE rental_id = @Id";
-            string sql = $@"SELECT m.*,d.* FROM RENTAL m INNER JOIN MEMBERS d ON m.publisher = d.Account WHERE m.rental_id = @Id ;";
+            string sql = $@"SELECT m.*,d.* FROM RENTAL m INNER JOIN MEMBERS d ON m.publisher = d.Account WHERE m.rental_id = @Id;";
             try
             {
                 conn.Open();
