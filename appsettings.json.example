@@ -1,0 +1,19 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "ConnectionStrings": {
+    "DB": "Server=localhost;Database=HomeFinder;Trusted_Connection=True;TrustServerCertificate=true;"
+  },
+    "Jwt": {
+    "SecretKey": "mySuperSecretKey123",
+    "Issuer": "MyIssuer",
+    "Audience": "MyAudience",
+    "ExpireTimeInMinutes": 30
+  },
+  "AllowedHosts": "*",
+  "UploadPath": "IMAGE"
+}
