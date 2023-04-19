@@ -325,7 +325,30 @@ namespace api1.Service
         #endregion
 
 
-
+        #region 修改會員資料
+        public void UpdateRental(Members UpdateData)
+        {
+            string sql = @"UPDATE Members SET name=@name, phone=@phone, img=@img WHERE account=@account";
+            try
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@account", UpdateData.account);
+                cmd.Parameters.AddWithValue("@name", UpdateData.name);
+                cmd.Parameters.AddWithValue("@phone",UpdateData.phone);
+                cmd.Parameters.AddWithValue("@img",UpdateData.img);
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message.ToString());
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+        #endregion
 
         /*#region 查詢會員資料陣列 TEST API
         public List<Members> GetDataByAccountList()

@@ -62,7 +62,6 @@ namespace api1.Controllers
                     {
                         return BadRequest(new { message = "請上傳照片" });
                     }
-
                     registerMember.newMember.password = registerMember.password;
                     string authCode = _mailService.GetValidateCode();
                     registerMember.newMember.authcode = authCode;
@@ -116,8 +115,8 @@ namespace api1.Controllers
                     SameSite = SameSiteMode.Strict,
                     Expires = DateTime.UtcNow.AddDays(1)
                 });
-                //var roles = HttpContext.User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value);
-                return Ok(new { token });
+                Members members = _membersSerivce.GetDataByAccount(Data.Account);
+                return Ok(new { token, members });
             }
             else
             {
@@ -180,17 +179,19 @@ namespace api1.Controllers
                 if (User.IsInRole("publisher"))
                 {
                     var roles = User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToArray();
-
+                    //var name = User.Claims.Where(c => c.Type == ClaimTypes.Name).Select(c => c.Value).ToArray();
                     return Ok("哈囉我是房東" + string.Join(", ", roles));
                 }
                 else if (User.IsInRole("admin"))
                 {
                     var roles = User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToArray();
+                    //var name = User.Claims.Where(c => c.Type == ClaimTypes.Name).Select(c => c.Value).ToArray();
                     return Ok("哈囉我是管理者" + string.Join(", ", roles));
                 }
                 else
                 {
-                    return Ok("哈囉我是一般使用者");
+                    string name = User.Identity.Name;
+                    return Ok("哈囉我是一般使用者" + name);
                 }
             }
             return Ok("尚未驗證");
@@ -206,13 +207,35 @@ namespace api1.Controllers
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public IActionResult EditProfile()
+        [HttpPost("EditProfile")]
+        public async Task<IActionResult> EditProfileAsync([FromForm] EditMembersViewModel UpdateData)
         {
-            if  (User.Identity.IsAuthenticated)
+            if (User.Identity.IsAuthenticated)
             {
-                
+                Members Data = _membersSerivce.GetDataByAccount(User.Identity.Name);
+                Data.name = UpdateData.name;
+                if (UpdateData.img_upload != null && UpdateData.img_upload.Length > 0)
+                {
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(UpdateData.img_upload.FileName);
+                    var path = Path.Combine("MembersImg", fileName);
+                    using (var stream = new FileStream(path, FileMode.Create))
+                    {
+                        await UpdateData.img_upload.CopyToAsync(stream);
+                    }
+                    //registerMember.newMember.img = path;
+                    Data.img = fileName;
+                }
+                else
+                {
+                    return BadRequest(new { message = "請上傳照片" });
+                }
+                Data.phone=UpdateData.phone;
+                _membersSerivce.UpdateRental(Data);
+                return Ok("修改成功");
+            }else{
+                return Ok("請去登入");
             }
-            return Ok();
+            
         }
     }
 }
