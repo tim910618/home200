@@ -121,6 +121,17 @@ public class HomeController : ControllerBase
         }
         return Ok(Data);
     }
+    //上架變下架
+    /*[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "publisher")]
+    [HttpPut("HomeUpToDown")]
+    public IActionResult HomeUpToDown(Guid Id, [FromForm] Rental UpToDownData)
+    {
+        var data=_homeDBService.GetDataById(Id);
+        UpToDownData.rental_id=Id;
+
+    }*/
+
+
 
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "publisher")]
@@ -182,7 +193,6 @@ public class HomeController : ControllerBase
 
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "publisher")]
-
     [HttpGet("{id}")]
     public IActionResult ReadImg(Guid Id)
     {
