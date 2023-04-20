@@ -2,7 +2,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Data.SqlClient;
 using api1.Models;
-
+using api1.ViewModel;
 
 namespace api1.Service
 {
@@ -289,10 +289,25 @@ namespace api1.Service
         #endregion
 
         #region 取得會員清單
-        public List<Members> GetDataList()
+        public List<MemberListViewModel> GetDataList()
         {
-            List<Members> DataList = new List<Members>();
-            string sql = $@"select * from Members";
+            List<MemberListViewModel> DataList = new List<MemberListViewModel>();
+            string sql = $@"SELECT 
+                                    member.account, 
+                                    member.identify, 
+                                    member.score, 
+                            COUNT(DISTINCT Rental.Rental_Id) AS rentalCount, 
+                            COUNT(Report.Report_Id) AS reportCount
+                            FROM 
+                                member
+                            LEFT JOIN 
+                                Rental ON member.account = Rental.publisher
+                            LEFT JOIN 
+                                report ON member.account = report.reported
+                            GROUP BY 
+                                member.account, 
+                                member.identify, 
+                                member.score";
             try
             {
                 conn.Open();
@@ -300,15 +315,8 @@ namespace api1.Service
                 SqlDataReader dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
-                    Members Data = new Members();
-                    Data.account = dr["account"].ToString();
-                    Data.password = dr["password"].ToString();
-                    Data.name = dr["name"].ToString();
-                    Data.email = dr["email"].ToString();
-                    Data.phone = dr["phone"].ToString();
-                    Data.authcode = dr["authcode"].ToString();
-                    Data.identity = Convert.ToInt32(dr["identity"]);
-                    Data.score = Convert.ToInt32(dr["score"]);
+                    MemberListViewModel Data = new MemberListViewModel();
+
                     DataList.Add(Data);
                 }
             }
@@ -335,8 +343,8 @@ namespace api1.Service
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@account", UpdateData.account);
                 cmd.Parameters.AddWithValue("@name", UpdateData.name);
-                cmd.Parameters.AddWithValue("@phone",UpdateData.phone);
-                cmd.Parameters.AddWithValue("@img",UpdateData.img);
+                cmd.Parameters.AddWithValue("@phone", UpdateData.phone);
+                cmd.Parameters.AddWithValue("@img", UpdateData.img);
                 cmd.ExecuteNonQuery();
             }
             catch (Exception e)

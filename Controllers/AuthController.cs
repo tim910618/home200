@@ -170,6 +170,7 @@ namespace api1.Controllers
             }
         }
 
+        //後端測試身分用
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("profile")]
         public IActionResult Profile()
@@ -197,15 +198,19 @@ namespace api1.Controllers
             return Ok("尚未驗證");
         }
 
+        #region 管理者帳號清單
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "admin")]
         [HttpGet("memberList")]
         public IActionResult GetMemberList()
         {
-            List<Members> DataList = new List<Members>();
+            List<MemberListViewModel> DataList = new List<MemberListViewModel>();
             DataList = _membersSerivce.GetDataList();
             return Ok(DataList);
         }
+        #endregion
 
+
+        #region 編輯資料
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("EditProfile")]
         public async Task<IActionResult> EditProfileAsync([FromForm] EditMembersViewModel UpdateData)
@@ -237,5 +242,6 @@ namespace api1.Controllers
             }
             
         }
+        #endregion
     }
 }
