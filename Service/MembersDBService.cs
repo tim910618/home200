@@ -25,13 +25,13 @@ namespace api1.Service
 
             if (newMember.identity == 1)
             {
-                sql = @"INSERT INTO Members (account,password,name,email,phone,authcode,[identity],score,img) 
-                    VALUES (@account, @password, @name, @email,@phone, @authcode, '1', '0',@img)";
+                sql = @"INSERT INTO Members (account,password,name,email,phone,authcode,[identity],score,img,isBlock) 
+                    VALUES (@account, @password, @name, @email,@phone, @authcode, '1', '0',@img,'0')";
             }
             else if (newMember.identity == 2)
             {
-                sql = @"INSERT INTO Members (account,password,name,email,phone,authcode,[identity],score,img) 
-                    VALUES (@account, @password, @name, @email,@phone, @authcode, '2', '0',@img)";
+                sql = @"INSERT INTO Members (account,password,name,email,phone,authcode,[identity],score,img,isBlock) 
+                    VALUES (@account, @password, @name, @email,@phone, @authcode, '2', '0',@img,'0')";
             }
             try
             {
@@ -44,7 +44,7 @@ namespace api1.Service
                 cmd.Parameters.AddWithValue("@phone", newMember.phone);
                 cmd.Parameters.AddWithValue("@authcode", newMember.authcode);
                 cmd.Parameters.AddWithValue("@img", newMember.img);
-
+                cmd.Parameters.AddWithValue("@isBlock", 0);
                 cmd.ExecuteNonQuery();
             }
             catch (Exception e)
@@ -91,6 +91,7 @@ namespace api1.Service
                 Data.authcode = dr["authcode"].ToString();
                 Data.identity = Convert.ToInt32(dr["identity"]);
                 Data.score = Convert.ToInt32(dr["score"]);
+                Data.isBlock = Convert.ToBoolean(dr["isBlock"]);
             }
             catch (Exception)
             {
@@ -161,21 +162,29 @@ namespace api1.Service
             Members LoginMember = GetDataByAccount(Account);
             if (LoginMember != null)
             {
-                if (string.IsNullOrWhiteSpace(LoginMember.authcode))
+                if (LoginMember.isBlock == false)
                 {
-                    if (PasswordCheck(LoginMember, Password))
+                    if (string.IsNullOrWhiteSpace(LoginMember.authcode))
                     {
-                        return "";
+                        if (PasswordCheck(LoginMember, Password))
+                        {
+                            return "";
+                        }
+                        else
+                        {
+                            return "密碼錯誤";
+                        }
                     }
                     else
                     {
-                        return "密碼錯誤";
+                        return "尚未驗證，請去EMAIL收驗證信";
                     }
                 }
                 else
                 {
-                    return "尚未驗證，請去EMAIL收驗證信";
+                    return "您已被停權，請聯繫客服04-22195240";
                 }
+
             }
             else
             {

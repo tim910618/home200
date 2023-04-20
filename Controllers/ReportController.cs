@@ -39,10 +39,11 @@ namespace api1.Controllers
         [HttpPost("AddReport")]
         public IActionResult CreateReport([FromBody]Report report)
         {
-            // if (!ModelState.IsValid)
-            // {
-            //     return BadRequest("請確認資料");
-            // }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("請確認資料");
+            }
+            report.reporter=User.Identity.Name;
             _reportService.AddReport(report);
             return Ok("檢舉成功");
         }
@@ -50,7 +51,13 @@ namespace api1.Controllers
         #endregion
 
         #region 停權帳號
-        //如果大於5就停權一次
+        //管理員審核(如果大於5就停權一次)
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public IActionResult BlockAccount()
+        {
+            
+            return Ok("已停權");
+        }
         #endregion
 
 
