@@ -48,7 +48,7 @@ namespace api1.Secruity
         //產生JWT
         public string GenerateJwtToken(string Account,string role)
         {
-            // 从 appsettings.json 文件中获取 JWT 配置信息
+            // 從 appsettings.json 設定配置
             var secretKey = _config["Jwt:SecretKey"];
             var issuer = _config["Jwt:Issuer"];
             var audience = _config["Jwt:Audience"];

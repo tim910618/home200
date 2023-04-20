@@ -30,27 +30,27 @@ var configuration = configurationBuilder.Build();
 builder.Services.AddControllers();
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddAuthorization(options =>
-{
-    options.FallbackPolicy = new AuthorizationPolicyBuilder()
-        .RequireAuthenticatedUser()
-        .Build();
+// builder.Services.AddAuthorization(options =>
+// {
+//     options.FallbackPolicy = new AuthorizationPolicyBuilder()
+//         .RequireAuthenticatedUser()
+//         .Build();
 
-    options.AddPolicy("RequireAdminRole", policy =>
-    {
-        policy.RequireRole("admin");
-    });
+//     options.AddPolicy("RequireAdminRole", policy =>
+//     {
+//         policy.RequireRole("admin");
+//     });
 
-    options.AddPolicy("RequireRenterRole", policy =>
-    {
-        policy.RequireRole("renter");
-    });
+//     options.AddPolicy("RequireRenterRole", policy =>
+//     {
+//         policy.RequireRole("renter");
+//     });
 
-    options.AddPolicy("RequirePublisherRole", policy =>
-    {
-        policy.RequireRole("publisher");
-    });
-});
+//     options.AddPolicy("RequirePublisherRole", policy =>
+//     {
+//         policy.RequireRole("publisher");
+//     });
+// });
 
 builder.Services.AddAuthorization(options =>
 {
@@ -61,32 +61,37 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddAuthentication(options =>
 {
+    //JWT身分驗證方案的預設名稱
+
+    //當API收到請求時，ASP.NET Core將自動使用JWT身分驗證方案對請求進行身分驗證
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    //自動使用JWT身分驗證方案來回應401
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(options =>
 {
+    //設定驗證參數
     options.TokenValidationParameters = new TokenValidationParameters
     {
+        //驗證JWT令牌的簽章是否正確
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:SecretKey"])),
-        ValidateIssuer = true,
-        ValidIssuer = configuration["Jwt:Issuer"],
-        ValidateAudience = true,
-        ValidAudience = configuration["Jwt:Audience"],
-        ClockSkew = TimeSpan.Zero,
+        ValidateIssuer = true,//驗證發行者
+        ValidIssuer = configuration["Jwt:Issuer"],//預期的發行者
+        ValidateAudience = true,//驗證接收者
+        ValidAudience = configuration["Jwt:Audience"],//預期的發行者預期接收者
+        ClockSkew = TimeSpan.Zero,//時效性
     };
     options.Events = new JwtBearerEvents
     {
-        OnTokenValidated = async ctx =>
+        OnTokenValidated = async ctx => //觸發事件自訂邏輯
         {
-            // 获取用户角色声明
+            // 獲取角色
             var roleClaim = ctx.Principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
             if (string.IsNullOrEmpty(roleClaim))
             {
                 ctx.Fail("Unauthorized");
             }
-
-            // 如果用户不是管理员、房东或租户，则返回未授权错误
+            // 身分判斷
             if (roleClaim != "admin" && roleClaim != "publisher" && roleClaim != "renter")
             {
                 ctx.Fail("Unauthorized");

@@ -41,7 +41,8 @@ namespace api1.Service
 
         public void BlockAccount(Members BlockData)
         {
-            string sql = @"Update Members set isBlcok=@pattern where";
+            
+            string sql = @"Update Members set isBlcok=@isBlcok where ";
             try
             {
                 conn.Open();
