@@ -49,24 +49,25 @@ public class HomeDetailController : ControllerBase
         return Ok(Data);
     }
 
-    /*[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "admin")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "admin")]
     [HttpGet("{id}")]
     public IActionResult AdminReadImg(Guid Id)
     {
         try
         {
-            Rental Data = _homeDBService.GetDataById(Id);
-            if (Data.isDelete==true || Data==null)
+            Rental data=_homeDBService.GetDataById(Id);
+            //var data = _homeDBService.GetDataById(Id);
+            if (data.isDelete==true || data==null)
             {
                 return Ok("查無此資訊");
             }
-            return Ok();
+            return Ok(data);
         }
         catch (Exception e)
         {
             return StatusCode(500, e.Message);
         }
-    }*/
+    }
 
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "admin")]
