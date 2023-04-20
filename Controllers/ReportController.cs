@@ -34,15 +34,15 @@ namespace api1.Controllers
             _reportService=reportDBService;
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         #region 新增檢舉
         [HttpPost("AddReport")]
-        public IActionResult CreateReport([FromBody] Report report)
+        public IActionResult CreateReport([FromBody]Report report)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest("請確認資料");
-            }
-            report.reportTime = DateTime.Now;
+            // if (!ModelState.IsValid)
+            // {
+            //     return BadRequest("請確認資料");
+            // }
             _reportService.AddReport(report);
             return Ok("檢舉成功");
         }

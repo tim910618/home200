@@ -25,7 +25,7 @@ namespace api1.Service
                 cmd.Parameters.AddWithValue("@Reported", AddData.reported);
                 cmd.Parameters.AddWithValue("@Reporter", AddData.reporter);
                 cmd.Parameters.AddWithValue("@Reason", AddData.reason);
-                cmd.Parameters.AddWithValue("@ReportTime", AddData.reportTime);
+                cmd.Parameters.AddWithValue("@ReportTime", DateTime.Now);
                 cmd.Parameters.AddWithValue("@isCheck", AddData.isCheck);
                 cmd.Parameters.AddWithValue("@checkTime", AddData.checkTime);
                 cmd.ExecuteNonQuery();

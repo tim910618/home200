@@ -198,14 +198,14 @@ namespace api1.Controllers
             return Ok("尚未驗證");
         }
 
-        #region 管理者帳號清單
+        #region 管理者抓帳號清單
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "admin")]
         [HttpGet("memberList")]
         public IActionResult GetMemberList()
         {
-            List<MemberListViewModel> DataList = new List<MemberListViewModel>();
-            DataList = _membersSerivce.GetDataList();
-            return Ok(DataList);
+            List<MemberListViewModel> Data=new List<MemberListViewModel>();
+            Data=_membersSerivce.GetDataList();
+            return Ok(Data);
         }
         #endregion
 

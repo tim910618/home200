@@ -4,6 +4,7 @@ using Microsoft.Data.SqlClient;
 using api1.Models;
 using api1.ViewModel;
 
+
 namespace api1.Service
 {
     public class MembersDBService
@@ -292,22 +293,10 @@ namespace api1.Service
         public List<MemberListViewModel> GetDataList()
         {
             List<MemberListViewModel> DataList = new List<MemberListViewModel>();
-            string sql = $@"SELECT 
-                                    member.account, 
-                                    member.identify, 
-                                    member.score, 
-                            COUNT(DISTINCT Rental.Rental_Id) AS rentalCount, 
-                            COUNT(Report.Report_Id) AS reportCount
-                            FROM 
-                                member
-                            LEFT JOIN 
-                                Rental ON member.account = Rental.publisher
-                            LEFT JOIN 
-                                report ON member.account = report.reported
-                            GROUP BY 
-                                member.account, 
-                                member.identify, 
-                                member.score";
+            string sql = $@"SELECT m.*, 
+                        (SELECT COUNT(*) FROM Rental r WHERE r.publisher = m.account) AS RentalCount,
+                        (SELECT COUNT(*) FROM Report rp WHERE rp.reported = m.account) AS ReportCount
+                        FROM Members m";
             try
             {
                 conn.Open();
@@ -316,7 +305,16 @@ namespace api1.Service
                 while (dr.Read())
                 {
                     MemberListViewModel Data = new MemberListViewModel();
-
+                    Data.account = dr["account"].ToString();
+                    Data.password = dr["password"].ToString();
+                    Data.name = dr["name"].ToString();
+                    Data.email = dr["email"].ToString();
+                    Data.phone = dr["phone"].ToString();
+                    Data.authcode = dr["authcode"].ToString();
+                    Data.identity = Convert.ToInt32(dr["identity"]);
+                    Data.score = Convert.ToInt32(dr["score"]);
+                    Data.rentalCount = dr.GetInt32(dr.GetOrdinal("rentalCount"));
+                    Data.reportCount = dr.GetInt32(dr.GetOrdinal("reportCount"));
                     DataList.Add(Data);
                 }
             }
