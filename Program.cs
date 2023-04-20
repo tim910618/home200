@@ -134,6 +134,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+
+// 設定CORS
+app.UseCors(builder => builder
+    .WithOrigins("http://127.0.0.1:5555") // 允許的源網址
+    .AllowAnyMethod() // 允許任何HTTP方法
+    .AllowAnyHeader() // 允許任何標頭
+    .AllowCredentials()); // 允許傳送身分驗證cookie
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
