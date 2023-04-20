@@ -50,29 +50,28 @@ namespace api1.Controllers
 
         #endregion
 
-        #region 停權帳號
-        //管理員審核(如果大於5就停權一次)
+        #region 停權帳號(停權/取消停權)
+        [HttpPost("isBlock")]
+        //管理員審核
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public IActionResult BlockAccount()
+        public IActionResult BlockAccount([FromBody] BlockAccount Data)
         {
-            
-            return Ok("已停權");
+            string Validate= _reportService.isBlockAccount(Data.reported,Data.isblock);
+            return Ok(Validate);
         }
         #endregion
 
 
-        #region 檢舉列表
-        public IActionResult ReportList()
+        #region 檢舉紀錄 //抓屬於自己的檢舉列表、會員
+        [HttpGet("ReportRecord")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public IActionResult ReportRecord([FromQuery]string Account)
         {
-            if (User.IsInRole("admin"))
-            {
-                //抓檢舉列表
-            }
-            else
-            {
-                //抓屬於自己的檢舉列表
-            }
-            return Ok();
+            List<Report> DataList=new List<Report>();
+            DataList=_reportService.GetRecord(Account);
+            //傳入角色
+            //讀取檢舉清單ReportList(Account)
+            return Ok(DataList);
         }
         #endregion
     }

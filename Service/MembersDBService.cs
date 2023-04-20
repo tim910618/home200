@@ -92,6 +92,7 @@ namespace api1.Service
                 Data.identity = Convert.ToInt32(dr["identity"]);
                 Data.score = Convert.ToInt32(dr["score"]);
                 Data.isBlock = Convert.ToBoolean(dr["isBlock"]);
+                Data.img = dr["img"].ToString();
             }
             catch (Exception)
             {
