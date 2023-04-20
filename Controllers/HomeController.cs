@@ -52,9 +52,75 @@ public class HomeController : ControllerBase
 
 
     
-    //上架
+    //上架 
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "publisher")]
+    [HttpGet("HomeUp")]
+    public IActionResult HomeUpIndex(int Page = 1)
+    {
+        RentalListViewModel Data = new RentalListViewModel();
+        // 新增頁面模型中的分頁
+        Data.Paging = new ForPaging(Page);
+        // 從 Service 中取得頁面所需陣列資料
+        Data.IdList = _homeDBService.GetUpIdList(Data.Paging);
+        Data.RentalBlock = new List<RentaldetailViewModel>();
+        foreach (var Id in Data.IdList)
+        {
+            // 宣告一個新陣列內物件
+            RentaldetailViewModel newBlock = new RentaldetailViewModel();
+            newBlock.AllData = _homeDBService.GetDataById(Id);
+            if(newBlock.AllData.isDelete==false || newBlock.AllData.tenant==true)
+            {
+                Data.RentalBlock.Add(newBlock);
+            }
+        }
+        return Ok(Data);
+    }
     //下架
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "publisher")]
+    [HttpGet("HomeDown")]
+    public IActionResult HomeDownIndex(int Page = 1)
+    {
+        RentalListViewModel Data = new RentalListViewModel();
+        // 新增頁面模型中的分頁
+        Data.Paging = new ForPaging(Page);
+        // 從 Service 中取得頁面所需陣列資料
+        Data.IdList = _homeDBService.GetDownIdList(Data.Paging);
+        Data.RentalBlock = new List<RentaldetailViewModel>();
+        foreach (var Id in Data.IdList)
+        {
+            // 宣告一個新陣列內物件
+            RentaldetailViewModel newBlock = new RentaldetailViewModel();
+            newBlock.AllData = _homeDBService.GetDataById(Id);
+            if(newBlock.AllData.isDelete==false || newBlock.AllData.check==1 && newBlock.AllData.tenant==false)
+            {
+                Data.RentalBlock.Add(newBlock);
+            }
+        }
+        return Ok(Data);
+    }
     //審核中
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "publisher")]
+    [HttpGet("HomeCheck")]
+    public IActionResult HomeCheckIndex(int Page = 1)
+    {
+        RentalListViewModel Data = new RentalListViewModel();
+        // 新增頁面模型中的分頁
+        Data.Paging = new ForPaging(Page);
+        // 從 Service 中取得頁面所需陣列資料
+        Data.IdList = _homeDBService.GetCheckIdList(Data.Paging);
+        Data.RentalBlock = new List<RentaldetailViewModel>();
+        foreach (var Id in Data.IdList)
+        {
+            // 宣告一個新陣列內物件
+            RentaldetailViewModel newBlock = new RentaldetailViewModel();
+            newBlock.AllData = _homeDBService.GetDataById(Id);
+            if(newBlock.AllData.isDelete==false || (newBlock.AllData.check == 0 || newBlock.AllData.check == 2) && newBlock.AllData.tenant==false)
+            {
+                Data.RentalBlock.Add(newBlock);
+            }
+        }
+        return Ok(Data);
+    }
 
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "publisher")]

@@ -12,11 +12,61 @@ namespace api1.Service
             conn = connection;
         }
 
-        public List<Guid> GetIdList(ForPaging Paging)
+        public List<Guid> GetUpIdList(ForPaging Paging)
         {
             SetMaxPaging(Paging);
             List<Guid> IdList = new List<Guid>();
-            string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by rental_id desc) AS sort,* FROM RENTAL WHERE tenant = 1 ) m WHERE m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
+            string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by rental_id desc) AS sort,* FROM RENTAL WHERE tenant = 1 AND isDelete = 0) m WHERE m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
+            try
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                SqlDataReader dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    IdList.Add(Guid.Parse(dr["rental_id"].ToString()));
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message.ToString());
+            }
+            finally
+            {
+                conn.Close();
+            }
+            return IdList;
+        }
+        public List<Guid> GetDownIdList(ForPaging Paging)
+        {
+            SetMaxPaging(Paging);
+            List<Guid> IdList = new List<Guid>();
+            string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by rental_id desc) AS sort,* FROM RENTAL WHERE tenant = 0 AND [check] = 1 AND isDelete = 0) m WHERE m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
+            try
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                SqlDataReader dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    IdList.Add(Guid.Parse(dr["rental_id"].ToString()));
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message.ToString());
+            }
+            finally
+            {
+                conn.Close();
+            }
+            return IdList;
+        }
+        public List<Guid> GetCheckIdList(ForPaging Paging)
+        {
+            SetMaxPaging(Paging);
+            List<Guid> IdList = new List<Guid>();
+            string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by rental_id desc) AS sort,* FROM RENTAL WHERE tenant = 0 AND [check] IN (0, 2) AND isDelete = 0) m WHERE m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
             try
             {
                 conn.Open();
@@ -127,7 +177,7 @@ namespace api1.Service
         {
 
             string sql = $@"UPDATE RENTAL SET genre=@genre, pattern=@pattern, type=@type, title=@title, address=@address, rent=@rent, waterfee=@waterfee, electricitybill=@electricitybill, adminfee=@adminfee, floor=@floor, area=@area,
-                equipmentname=@equipmentname, content=@content, img1=@img1, img2=@img2,img3=@img3,img4=@img4,img5=@img5,uploadtime=@uploadtime 
+                equipmentname=@equipmentname, content=@content, img1=@img1, img2=@img2,img3=@img3,img4=@img4,img5=@img5,uploadtime=@uploadtime ,[check]=@check,tenant=@tenant
                 WHERE rental_id = @Id;";                
             try
             {
@@ -154,6 +204,8 @@ namespace api1.Service
                 cmd.Parameters.AddWithValue("@img5", UpdateData.img5);
                 cmd.Parameters.AddWithValue("@rental_id", UpdateData.rental_id);
                 cmd.Parameters.AddWithValue("@uploadtime", DateTime.Now);
+                cmd.Parameters.AddWithValue("@check", 0);
+                cmd.Parameters.AddWithValue("@tenant", false);
                 cmd.ExecuteNonQuery();
             }
             catch(Exception e)
