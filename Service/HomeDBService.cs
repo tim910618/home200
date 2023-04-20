@@ -114,6 +114,29 @@ namespace api1.Service
         }
 
 
+        public void UpToDown(Rental UpToDownData)
+        {
+            string sql=$@"UPDATE RENTAL SET [check]=@check ,tenant=@tenant WHERE rental_id = @Id;";
+            try
+            {
+                conn.Open();
+                SqlCommand cmd =new SqlCommand(sql,conn);
+                cmd.Parameters.AddWithValue("@Id",UpToDownData.rental_id);
+                cmd.Parameters.AddWithValue("@check", 0);
+                cmd.Parameters.AddWithValue("@tenant", false);
+                cmd.ExecuteNonQuery();
+            }
+            catch(Exception e)
+            {
+                throw new Exception(e.Message.ToString());
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+
+
 
 
 
