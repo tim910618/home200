@@ -243,5 +243,12 @@ namespace api1.Controllers
             
         }
         #endregion
+
+        #region 信用分數
+        public IActionResult Score()
+        {
+            return Ok();
+        }
+        #endregion
     }
 }
