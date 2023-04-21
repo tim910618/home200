@@ -16,7 +16,7 @@ namespace api1.Service
         {
             SetMaxPaging(Paging);
             List<Guid> IdList = new List<Guid>();
-            string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by rental_id desc) AS sort,* FROM RENTAL WHERE tenant = 1 AND isDelete = 0) m WHERE m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
+            string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by rental_id desc) AS sort,* FROM RENTAL WHERE tenant = 1 AND [check] = 1 AND isDelete = 0) m WHERE m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
             try
             {
                 conn.Open();
@@ -122,6 +122,27 @@ namespace api1.Service
                 conn.Open();
                 SqlCommand cmd =new SqlCommand(sql,conn);
                 cmd.Parameters.AddWithValue("@Id",UpToDownData.rental_id);
+                cmd.Parameters.AddWithValue("@check", 1);
+                cmd.Parameters.AddWithValue("@tenant", false);
+                cmd.ExecuteNonQuery();
+            }
+            catch(Exception e)
+            {
+                throw new Exception(e.Message.ToString());
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+        public void DownToCheck(Rental DownToCheckData)
+        {
+            string sql=$@"UPDATE RENTAL SET [check]=@check ,tenant=@tenant WHERE rental_id = @Id;";
+            try
+            {
+                conn.Open();
+                SqlCommand cmd =new SqlCommand(sql,conn);
+                cmd.Parameters.AddWithValue("@Id",DownToCheckData.rental_id);
                 cmd.Parameters.AddWithValue("@check", 0);
                 cmd.Parameters.AddWithValue("@tenant", false);
                 cmd.ExecuteNonQuery();

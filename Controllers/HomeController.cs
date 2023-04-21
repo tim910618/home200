@@ -106,6 +106,19 @@ public class HomeController : ControllerBase
         _homeDBService.UpToDown(UpToDownData);
         return Ok("已下架");
     }
+    //送出審查
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "publisher")]
+    [HttpPut("HomeDownToCheck/{id:guid}")]
+    public IActionResult HomeDownToCheck(Guid Id, [FromForm] Rental DownToCheckData)
+    {
+        DownToCheckData.rental_id=Id;
+        _homeDBService.DownToCheck(DownToCheckData);
+        return Ok("已送出審查");
+    }
+
+    
+
+
 
 
 
