@@ -41,10 +41,7 @@ public class HomeAnyController : ControllerBase
             // 宣告一個新陣列內物件
             RentaldetailViewModel newBlock = new RentaldetailViewModel();
             newBlock.AllData = _homeDBService.GetDataById(Id);
-            if(newBlock.AllData.isDelete==false && newBlock.AllData.tenant == true)
-            {
-                Data.RentalBlock.Add(newBlock);
-            }
+            Data.RentalBlock.Add(newBlock);
         }
         return Ok(Data);
     }

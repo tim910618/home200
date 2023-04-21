@@ -27,30 +27,6 @@ public class HomeController : ControllerBase
         _httpContextAccessor=httpContextAccessor;
     }
 
-    //房東專用
-    /*[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "publisher")]
-    [HttpGet("RentalIndex")]
-    public IActionResult Index(int Page = 1)
-    {
-        RentalListViewModel Data = new RentalListViewModel();
-        // 新增頁面模型中的分頁
-        Data.Paging = new ForPaging(Page);
-        // 從 Service 中取得頁面所需陣列資料
-        Data.IdList = _homeDBService.GetIdList(Data.Paging);
-        Data.RentalBlock = new List<RentaldetailViewModel>();
-        foreach (var Id in Data.IdList)
-        {
-            // 宣告一個新陣列內物件
-            RentaldetailViewModel newBlock = new RentaldetailViewModel();
-            //newBlock.AllData.publisher=_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
-            newBlock.AllData = _homeDBService.GetDataById(Id);
-            //if(newBlock.AllData.isDelete==false){}
-            Data.RentalBlock.Add(newBlock);
-        }
-        return Ok(Data);
-    }*/
-
-
     
     //上架 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "publisher")]
@@ -122,14 +98,27 @@ public class HomeController : ControllerBase
         return Ok(Data);
     }
     //上架變下架
-    /*[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "publisher")]
-    [HttpPut("HomeUpToDown")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "publisher")]
+    [HttpPut("HomeUpToDown/{id:guid}")]
     public IActionResult HomeUpToDown(Guid Id, [FromForm] Rental UpToDownData)
     {
-        var data=_homeDBService.GetDataById(Id);
         UpToDownData.rental_id=Id;
+        _homeDBService.UpToDown(UpToDownData);
+        return Ok("已下架");
+    }
+    //送出審查
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "publisher")]
+    [HttpPut("HomeDownToCheck/{id:guid}")]
+    public IActionResult HomeDownToCheck(Guid Id, [FromForm] Rental DownToCheckData)
+    {
+        DownToCheckData.rental_id=Id;
+        _homeDBService.DownToCheck(DownToCheckData);
+        return Ok("已送出審查");
+    }
 
-    }*/
+    
+
+
 
 
 
