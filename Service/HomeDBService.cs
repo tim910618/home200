@@ -164,7 +164,6 @@ namespace api1.Service
         public Rental GetDataById(Guid Id)
         {
             Rental Data = new Rental();
-            //string sql = "SELECT * FROM RENTAL WHERE rental_id = @Id";
             string sql = $@"SELECT m.*,d.* FROM RENTAL m INNER JOIN MEMBERS d ON m.publisher = d.Account WHERE m.rental_id = @Id;";
             try
             {
@@ -193,12 +192,12 @@ namespace api1.Service
                 Data.img3 = dr["img3"].ToString();
                 Data.img4 = dr["img4"].ToString();
                 Data.img5 = dr["img5"].ToString();
-
                 Data.check = Convert.ToInt32(dr["check"]);
                 Data.tenant = Convert.ToBoolean(dr["tenant"]);
                 Data.uploadtime = Convert.ToDateTime(dr["uploadtime"]);
                 Data.isDelete = Convert.ToBoolean(dr["isDelete"]);
                 Data.Member.name = dr["name"].ToString();
+                Data.Member.isBlock = Convert.ToBoolean(dr["isBlock"]);
             }
             catch (Exception)
             {
@@ -208,7 +207,7 @@ namespace api1.Service
             {
                 conn.Close();
             }
-            if (Data == null)
+            if (Data == null || Data.Member.isBlock==true)
             {
                 return null;
             }

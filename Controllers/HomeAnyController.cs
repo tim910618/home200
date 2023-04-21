@@ -41,7 +41,36 @@ public class HomeAnyController : ControllerBase
             // 宣告一個新陣列內物件
             RentaldetailViewModel newBlock = new RentaldetailViewModel();
             newBlock.AllData = _homeDBService.GetDataById(Id);
-            Data.RentalBlock.Add(newBlock);
+            if (newBlock.AllData != null)
+            {
+                Data.RentalBlock.Add(newBlock);
+            }
+        }
+        return Ok(Data);
+    }
+
+    [AllowAnonymous]
+    [HttpPost("HomeAnySearch")]
+    public IActionResult HomeAnySearchIndex([FromForm]AnySearchViewModel SearchWord,int Page = 1)
+    {
+        RentalListViewModel Data = new RentalListViewModel();
+        Data.Paging = new ForPaging(Page);
+        Data.Search=new List<AnySearchViewModel>{SearchWord};
+        Data.IdList = _homeanyDBService.GetIdList(Data.Paging,SearchWord);
+        Data.RentalBlock = new List<RentaldetailViewModel>();
+        foreach (var Id in Data.IdList)
+        {
+            // 宣告一個新陣列內物件
+            RentaldetailViewModel newBlock = new RentaldetailViewModel();
+            newBlock.AllData = _homeDBService.GetDataById(Id);
+            if (newBlock.AllData != null)
+            {
+                Data.RentalBlock.Add(newBlock);
+            }
+        }
+        if(Data.RentalBlock.Count==0)
+        {
+            return Ok("查無此資料");
         }
         return Ok(Data);
     }
