@@ -116,6 +116,8 @@ namespace api1.Controllers
                     Expires = DateTime.UtcNow.AddDays(1)
                 });
                 Members members = _membersSerivce.GetDataByAccount(Data.Account);
+                string imagePath = Path.Combine("MembersImg", members.img);
+                members.img=imagePath;
                 return Ok(new { token, members });
             }
             else
@@ -203,8 +205,8 @@ namespace api1.Controllers
         [HttpGet("memberList")]
         public IActionResult GetMemberList()
         {
-            List<MemberListViewModel> Data=new List<MemberListViewModel>();
-            Data=_membersSerivce.GetDataList();
+            List<MemberListViewModel> Data = new List<MemberListViewModel>();
+            Data = _membersSerivce.GetDataList();
             return Ok(Data);
         }
         #endregion
@@ -221,6 +223,14 @@ namespace api1.Controllers
                 Data.name = UpdateData.name;
                 if (UpdateData.img_upload != null && UpdateData.img_upload.Length > 0)
                 {
+                    if (!string.IsNullOrEmpty(Data.img))
+                    {
+                        var imagePath = Path.Combine("MembersImg", Data.img);
+                        if (System.IO.File.Exists(imagePath))
+                        {
+                            System.IO.File.Delete(imagePath);
+                        }
+                    }
                     var fileName = Guid.NewGuid().ToString() + Path.GetExtension(UpdateData.img_upload.FileName);
                     var path = Path.Combine("MembersImg", fileName);
                     using (var stream = new FileStream(path, FileMode.Create))
@@ -234,13 +244,15 @@ namespace api1.Controllers
                 {
                     return BadRequest(new { message = "請上傳照片" });
                 }
-                Data.phone=UpdateData.phone;
-                _membersSerivce.UpdateRental(Data);
+                Data.phone = UpdateData.phone;
+                _membersSerivce.UpdatePro(Data);
                 return Ok("修改成功");
-            }else{
+            }
+            else
+            {
                 return Ok("請去登入");
             }
-            
+
         }
         #endregion
 

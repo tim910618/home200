@@ -18,10 +18,7 @@ using System.Web;
 [Route("api/[controller]")]
 public class TimeController : ControllerBase
 {
-
         private readonly TimeDBService _timeService;
-
-
         public TimeController(TimeDBService timeDBService)
         {
             _timeService=timeDBService;
@@ -32,18 +29,25 @@ public class TimeController : ControllerBase
     [HttpPost("AddBookTime")]
     public IActionResult AddBookTime([FromBody] BookTime bookTime)
     {
+        bookTime.publisher="admin";
+        // bookTime.publisher=User.Identity.Name;
+        // if(User.Identity.Name==null){
+        //     return BadRequest("請去登入");
+        // }
         _timeService.AddBookTime(bookTime);
         return Ok();
     }
     #endregion
 
-    #region 取得時間清單
+    #region 取得所選時間清單
+    
     #endregion
 
     #region 取得已預約時間清單
     #endregion
 
     #region 新增預約
+    
     #endregion
 
     #region 取消預約

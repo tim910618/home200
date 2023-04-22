@@ -342,7 +342,7 @@ namespace api1.Service
 
 
         #region 修改會員資料
-        public void UpdateRental(Members UpdateData)
+        public void UpdatePro(Members UpdateData)
         {
             string sql = @"UPDATE Members SET name=@name, phone=@phone, img=@img WHERE account=@account";
             try
