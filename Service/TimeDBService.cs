@@ -15,6 +15,7 @@ namespace api1.Service
             conn = connection;
         }
 
+        #region 新增可預約時間
         public void AddBookTime(BookTime bookTime)
         {
             // 將可預約時間轉成陣列
@@ -69,5 +70,72 @@ namespace api1.Service
                 conn.Close();
             }
         }
+        #endregion
+
+        #region 取得可預約時間表
+        public BookTime GetBookTime(string account)
+        {
+            BookTime Data = new BookTime();
+            string sql = $@"select * from BookTime where publisher=@publisher";
+            try
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@publisher", account);
+                SqlDataReader dr = cmd.ExecuteReader();
+                dr.Read();
+                Data.publisher = dr["publisher"].ToString();
+                Data.mon = dr["monday"].ToString();
+                Data.tue = dr["tuesday"].ToString();
+                Data.wed = dr["wednesday"].ToString();
+                Data.thu = dr["thursday"].ToString();
+                Data.fri = dr["friday"].ToString();
+                Data.sat = dr["saturday"].ToString();
+                Data.sun = dr["sunday"].ToString();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message.ToString());
+            }
+            finally
+            {
+                conn.Close();
+            }
+            return (Data);
+        }
+        #endregion
+
+        #region 取得單一天的預約時間
+        public BookTime GetBookOfDay(string account)
+        {
+            BookTime Data = new BookTime();
+            string sql = $@"select * from BookTime where publisher=@publisher";
+            try
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@publisher", account);
+                SqlDataReader dr = cmd.ExecuteReader();
+                dr.Read();
+                Data.publisher = dr["publisher"].ToString();
+                Data.mon = dr["monday"].ToString();
+                Data.tue = dr["tuesday"].ToString();
+                Data.wed = dr["wednesday"].ToString();
+                Data.thu = dr["thursday"].ToString();
+                Data.fri = dr["friday"].ToString();
+                Data.sat = dr["saturday"].ToString();
+                Data.sun = dr["sunday"].ToString();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message.ToString());
+            }
+            finally
+            {
+                conn.Close();
+            }
+            return (Data);
+        }
+        #endregion
     }
 }

@@ -122,6 +122,7 @@ builder.Services.AddSingleton<HomeDBService>();
 builder.Services.AddSingleton<HomeAnyDBService>();
 builder.Services.AddSingleton<ReportDBService>();
 builder.Services.AddSingleton<TimeDBService>();
+builder.Services.AddSingleton<ListDBService>();
 builder.Services.AddSingleton<HomeDetailDBService>();
 builder.Services.AddSingleton<JwtService>();
 builder.Services.AddHttpContextAccessor();
