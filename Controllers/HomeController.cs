@@ -34,14 +34,11 @@ public class HomeController : ControllerBase
     public IActionResult HomeUpIndex(int Page = 1)
     {
         RentalListViewModel Data = new RentalListViewModel();
-        // 新增頁面模型中的分頁
         Data.Paging = new ForPaging(Page);
-        // 從 Service 中取得頁面所需陣列資料
         Data.IdList = _homeDBService.GetUpIdList(Data.Paging);
         Data.RentalBlock = new List<RentaldetailViewModel>();
         foreach (var Id in Data.IdList)
         {
-            // 宣告一個新陣列內物件
             RentaldetailViewModel newBlock = new RentaldetailViewModel();
             newBlock.AllData = _homeDBService.GetDataById(Id);
             if(newBlock.AllData.isDelete==false || newBlock.AllData.tenant==true)
@@ -57,14 +54,11 @@ public class HomeController : ControllerBase
     public IActionResult HomeDownIndex(int Page = 1)
     {
         RentalListViewModel Data = new RentalListViewModel();
-        // 新增頁面模型中的分頁
         Data.Paging = new ForPaging(Page);
-        // 從 Service 中取得頁面所需陣列資料
         Data.IdList = _homeDBService.GetDownIdList(Data.Paging);
         Data.RentalBlock = new List<RentaldetailViewModel>();
         foreach (var Id in Data.IdList)
         {
-            // 宣告一個新陣列內物件
             RentaldetailViewModel newBlock = new RentaldetailViewModel();
             newBlock.AllData = _homeDBService.GetDataById(Id);
             if(newBlock.AllData.isDelete==false || newBlock.AllData.check==1 && newBlock.AllData.tenant==false)
@@ -80,14 +74,11 @@ public class HomeController : ControllerBase
     public IActionResult HomeCheckIndex(int Page = 1)
     {
         RentalListViewModel Data = new RentalListViewModel();
-        // 新增頁面模型中的分頁
         Data.Paging = new ForPaging(Page);
-        // 從 Service 中取得頁面所需陣列資料
         Data.IdList = _homeDBService.GetCheckIdList(Data.Paging);
         Data.RentalBlock = new List<RentaldetailViewModel>();
         foreach (var Id in Data.IdList)
         {
-            // 宣告一個新陣列內物件
             RentaldetailViewModel newBlock = new RentaldetailViewModel();
             newBlock.AllData = _homeDBService.GetDataById(Id);
             if(newBlock.AllData.isDelete==false || (newBlock.AllData.check == 0 || newBlock.AllData.check == 2) && newBlock.AllData.tenant==false)
@@ -117,11 +108,6 @@ public class HomeController : ControllerBase
     }
 
     
-
-
-
-
-
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "publisher")]
     [HttpPost("InsertRental")]
@@ -229,7 +215,6 @@ public class HomeController : ControllerBase
         {
             if (files[i] != null && files[i].Length > 0)
             {
-                // 產生檔名，以避免重複
                 string filename = Guid.NewGuid().ToString() + Path.GetExtension(files[i].FileName);
                 filenames.Add(filename);
 
@@ -258,7 +243,6 @@ public class HomeController : ControllerBase
                     System.IO.File.Delete(oldFilePath);
                 }
 
-                // 儲存檔案
                 var path = Path.Combine(uploadPath, filename);
                 using (var stream = new FileStream(path, FileMode.Create))
                 {

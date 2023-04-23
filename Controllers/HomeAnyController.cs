@@ -28,17 +28,17 @@ public class HomeAnyController : ControllerBase
         _httpContextAccessor=httpContextAccessor;
     }
 
+    //全部資料降冪
     [AllowAnonymous]
-    [HttpGet("HomeAny")]
-    public IActionResult HomeAnyIndex(int Page = 1)
+    [HttpGet("HomeAnyDownTime")]
+    public IActionResult HomeAnyDownTime(int Page = 1)
     {
         RentalListViewModel Data = new RentalListViewModel();
         Data.Paging = new ForPaging(Page);
-        Data.IdList = _homeanyDBService.GetIdList(Data.Paging);
+        Data.IdList = _homeanyDBService.GetIdListDown(Data.Paging);
         Data.RentalBlock = new List<RentaldetailViewModel>();
         foreach (var Id in Data.IdList)
         {
-            // 宣告一個新陣列內物件
             RentaldetailViewModel newBlock = new RentaldetailViewModel();
             newBlock.AllData = _homeDBService.GetDataById(Id);
             if (newBlock.AllData != null)
@@ -49,18 +49,65 @@ public class HomeAnyController : ControllerBase
         return Ok(Data);
     }
 
+    //全部資料升冪
     [AllowAnonymous]
-    [HttpPost("HomeAnySearch")]
-    public IActionResult HomeAnySearchIndex([FromForm]AnySearchViewModel SearchWord,int Page = 1)
+    [HttpGet("HomeAnyUpTime")]
+    public IActionResult HomeAnyUpTime(int Page = 1)
+    {
+        RentalListViewModel Data = new RentalListViewModel();
+        Data.Paging = new ForPaging(Page);
+        Data.IdList = _homeanyDBService.GetIdListUp(Data.Paging);
+        Data.RentalBlock = new List<RentaldetailViewModel>();
+        foreach (var Id in Data.IdList)
+        {
+            RentaldetailViewModel newBlock = new RentaldetailViewModel();
+            newBlock.AllData = _homeDBService.GetDataById(Id);
+            if (newBlock.AllData != null)
+            {
+                Data.RentalBlock.Add(newBlock);
+            }
+        }
+        return Ok(Data);
+    }
+
+    //有搜尋值降冪
+    [AllowAnonymous]
+    [HttpPost("HomeAnySearchDown")]
+    public IActionResult HomeAnySearchDown([FromForm]AnySearchViewModel SearchWord,int Page = 1)
     {
         RentalListViewModel Data = new RentalListViewModel();
         Data.Paging = new ForPaging(Page);
         Data.Search=new List<AnySearchViewModel>{SearchWord};
-        Data.IdList = _homeanyDBService.GetIdList(Data.Paging,SearchWord);
+        Data.IdList = _homeanyDBService.GetIdListDown(Data.Paging,SearchWord);
         Data.RentalBlock = new List<RentaldetailViewModel>();
         foreach (var Id in Data.IdList)
         {
-            // 宣告一個新陣列內物件
+            RentaldetailViewModel newBlock = new RentaldetailViewModel();
+            newBlock.AllData = _homeDBService.GetDataById(Id);
+            if (newBlock.AllData != null)
+            {
+                Data.RentalBlock.Add(newBlock);
+            }
+        }
+        if(Data.RentalBlock.Count==0)
+        {
+            return Ok("查無此資料");
+        }
+        return Ok(Data);
+    }
+    
+    //有搜尋值升冪
+    [AllowAnonymous]
+    [HttpPost("HomeAnySearchUp")]
+    public IActionResult HomeAnySearchUp([FromForm]AnySearchViewModel SearchWord,int Page = 1)
+    {
+        RentalListViewModel Data = new RentalListViewModel();
+        Data.Paging = new ForPaging(Page);
+        Data.Search=new List<AnySearchViewModel>{SearchWord};
+        Data.IdList = _homeanyDBService.GetIdListUp(Data.Paging,SearchWord);
+        Data.RentalBlock = new List<RentaldetailViewModel>();
+        foreach (var Id in Data.IdList)
+        {
             RentaldetailViewModel newBlock = new RentaldetailViewModel();
             newBlock.AllData = _homeDBService.GetDataById(Id);
             if (newBlock.AllData != null)
@@ -75,9 +122,10 @@ public class HomeAnyController : ControllerBase
         return Ok(Data);
     }
 
+    //單筆資料
     [AllowAnonymous]
     [HttpGet("{id}")]
-    public IActionResult AnyReadImg(Guid Id)
+    public IActionResult AnyRead(Guid Id)
     {
         try
         {
@@ -97,5 +145,16 @@ public class HomeAnyController : ControllerBase
         {
             return StatusCode(500, e.Message);
         }
+    }
+
+    //新增蒐藏
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "renter")]
+    [HttpPost("AllCollect/{id}")]
+    public IActionResult AllCollect([FromQuery]Collect Data,[FromQuery]Guid rental_id)
+    {
+        Data.renter=_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
+        Data.rental_id=rental_id;
+        _homeanyDBService.InsertCollect(Data);
+        return Ok("已蒐藏");
     }
 }
