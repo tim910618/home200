@@ -149,8 +149,8 @@ namespace api1.Controllers
             return Ok(ChangePasswordStr);
         }
 
-        //Account=Loginㄇ
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        
+        [AllowAnonymous]
         [HttpPost("forgetPasswordMail")]
         public IActionResult ForgetPasswordMail(ForgetPasswordViewModel Data)
         {
