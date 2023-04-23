@@ -91,7 +91,7 @@ public class TimeController : ControllerBase
                 availableTimes = bookTime.sun;
                 break;
             default:
-                throw new ArgumentException("Invalid day of week.");
+                throw new ArgumentException("無效的日期天數");
         }
         // 將可預約時間字串轉成陣列並回傳
         string[] times = availableTimes.Split(';');

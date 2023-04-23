@@ -94,7 +94,7 @@ namespace api1.Controllers
 
         [AllowAnonymous]
         [HttpPost("emailValidate")]
-        public IActionResult EmailValidate(EmailValidate Data)
+        public IActionResult EmailValidate([FromQuery]EmailValidate Data)
         {
             string EmailValidateStr = _membersSerivce.EmailValidate(Data.account, Data.authcode);
             return Ok(EmailValidateStr);
