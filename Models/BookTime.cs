@@ -2,7 +2,7 @@ namespace api1.Models
 {
     public class BookTime
     {
-        //public int booktime_id { get; set; }
+        public Guid? booktime_id { get; set; }
         public string? publisher { get; set; }
         public string? mon { get; set; }
         public string? tue { get; set; }

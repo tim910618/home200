@@ -70,5 +70,28 @@ namespace api1.Service
             SmtpServer.Send(mail);
         }
         #endregion
+
+        #region 預約看房信
+        public string BookMail(string TempString, string UserName,string Time)
+        {
+            TempString = TempString.Replace("{{UserName}}", UserName);
+            TempString = TempString.Replace("{{Time}}", Time);
+            return TempString;
+        }
+        public void SentBookMail(string MailBody, string ToEmail)
+        {
+            SmtpClient SmtpServer = new SmtpClient("smtp.gmail.com");
+            SmtpServer.Port = 587;
+            SmtpServer.Credentials = new System.Net.NetworkCredential(gmail_account, gmail_password);
+            SmtpServer.EnableSsl = true;
+            MailMessage mail = new MailMessage();
+            mail.From = new MailAddress(gmail_mail);
+            mail.To.Add(ToEmail);
+            mail.Subject = " 預約看房信 ";
+            mail.Body = MailBody;
+            mail.IsBodyHtml = true;
+            SmtpServer.Send(mail);
+        }
+        #endregion
     }
 }
