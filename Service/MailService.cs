@@ -72,10 +72,12 @@ namespace api1.Service
         #endregion
 
         #region 預約看房信
-        public string BookMail(string TempString, string UserName,string Time)
+        public string BookMailBody(string TempString, string UserName,DateOnly Date,string Time,string address)
         {
             TempString = TempString.Replace("{{UserName}}", UserName);
+            TempString = TempString.Replace("{{Date}}", Date.ToString("yyyy/MM/dd"));
             TempString = TempString.Replace("{{Time}}", Time);
+            TempString=TempString.Replace("{{Address}}",address);
             return TempString;
         }
         public void SentBookMail(string MailBody, string ToEmail)

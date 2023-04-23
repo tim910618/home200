@@ -22,12 +22,14 @@ public class ListController : ControllerBase
     private readonly MembersDBService _membersSerivce;
     private readonly HomeDBService _homeDBService;
     private readonly TimeDBService _timeService;
-    public ListController(ListDBService listDBService, MembersDBService membersDBService, HomeDBService homeDBService, TimeDBService timeDBService)
+        private readonly MailService _mailService;
+    public ListController(ListDBService listDBService, MembersDBService membersDBService, HomeDBService homeDBService, TimeDBService timeDBService,MailService mailService)
     {
         _ListService = listDBService;
         _membersSerivce = membersDBService;
         _homeDBService = homeDBService;
         _timeService = timeDBService;
+        _mailService=mailService;
     }
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     #region 取得已預約時間清單
@@ -52,12 +54,18 @@ public class ListController : ControllerBase
     public IActionResult AddBooking(BookList Data)
     {
         Data.renter=User.Identity.Name;
+        Members Members=_membersSerivce.GetDataByAccount(Data.renter);
         if(User.Identity.Name==null){
             return BadRequest("請去登入");
         }
         var rental = _homeDBService.GetDataById(Data.rental_id);
         Data.publisher = rental.publisher;
         _ListService.Addbooking(Data);
+        //寄預約信
+        string filePath = @"Views/BookMail.html";
+        string TempString = System.IO.File.ReadAllText(filePath);
+        string MailBody = _mailService.BookMailBody(TempString, User.Identity.Name, Data.bookdate,Data.booktime,rental.address);
+        _mailService.SentBookMail(MailBody, Members.email);
         return Ok("新增預約成功");
     }
     #endregion
