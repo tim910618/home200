@@ -10,7 +10,7 @@ namespace api1.Models
         public string? phone { get; set; }
         public string? authcode { get; set; }
         public int? identity { get; set; }
-        public int? score { get; set; }
+        public double? score { get; set; }
         public string? img{get;set;}
         public bool? isBlock{get;set;}
 }
