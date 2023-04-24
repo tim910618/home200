@@ -15,6 +15,7 @@ namespace api1.ViewModel
         public int? identity { get; set; }
         public int? score { get; set; }
         public string? img { get; set; }
+        public bool? isBlock{get;set;}
         public int rentalCount { get; set; }
         public int reportCount { get; set; }
     }
