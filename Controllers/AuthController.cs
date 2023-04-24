@@ -172,32 +172,16 @@ namespace api1.Controllers
             }
         }
 
-        //後端測試身分用
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [HttpGet("profile")]
-        public IActionResult Profile()
+        //查詢基本檔案
+        [AllowAnonymous]
+        [HttpGet("profile/{account}")]
+        public IActionResult Profile(string? account)
         {
-            if (User.Identity.IsAuthenticated)
-            {
-                if (User.IsInRole("publisher"))
-                {
-                    var roles = User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToArray();
-                    //var name = User.Claims.Where(c => c.Type == ClaimTypes.Name).Select(c => c.Value).ToArray();
-                    return Ok("哈囉我是房東" + string.Join(", ", roles));
-                }
-                else if (User.IsInRole("admin"))
-                {
-                    var roles = User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToArray();
-                    //var name = User.Claims.Where(c => c.Type == ClaimTypes.Name).Select(c => c.Value).ToArray();
-                    return Ok("哈囉我是管理者" + string.Join(", ", roles));
-                }
-                else
-                {
-                    string name = User.Identity.Name;
-                    return Ok("哈囉我是一般使用者" + name);
-                }
+            Members Data = _membersSerivce.GetDataByAccount(account);
+            if(Data==null){
+                return BadRequest("查無此人");
             }
-            return Ok("尚未驗證");
+            return Ok(Data);
         }
 
         #region 管理者抓帳號清單

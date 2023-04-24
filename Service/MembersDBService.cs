@@ -323,6 +323,7 @@ namespace api1.Service
                     Data.authcode = dr["authcode"].ToString();
                     Data.identity = Convert.ToInt32(dr["identity"]);
                     Data.score = Convert.ToInt32(dr["score"]);
+                    Data.isBlock = Convert.ToBoolean(dr["isBlock"]);
                     Data.rentalCount = dr.GetInt32(dr.GetOrdinal("rentalCount"));
                     Data.reportCount = dr.GetInt32(dr.GetOrdinal("reportCount"));
                     DataList.Add(Data);
