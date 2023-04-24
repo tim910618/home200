@@ -8,9 +8,9 @@ namespace api1.Service
 {
     public class MailService
     {
-        private string gmail_account = "mindy.1030529@gmail.com"; 
-        private string gmail_password = "sjurinmcvmxoekdy"; 
-        private string gmail_mail = "mindy.1030529@gmail.com";
+        private string gmail_account = "s1410931048@gms.nutc.edu.tw"; 
+        private string gmail_password = "gexarlffubzkdyzr"; 
+        private string gmail_mail = "s1410931048@gms.nutc.edu.tw";
         
         #region 產生驗證碼
         public string GetValidateCode()
