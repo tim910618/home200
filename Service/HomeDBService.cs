@@ -12,15 +12,16 @@ namespace api1.Service
             conn = connection;
         }
 
-        public List<Guid> GetUpIdList(ForPaging Paging)
+        public List<Guid> GetUpIdList(ForPaging Paging,string publisher)
         {
-            SetMaxPaging(Paging);
+            SetMaxPaging(Paging,publisher);
             List<Guid> IdList = new List<Guid>();
-            string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by rental_id desc) AS sort,* FROM RENTAL WHERE tenant = 1 AND [check] = 1 AND isDelete = 0) m WHERE m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
+            string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by rental_id desc) AS sort,* FROM RENTAL WHERE publisher = @publisher AND tenant = 1 AND [check] = 1 AND isDelete = 0) m WHERE m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
             try
             {
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@publisher", publisher);
                 SqlDataReader dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
@@ -37,15 +38,16 @@ namespace api1.Service
             }
             return IdList;
         }
-        public List<Guid> GetDownIdList(ForPaging Paging)
+        public List<Guid> GetDownIdList(ForPaging Paging,string publisher)
         {
-            SetMaxPaging(Paging);
+            SetMaxPaging(Paging,publisher);
             List<Guid> IdList = new List<Guid>();
-            string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by rental_id desc) AS sort,* FROM RENTAL WHERE tenant = 0 AND [check] = 1 AND isDelete = 0) m WHERE m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
+            string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by rental_id desc) AS sort,* FROM RENTAL WHERE publisher = @publisher AND tenant = 0 AND [check] = 1 AND isDelete = 0) m WHERE m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
             try
             {
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@publisher", publisher);
                 SqlDataReader dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
@@ -62,15 +64,16 @@ namespace api1.Service
             }
             return IdList;
         }
-        public List<Guid> GetCheckIdList(ForPaging Paging)
+        public List<Guid> GetCheckIdList(ForPaging Paging,string publisher)
         {
-            SetMaxPaging(Paging);
+            SetMaxPaging(Paging,publisher);
             List<Guid> IdList = new List<Guid>();
-            string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by rental_id desc) AS sort,* FROM RENTAL WHERE tenant = 0 AND [check] IN (0, 2) AND isDelete = 0) m WHERE m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
+            string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by rental_id desc) AS sort,* FROM RENTAL WHERE publisher = @publisher AND tenant = 0 AND [check] IN (0, 2) AND isDelete = 0) m WHERE m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
             try
             {
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@publisher", publisher);
                 SqlDataReader dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
@@ -87,14 +90,15 @@ namespace api1.Service
             }
             return IdList;
         }
-        public void SetMaxPaging(ForPaging Paging)
+        public void SetMaxPaging(ForPaging Paging,string publisher)
         {
             int Row = 0;
-            string sql = $@" SELECT * FROM RENTAL; ";
+            string sql = $@" SELECT * FROM RENTAL WHERE publisher = @publisher; ";
             try
             {
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@publisher", publisher);
                 SqlDataReader dr = cmd.ExecuteReader();
                 while (dr.Read()) 
                 {

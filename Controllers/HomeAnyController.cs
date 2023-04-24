@@ -149,12 +149,20 @@ public class HomeAnyController : ControllerBase
 
     //新增蒐藏
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "renter")]
-    [HttpPost("AllCollect/{id}")]
-    public IActionResult AllCollect([FromQuery]Collect Data,[FromQuery]Guid rental_id)
+    [HttpPost("AddCollect")]
+    public IActionResult AddCollect([FromQuery]Collect Data,Guid rental_id)
     {
         Data.renter=_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
-        Data.rental_id=rental_id;
         _homeanyDBService.InsertCollect(Data);
         return Ok("已蒐藏");
+    }
+    //取消蒐藏
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "renter")]
+    [HttpDelete("RemoveCollect/{collect_id}")]
+    public IActionResult  RemoveCollect(Guid collect_id)
+    {
+        //Data.renter=_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
+        _homeanyDBService.RemoveCollect(collect_id);
+        return Ok("取消蒐藏");
     }
 }

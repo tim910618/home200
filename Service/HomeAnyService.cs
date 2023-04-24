@@ -313,13 +313,14 @@ namespace api1.Service
         //新增蒐藏
         public void InsertCollect(Collect newData)
         {
-            string sql=$@"INSERT INTO COLLECT(renter,rental_id) VALUES (@renter,@rental_id) ;";
+            string sql = @"INSERT INTO COLLECT(renter,rental_id) VALUES (@renter,@rental_id) ;";
             try
             {
                 conn.Open();
-                SqlCommand cmd=new SqlCommand(sql,conn);
+                SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@renter",newData.renter);
-                cmd.Parameters.AddWithValue("@rental_id",newData.rental_id);
+                cmd.Parameters.AddWithValue("@rental_id", newData.rental_id);
+                cmd.ExecuteNonQuery();
             }
             catch(Exception e)
             {
@@ -328,6 +329,26 @@ namespace api1.Service
             finally
             {
                 conn.Close();    
+            }
+        }
+        //取消蒐藏
+        public void RemoveCollect(Guid id)
+        {
+            string sql = @"DELETE FROM COLLECT WHERE collect_id = @collect_id;";
+            try
+            {
+                conn.Open();
+                SqlCommand cmd=new SqlCommand(sql,conn);
+                cmd.Parameters.AddWithValue("@collect_id", id);
+                cmd.ExecuteNonQuery();
+            }
+            catch(Exception e)
+            {
+                throw new Exception(e.Message.ToString());
+            }
+            finally
+            {
+                conn.Close();
             }
         }
 
