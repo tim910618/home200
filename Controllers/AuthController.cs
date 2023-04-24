@@ -69,7 +69,8 @@ namespace api1.Controllers
                     string filePath = @"Views/RegisterEmail.html";
                     string TempString = System.IO.File.ReadAllText(filePath);
                     var scheme = Request.Scheme;
-                    var host = Request.Host.ToUriComponent();
+                    //var host = Request.Host.ToUriComponent();
+                    var host="127.0.0.1:5555";
                     var pathBase = Request.PathBase.ToUriComponent();
                     var controller = "Members";
                     var action = "EmailValidate";
@@ -94,7 +95,7 @@ namespace api1.Controllers
 
         [AllowAnonymous]
         [HttpPost("emailValidate")]
-        public IActionResult EmailValidate([FromQuery]EmailValidate Data)
+        public IActionResult EmailValidate([FromQuery] EmailValidate Data)
         {
             string EmailValidateStr = _membersSerivce.EmailValidate(Data.account, Data.authcode);
             return Ok(EmailValidateStr);
@@ -116,8 +117,11 @@ namespace api1.Controllers
                     Expires = DateTime.UtcNow.AddDays(1)
                 });
                 Members members = _membersSerivce.GetDataByAccount(Data.Account);
-                string imagePath = Path.Combine("MembersImg", members.img);
-                members.img=imagePath;
+                string imagePath = members.img;
+                string imageFullPath = Path.Combine("MembersImg", imagePath);
+                byte[] imageBytes = System.IO.File.ReadAllBytes(imageFullPath);
+                string base64String = Convert.ToBase64String(imageBytes);
+                members.img=base64String;
                 return Ok(new { token, members });
             }
             else
@@ -149,7 +153,7 @@ namespace api1.Controllers
             return Ok(ChangePasswordStr);
         }
 
-        
+
         [AllowAnonymous]
         [HttpPost("forgetPasswordMail")]
         public IActionResult ForgetPasswordMail(ForgetPasswordViewModel Data)
@@ -178,8 +182,17 @@ namespace api1.Controllers
         public IActionResult Profile(string? account)
         {
             Members Data = _membersSerivce.GetDataByAccount(account);
-            if(Data==null){
+            if (Data == null)
+            {
                 return BadRequest("查無此人");
+            }
+            else
+            {
+                string imagePath = Data.img;
+                string imageFullPath = Path.Combine("MembersImg", imagePath);
+                byte[] imageBytes = System.IO.File.ReadAllBytes(imageFullPath);
+                string base64String = Convert.ToBase64String(imageBytes);
+                Data.img=base64String;
             }
             return Ok(Data);
         }

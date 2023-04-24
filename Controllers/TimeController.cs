@@ -20,11 +20,14 @@ public class TimeController : ControllerBase
 {
     private readonly TimeDBService _timeService;
     private readonly MembersDBService _MemberService;
+    private readonly HomeDBService _HomeDBService;
 
-    public TimeController(TimeDBService timeDBService, MembersDBService membersDBService)
+
+    public TimeController(TimeDBService timeDBService, MembersDBService membersDBService, HomeDBService homeDBService)
     {
         _timeService = timeDBService;
         _MemberService = membersDBService;
+        _HomeDBService = homeDBService;
     }
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "publisher")]
     #region 房東設定可預約時間
@@ -144,18 +147,16 @@ public class TimeController : ControllerBase
     }
     #endregion
     [AllowAnonymous]
-    #region 取得單天的預約時間 RentalController用吧
-    [HttpGet("BookOfDay/{date}")]
-    public IActionResult BookOfDay(DateTime date)
+    #region 取得單天的預約時間 取得房東
+    [HttpGet("BookOfDay")]
+    public IActionResult BookOfDay([FromQuery] Guid rental_id, DateOnly datetime)
     {
-        // 先取得 Rental 的屋主是誰，這裡先用 admin 
-        string account = "admin";
-        // bookTime.publisher=User.Identity.Name;
-        // if(User.Identity.Name==null){
-        //     return BadRequest("請去登入");
-        // }
+        // 先取得 Rental 的屋主是誰
+        Rental rental = _HomeDBService.GetDataById(rental_id);
+        string account = rental.publisher;
+
         // 先查詢 SpecialTime 表格中有沒有指定日期的資料
-        SpecialTime specialTime = _timeService.GetSpecialTime(account, date);
+        SpecialTime specialTime = _timeService.GetSpecialTime(account, datetime);
         string availableTimes;
 
         if (specialTime != null)
@@ -167,7 +168,7 @@ public class TimeController : ControllerBase
         {
             // 如果沒有資料，就從 BookTime 中取得當天的可預約時段
             BookTime bookTime = _timeService.GetBookOfDay(account);
-            switch (date.DayOfWeek)
+            switch (datetime.DayOfWeek)
             {
                 case DayOfWeek.Monday:
                     availableTimes = bookTime.mon;
@@ -194,16 +195,17 @@ public class TimeController : ControllerBase
                     throw new ArgumentException("請選擇正確的日期格式");
             }
         }
-
-        // 將已被預約的時段轉成陣列
-        //string[] bookedTimes = _timeService.GetBookedTimes(account, date);
+        // 將DateTime轉換為date跟time
+        //DateOnly date = DateOnly.FromDateTime(datetime);
         // 將當天所有可預約的時段轉成陣列
         string[] availableTimesArray = availableTimes.Split(';');
+        // 抓取已被預約的時段轉成陣列
+        string[] bookedTimes = _timeService.GetBookedTimes(account, datetime, availableTimesArray);   
         // 取得未被預約的時段
-        //string[] unbookedTimes = availableTimesArray.Except(bookedTimes).ToArray();
+        string[] unbookedTimes = availableTimesArray.Except(bookedTimes).ToArray();
 
         //return Ok(new { bookedTimes, unbookedTimes });
-        return Ok(new { availableTimesArray });
+        return Ok(new { bookedTimes, unbookedTimes });
     }
 
     #endregion

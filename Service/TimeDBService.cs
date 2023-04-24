@@ -217,7 +217,7 @@ namespace api1.Service
             return availableTimes;
         }
 
-        public SpecialTime GetSpecialTime(string publisher, DateTime date)
+        public SpecialTime GetSpecialTime(string publisher, DateOnly date)
         {
             SpecialTime data = null;
             string sql = "SELECT * FROM SpecialTime WHERE publisher=@publisher AND date=@date";
@@ -354,6 +354,38 @@ namespace api1.Service
                 conn.Close();
             }
         }
+        #endregion
+
+        #region 取得房東已被預約陣列
+        public string[] GetBookedTimes(string account, DateOnly date, string[] availableTimes)
+        {
+            List<string> bookedTimes = new List<string>();
+            string sql = $"SELECT booktime FROM booklist WHERE publisher = @account AND bookdate = @date AND booktime IN ({string.Join(",", availableTimes.Select(t => $"'{t}'"))})";
+            try
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@account", account);
+                cmd.Parameters.AddWithValue("@date", date);
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    string time = reader.GetString(0);
+                    bookedTimes.Add(time);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                conn.Close();
+            }
+            return bookedTimes.ToArray();
+        }
+
         #endregion
     }
 }
