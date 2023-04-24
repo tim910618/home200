@@ -332,19 +332,54 @@ namespace api1.Service
             }
         }
         //取消蒐藏
-        public void RemoveCollect(Guid id)
+        public void RemoveCollect(string renter,Guid rental_id)
         {
-            string sql = @"DELETE FROM COLLECT WHERE collect_id = @collect_id;";
+            string sql = @"SELECT collect_id FROM COLLECT WHERE renter = @renter AND rental_id = @rental_id;";
             try
             {
                 conn.Open();
-                SqlCommand cmd=new SqlCommand(sql,conn);
-                cmd.Parameters.AddWithValue("@collect_id", id);
-                cmd.ExecuteNonQuery();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@renter", renter);
+                cmd.Parameters.AddWithValue("@rental_id", rental_id);
+                object collectIdObj = cmd.ExecuteScalar();
+                if (collectIdObj == null)
+                {
+                    throw new Exception("找不到收藏紀錄");
+                }
+                var collectId = (Guid)collectIdObj;
+
+                // 刪除收藏紀錄
+                string deleteSql = @"DELETE FROM COLLECT WHERE collect_id=@collect_id";
+                SqlCommand deleteCmd = new SqlCommand(deleteSql, conn);
+                deleteCmd.Parameters.AddWithValue("@collect_id", collectId);
+                deleteCmd.ExecuteNonQuery();
             }
             catch(Exception e)
             {
                 throw new Exception(e.Message.ToString());
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+        //檢查是否已蒐藏
+        public bool CheckCollect(string renter,Guid rental_id)
+        {
+            string sql=$@"SELECT collect_id FROM COLLECT WHERE renter=@renter AND rental_id=@rental_id ;";
+            try
+            {
+                conn.Open();
+                SqlCommand cmd =new SqlCommand(sql,conn);
+                cmd.Parameters.AddWithValue("@renter",renter);
+                cmd.Parameters.AddWithValue("@rental_id",rental_id);
+                object collectIdObj=cmd.ExecuteScalar();
+
+                return collectIdObj !=null;
+            }
+            catch(Exception e)
+            {
+                throw new Exception (e.Message.ToString());
             }
             finally
             {

@@ -153,16 +153,21 @@ public class HomeAnyController : ControllerBase
     public IActionResult AddCollect([FromQuery]Collect Data,Guid rental_id)
     {
         Data.renter=_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
+        bool CheckCollect=_homeanyDBService.CheckCollect(Data.renter,rental_id);
+        if(CheckCollect==true)
+        {
+            return Ok("此房屋已經蒐藏過了");
+        }
         _homeanyDBService.InsertCollect(Data);
-        return Ok("已蒐藏");
+        return Ok("蒐藏成功");
     }
     //取消蒐藏
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "renter")]
-    [HttpDelete("RemoveCollect/{collect_id}")]
-    public IActionResult  RemoveCollect(Guid collect_id)
+    [HttpDelete("RemoveCollect/{rental_id}")]
+    public IActionResult  RemoveCollect(Guid rental_id)
     {
-        //Data.renter=_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
-        _homeanyDBService.RemoveCollect(collect_id);
+        string renter=_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
+        _homeanyDBService.RemoveCollect(renter,rental_id);
         return Ok("取消蒐藏");
     }
 }
