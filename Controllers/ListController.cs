@@ -50,7 +50,7 @@ public class ListController : ControllerBase
     }
     #endregion
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "renter")]
-    #region 新增預約
+    #region 新增預約 有考量重疊部分了
     [HttpPost("AddBooking")]
     public IActionResult AddBooking(BookList Data)
     {
