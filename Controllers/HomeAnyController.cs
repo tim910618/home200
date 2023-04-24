@@ -149,12 +149,25 @@ public class HomeAnyController : ControllerBase
 
     //新增蒐藏
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "renter")]
-    [HttpPost("AllCollect/{id}")]
-    public IActionResult AllCollect([FromQuery]Collect Data,[FromQuery]Guid rental_id)
+    [HttpPost("AddCollect")]
+    public IActionResult AddCollect([FromQuery]Collect Data,Guid rental_id)
     {
         Data.renter=_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
-        Data.rental_id=rental_id;
+        bool CheckCollect=_homeanyDBService.CheckCollect(Data.renter,rental_id);
+        if(CheckCollect==true)
+        {
+            return Ok("此房屋已經蒐藏過了");
+        }
         _homeanyDBService.InsertCollect(Data);
-        return Ok("已蒐藏");
+        return Ok("蒐藏成功");
+    }
+    //取消蒐藏
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "renter")]
+    [HttpDelete("RemoveCollect/{rental_id}")]
+    public IActionResult  RemoveCollect(Guid rental_id)
+    {
+        string renter=_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
+        _homeanyDBService.RemoveCollect(renter,rental_id);
+        return Ok("取消蒐藏");
     }
 }

@@ -313,13 +313,14 @@ namespace api1.Service
         //新增蒐藏
         public void InsertCollect(Collect newData)
         {
-            string sql=$@"INSERT INTO COLLECT(renter,rental_id) VALUES (@renter,@rental_id) ;";
+            string sql = @"INSERT INTO COLLECT(renter,rental_id) VALUES (@renter,@rental_id) ;";
             try
             {
                 conn.Open();
-                SqlCommand cmd=new SqlCommand(sql,conn);
+                SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@renter",newData.renter);
-                cmd.Parameters.AddWithValue("@rental_id",newData.rental_id);
+                cmd.Parameters.AddWithValue("@rental_id", newData.rental_id);
+                cmd.ExecuteNonQuery();
             }
             catch(Exception e)
             {
@@ -328,6 +329,61 @@ namespace api1.Service
             finally
             {
                 conn.Close();    
+            }
+        }
+        //取消蒐藏
+        public void RemoveCollect(string renter,Guid rental_id)
+        {
+            string sql = @"SELECT collect_id FROM COLLECT WHERE renter = @renter AND rental_id = @rental_id;";
+            try
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@renter", renter);
+                cmd.Parameters.AddWithValue("@rental_id", rental_id);
+                object collectIdObj = cmd.ExecuteScalar();
+                if (collectIdObj == null)
+                {
+                    throw new Exception("找不到收藏紀錄");
+                }
+                var collectId = (Guid)collectIdObj;
+
+                // 刪除收藏紀錄
+                string deleteSql = @"DELETE FROM COLLECT WHERE collect_id=@collect_id";
+                SqlCommand deleteCmd = new SqlCommand(deleteSql, conn);
+                deleteCmd.Parameters.AddWithValue("@collect_id", collectId);
+                deleteCmd.ExecuteNonQuery();
+            }
+            catch(Exception e)
+            {
+                throw new Exception(e.Message.ToString());
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+        //檢查是否已蒐藏
+        public bool CheckCollect(string renter,Guid rental_id)
+        {
+            string sql=$@"SELECT collect_id FROM COLLECT WHERE renter=@renter AND rental_id=@rental_id ;";
+            try
+            {
+                conn.Open();
+                SqlCommand cmd =new SqlCommand(sql,conn);
+                cmd.Parameters.AddWithValue("@renter",renter);
+                cmd.Parameters.AddWithValue("@rental_id",rental_id);
+                object collectIdObj=cmd.ExecuteScalar();
+
+                return collectIdObj !=null;
+            }
+            catch(Exception e)
+            {
+                throw new Exception (e.Message.ToString());
+            }
+            finally
+            {
+                conn.Close();
             }
         }
 

@@ -33,9 +33,10 @@ public class HomeController : ControllerBase
     [HttpGet("HomeUp")]
     public IActionResult HomeUpIndex(int Page = 1)
     {
+        var publisher=_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
         RentalListViewModel Data = new RentalListViewModel();
         Data.Paging = new ForPaging(Page);
-        Data.IdList = _homeDBService.GetUpIdList(Data.Paging);
+        Data.IdList = _homeDBService.GetUpIdList(Data.Paging,publisher);
         Data.RentalBlock = new List<RentaldetailViewModel>();
         foreach (var Id in Data.IdList)
         {
@@ -53,9 +54,10 @@ public class HomeController : ControllerBase
     [HttpGet("HomeDown")]
     public IActionResult HomeDownIndex(int Page = 1)
     {
+        var publisher=_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
         RentalListViewModel Data = new RentalListViewModel();
         Data.Paging = new ForPaging(Page);
-        Data.IdList = _homeDBService.GetDownIdList(Data.Paging);
+        Data.IdList = _homeDBService.GetDownIdList(Data.Paging,publisher);
         Data.RentalBlock = new List<RentaldetailViewModel>();
         foreach (var Id in Data.IdList)
         {
@@ -73,9 +75,10 @@ public class HomeController : ControllerBase
     [HttpGet("HomeCheck")]
     public IActionResult HomeCheckIndex(int Page = 1)
     {
+        var publisher=_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
         RentalListViewModel Data = new RentalListViewModel();
         Data.Paging = new ForPaging(Page);
-        Data.IdList = _homeDBService.GetCheckIdList(Data.Paging);
+        Data.IdList = _homeDBService.GetCheckIdList(Data.Paging,publisher);
         Data.RentalBlock = new List<RentaldetailViewModel>();
         foreach (var Id in Data.IdList)
         {
