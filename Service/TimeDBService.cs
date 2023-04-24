@@ -217,10 +217,10 @@ namespace api1.Service
             return availableTimes;
         }
 
-        public SpecialTime GetSpecialTime(string publisher, DateOnly date)
+        public SpecialTime GetSpecialTime(string publisher, DateTime date)
         {
             SpecialTime data = null;
-            string sql = "SELECT * FROM SpecialTime WHERE publisher=@publisher AND date=@date";
+            string sql = "SELECT * FROM SpecialTime WHERE publisher=@publisher AND Date=@date";
             try
             {
                 conn.Open();
@@ -233,7 +233,7 @@ namespace api1.Service
                     data = new SpecialTime();
                     data.special_id = (Guid)dr["special_id"];
                     data.publisher = dr["publisher"].ToString();
-                    data.date = (DateTime)dr["date"];
+                    data.date = (DateTime)dr["Date"];
                     data.oldtime = dr["oldtime"].ToString();
                     data.newtime = dr["newtime"].ToString();
                 }
@@ -357,7 +357,7 @@ namespace api1.Service
         #endregion
 
         #region 取得房東已被預約陣列
-        public string[] GetBookedTimes(string account, DateOnly date, string[] availableTimes)
+        public string[] GetBookedTimes(string account, DateTime date, string[] availableTimes)
         {
             List<string> bookedTimes = new List<string>();
             string sql = $"SELECT booktime FROM booklist WHERE publisher = @account AND bookdate = @date AND booktime IN ({string.Join(",", availableTimes.Select(t => $"'{t}'"))})";

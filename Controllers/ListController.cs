@@ -22,22 +22,23 @@ public class ListController : ControllerBase
     private readonly MembersDBService _membersSerivce;
     private readonly HomeDBService _homeDBService;
     private readonly TimeDBService _timeService;
-        private readonly MailService _mailService;
-    public ListController(ListDBService listDBService, MembersDBService membersDBService, HomeDBService homeDBService, TimeDBService timeDBService,MailService mailService)
+    private readonly MailService _mailService;
+    public ListController(ListDBService listDBService, MembersDBService membersDBService, HomeDBService homeDBService, TimeDBService timeDBService, MailService mailService)
     {
         _ListService = listDBService;
         _membersSerivce = membersDBService;
         _homeDBService = homeDBService;
         _timeService = timeDBService;
-        _mailService=mailService;
+        _mailService = mailService;
     }
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     #region 取得已預約時間清單
     [HttpGet]
     public IActionResult GetBookList()
     {
-        string account=User.Identity.Name;
-        if(User.Identity.Name==null){
+        string account = User.Identity.Name;
+        if (User.Identity.Name == null)
+        {
             return BadRequest("請去登入");
         }
         List<BookList> DataList = _ListService.GetBookTime(account);
@@ -49,28 +50,44 @@ public class ListController : ControllerBase
     }
     #endregion
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "renter")]
-    #region 新增預約 點選button要先確認->CheckBooking
+    #region 新增預約
     [HttpPost("AddBooking")]
     public IActionResult AddBooking(BookList Data)
     {
-        Data.renter=User.Identity.Name;
-        Members Members=_membersSerivce.GetDataByAccount(Data.renter);
-        if(User.Identity.Name==null){
+        Data.renter = User.Identity.Name;
+        Members Members = _membersSerivce.GetDataByAccount(Data.renter);
+        if (User.Identity.Name == null)
+        {
             return BadRequest("請去登入");
         }
         var rental = _homeDBService.GetDataById(Data.rental_id);
         Data.publisher = rental.publisher;
-        _ListService.Addbooking(Data);
+        bool timeover = _ListService.IsTimeOverlap(Data.booktime, Data.bookdate, Data.renter);
+        if (timeover == true)
+        {
+            bool booked = _ListService.CheckBooked(Data.renter, Data.bookdate, Data.booktime);
+            return BadRequest("看房時間重疊！");
+            if (booked == true)
+            {
+                return BadRequest("您已預約看房！");
+            }
+        }
+        else
+        {
+            _ListService.Addbooking(Data);
+        }
         //寄預約信
         string filePath = @"Views/BookMail.html";
         string TempString = System.IO.File.ReadAllText(filePath);
-        string MailBody = _mailService.BookMailBody(TempString, User.Identity.Name, Data.bookdate,Data.booktime,rental.address);
+        string MailBody = _mailService.BookMailBody(TempString, User.Identity.Name, Data.bookdate, Data.booktime, rental.address);
         _mailService.SentBookMail(MailBody, Members.email);
         return Ok("新增預約成功");
     }
     #endregion
+
     [AllowAnonymous]
-    #region 確認是否被預約
+    #region 確認是否被預約 點選button要先確認->CheckBooking！這不需要了！
+
     [HttpGet("CheckBooking")]
     public IActionResult CheckBook([FromBody] CheckBooked Data)
     {
@@ -87,6 +104,7 @@ public class ListController : ControllerBase
         }
     }
     #endregion
+
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     #region 取消預約
     [HttpDelete("CancelBooking")]

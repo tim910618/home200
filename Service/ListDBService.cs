@@ -129,5 +129,78 @@ namespace api1.Service
             return isBooked;
         }
         #endregion
+
+        #region 
+        public bool CheckBooked(string account, DateOnly date, string time)
+        {
+            string sql = @"select * from booklist where renter=@renter and bookdate=@date and booktime=@time";
+            try
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@renter", account);
+                cmd.Parameters.AddWithValue("@date", date);
+                cmd.Parameters.AddWithValue("@time", time);
+                SqlDataReader dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message.ToString());
+            }
+            finally
+            {
+                conn.Close();
+            }
+            return false;
+        }
+
+        //時間有無交集
+        public bool IsTimeOverlap(string booktime, DateOnly bookdate, string account)
+        {
+            string[] timeParts = booktime.Split('-');
+            TimeSpan book_startTime = TimeSpan.Parse(timeParts[0]);
+            TimeSpan book_endTime = TimeSpan.Parse(timeParts[1]);
+
+            string sql = @"select booktime from booklist where renter=@renter and bookdate=@date";
+            try
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@renter", account);
+                cmd.Parameters.AddWithValue("@date", bookdate);
+                SqlDataReader dr = cmd.ExecuteReader();
+                List<string> bookedTimes = new List<string>();
+                while (dr.Read())
+                {
+                    bookedTimes.Add(dr.GetString(0));
+                }
+
+                foreach (string bookedTime in bookedTimes)
+                {
+                    string[] bookedTimeParts = bookedTime.Split('-');
+                    TimeSpan booked_startTime = TimeSpan.Parse(bookedTimeParts[0]);
+                    TimeSpan booked_endTime = TimeSpan.Parse(bookedTimeParts[1]);
+                    if (book_startTime < booked_endTime && book_endTime > booked_startTime)
+                    {
+                        return true;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message.ToString());
+            }
+            finally
+            {
+                conn.Close();
+            }
+            return false;
+        }
+
+        #endregion
     }
 }

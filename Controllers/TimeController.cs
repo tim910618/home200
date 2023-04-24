@@ -13,6 +13,7 @@ using api1.Secruity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using api1.Models;
 using System.Web;
+using System.Data.SqlTypes;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -149,7 +150,7 @@ public class TimeController : ControllerBase
     [AllowAnonymous]
     #region 取得單天的預約時間 取得房東
     [HttpGet("BookOfDay")]
-    public IActionResult BookOfDay([FromQuery] Guid rental_id, DateOnly datetime)
+    public IActionResult BookOfDay([FromQuery] Guid rental_id, DateTime datetime)
     {
         // 先取得 Rental 的屋主是誰
         Rental rental = _HomeDBService.GetDataById(rental_id);
@@ -200,7 +201,7 @@ public class TimeController : ControllerBase
         // 將當天所有可預約的時段轉成陣列
         string[] availableTimesArray = availableTimes.Split(';');
         // 抓取已被預約的時段轉成陣列
-        string[] bookedTimes = _timeService.GetBookedTimes(account, datetime, availableTimesArray);   
+        string[] bookedTimes = _timeService.GetBookedTimes(rental.publisher, datetime, availableTimesArray);   
         // 取得未被預約的時段
         string[] unbookedTimes = availableTimesArray.Except(bookedTimes).ToArray();
 
