@@ -117,11 +117,12 @@ namespace api1.Controllers
                     Expires = DateTime.UtcNow.AddDays(1)
                 });
                 Members members = _membersSerivce.GetDataByAccount(Data.Account);
+                //base64
                 string imagePath = members.img;
                 string imageFullPath = Path.Combine("MembersImg", imagePath);
                 byte[] imageBytes = System.IO.File.ReadAllBytes(imageFullPath);
                 string base64String = Convert.ToBase64String(imageBytes);
-                members.img=base64String;
+                //members.img=base64String;
                 return Ok(new { token, members });
             }
             else

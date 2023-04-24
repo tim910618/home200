@@ -130,7 +130,7 @@ namespace api1.Service
         }
         #endregion
 
-        #region 
+        #region 判斷時間
         public bool CheckBooked(string account, DateOnly date, string time)
         {
             string sql = @"select * from booklist where renter=@renter and bookdate=@date and booktime=@time";
