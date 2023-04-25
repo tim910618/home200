@@ -40,9 +40,20 @@ public class HomeAnyController : ControllerBase
         foreach (var Id in Data.IdList)
         {
             RentaldetailViewModel newBlock = new RentaldetailViewModel();
-            newBlock.AllData = _homeDBService.GetDataById(Id);
-            if (newBlock.AllData != null)
+            var rentalData = _homeDBService.GetDataById(Id);
+            if (rentalData != null)
             {
+                newBlock.AllData = rentalData;
+                var imgPathList = new List<string>();
+                for (int i = 1; i <= 5; i++)
+                {
+                    var imgPath = rentalData.GetType().GetProperty($"img{i}").GetValue(rentalData) as string;
+                    if (!string.IsNullOrEmpty(imgPath))
+                    {
+                        imgPathList.Add($"{Request.Scheme}://{Request.Host.Value}/{imgPath.Replace("\\", "/")}");
+                    }
+                }
+                newBlock.ImagePath = string.Join(",", imgPathList);
                 Data.RentalBlock.Add(newBlock);
             }
         }
@@ -147,6 +158,29 @@ public class HomeAnyController : ControllerBase
         }
     }
 
+
+
+    //蒐藏全部資料
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "renter")]
+    [HttpPost("AllCollect")]
+    public IActionResult AllCollect([FromQuery]Collect Data,int Page=1)
+    {
+        Data.renter=_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
+        RentalListViewModel ViewData = new RentalListViewModel();
+        ViewData.Paging = new ForPaging(Page);
+        ViewData.IdList = _homeanyDBService.GetIdListAllCollect(ViewData.Paging,Data.renter);
+        ViewData.RentalBlock = new List<RentaldetailViewModel>();
+        foreach (var Id in ViewData.IdList)
+        {
+            RentaldetailViewModel newBlock = new RentaldetailViewModel();
+            newBlock.AllData = _homeDBService.GetDataById(Id);
+            if (newBlock.AllData != null)
+            {
+                ViewData.RentalBlock.Add(newBlock);
+            }
+        }
+        return Ok(ViewData);
+    }
     //新增蒐藏
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "renter")]
     [HttpPost("AddCollect")]

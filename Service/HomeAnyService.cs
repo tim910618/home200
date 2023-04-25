@@ -309,7 +309,33 @@ namespace api1.Service
             Paging.SetRightPage();
         }
 
-
+        //讀取全部蒐藏資料
+        public List<Guid> GetIdListAllCollect(ForPaging Paging,string renter)
+        {
+            SetMaxPaging(Paging);
+            List<Guid> IdList = new List<Guid>();
+            string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by collect_id desc) AS sort,* FROM COLLECT WHERE renter = @renter) m WHERE m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
+            try
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@renter", renter);
+                SqlDataReader dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    IdList.Add(Guid.Parse(dr["rental_id"].ToString()));
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message.ToString());
+            }
+            finally
+            {
+                conn.Close();
+            }
+            return IdList;
+        }
         //新增蒐藏
         public void InsertCollect(Collect newData)
         {
