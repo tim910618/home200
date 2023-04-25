@@ -54,7 +54,7 @@ namespace api1.Service
         #region 新增可預約時間
         public void Addbooking(BookList Data)
         {
-            string sql = @"insert into booklist(renter,publisher,bookdate,booktime,rental_id) values (@renter,@publisher,@bookdate,@booktime,@rental_id)";
+            string sql = @"insert into booklist(booklist_id,renter,publisher,bookdate,booktime,rental_id) values (@booklist_id,@renter,@publisher,@bookdate,@booktime,@rental_id)";
             try
             {
                 conn.Open();
@@ -64,6 +64,10 @@ namespace api1.Service
                 cmd.Parameters.AddWithValue("@bookdate", Data.bookdate);
                 cmd.Parameters.AddWithValue("@booktime", Data.booktime);
                 cmd.Parameters.AddWithValue("@rental_id", Data.rental_id);
+                // 產生新的 GUID 並加入到 BookList 物件中
+                Data.booklist_id = Guid.NewGuid();
+                // 將 GUID 加入到 SQL INSERT 語句中
+                cmd.Parameters.AddWithValue("@booklist_id", Data.booklist_id);
                 cmd.ExecuteNonQuery();
             }
             catch (Exception e)
@@ -101,10 +105,10 @@ namespace api1.Service
         #endregion
 
         #region 確認預約
-        public bool IsBooked(DateOnly bookdate, string booktime, string publisher)
+        public bool IsBooked(DateOnly bookdate, string booktime, string publisher, string renter)
         {
             bool isBooked = false;
-            string sql = @"SELECT COUNT(*) FROM booklist WHERE publisher=@publisher AND bookdate=@bookdate AND booktime=@booktime";
+            string sql = @"SELECT COUNT(*) FROM booklist WHERE publisher=@publisher AND bookdate=@bookdate AND booktime=@booktime AND renter != @renter";
             try
             {
                 conn.Open();
@@ -112,6 +116,7 @@ namespace api1.Service
                 cmd.Parameters.AddWithValue("@publisher", publisher);
                 cmd.Parameters.AddWithValue("@bookdate", bookdate);
                 cmd.Parameters.AddWithValue("@booktime", booktime);
+                cmd.Parameters.AddWithValue("@renter", renter);
                 int count = (int)cmd.ExecuteScalar();
                 if (count > 0)
                 {
@@ -128,17 +133,19 @@ namespace api1.Service
             }
             return isBooked;
         }
+
         #endregion
 
         #region 判斷時間
-        public bool CheckBooked(string account, DateOnly date, string time)
+        public bool CheckBooked(string renter, string publisher, DateOnly date, string time)
         {
-            string sql = @"select * from booklist where renter=@renter and bookdate=@date and booktime=@time";
+            string sql = @"select * from booklist where renter=@renter and publisher=@publisher and bookdate=@date and booktime=@time";
             try
             {
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("@renter", account);
+                cmd.Parameters.AddWithValue("@renter", renter);
+                cmd.Parameters.AddWithValue("@publisher", publisher);
                 cmd.Parameters.AddWithValue("@date", date);
                 cmd.Parameters.AddWithValue("@time", time);
                 SqlDataReader dr = cmd.ExecuteReader();
@@ -158,6 +165,7 @@ namespace api1.Service
             return false;
         }
 
+
         //時間有無交集
         public bool IsTimeOverlap(string booktime, DateOnly bookdate, string account)
         {
@@ -165,12 +173,13 @@ namespace api1.Service
             TimeSpan book_startTime = TimeSpan.Parse(timeParts[0]);
             TimeSpan book_endTime = TimeSpan.Parse(timeParts[1]);
 
-            string sql = @"select booktime from booklist where renter=@renter and bookdate=@date";
+            string sql = @"select booktime from booklist where (renter=@renter or publisher=@publisher) and bookdate=@date";
             try
             {
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@renter", account);
+                cmd.Parameters.AddWithValue("@publisher", account);
                 cmd.Parameters.AddWithValue("@date", bookdate);
                 SqlDataReader dr = cmd.ExecuteReader();
                 List<string> bookedTimes = new List<string>();
@@ -200,6 +209,7 @@ namespace api1.Service
             }
             return false;
         }
+
 
         #endregion
     }

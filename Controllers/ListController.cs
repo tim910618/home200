@@ -63,8 +63,9 @@ public class ListController : ControllerBase
         var rental = _homeDBService.GetDataById(Data.rental_id);
         Data.publisher = rental.publisher;
         Members publisher = _membersSerivce.GetDataByAccount(Data.publisher);
+        bool otherbooked = _ListService.IsBooked(Data.bookdate, Data.booktime, Data.publisher, Data.renter);
         bool timeover = _ListService.IsTimeOverlap(Data.booktime, Data.bookdate, Data.renter);
-        bool booked = _ListService.CheckBooked(Data.renter, Data.bookdate, Data.booktime);
+        bool booked = _ListService.CheckBooked(Data.renter, rental.publisher, Data.bookdate, Data.booktime);
         if (timeover == true)
         {
             return BadRequest("看房時間重疊！");
@@ -72,6 +73,9 @@ public class ListController : ControllerBase
         else if (booked == true)
         {
             return BadRequest("您已預約看房！");
+        }else if(otherbooked==true)
+        {
+            return BadRequest("已被其他房客預約！");
         }
         else
         {
@@ -82,37 +86,37 @@ public class ListController : ControllerBase
         string TempString = System.IO.File.ReadAllText(filePath);
         string MailBody = _mailService.BookMailBody(TempString, publisher.name, Data.bookdate, Data.booktime, rental.address);
         _mailService.SentBookMail(MailBody, publisher.email);
-        return Ok("新增預約成功");
+        return Ok(Data);
     }
     #endregion
 
-    [AllowAnonymous]
+    // [AllowAnonymous]
     #region 確認是否被預約 點選button要先確認->CheckBooking！這不需要了！
 
-    [HttpGet("CheckBooking")]
-    public IActionResult CheckBook([FromBody] CheckBooked Data)
-    {
-        // 檢查指定的時間是否已經被預約
-        var isBooked = _ListService.IsBooked(Data.bookdate, Data.booktime, Data.publisher);
+    // [HttpGet("CheckBooking")]
+    // public IActionResult CheckBook([FromBody] CheckBooked Data)
+    // {
+    //     // 檢查指定的時間是否已經被預約
+    //     var isBooked = _ListService.IsBooked(Data.bookdate, Data.booktime, Data.publisher);
 
-        if (isBooked)
-        {
-            return BadRequest("指定的時間已經被預約了");
-        }
-        else
-        {
-            return Ok("指定的時間可以預約");
-        }
-    }
-    #endregion
+    //     if (isBooked)
+    //     {
+    //         return BadRequest("指定的時間已經被預約了");
+    //     }
+    //     else
+    //     {
+    //         return Ok("指定的時間可以預約");
+    //     }
+    // }
+    // #endregion
 
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    #region 取消預約
-    [HttpDelete("CancelBooking")]
-    public IActionResult CancelBooking(Guid id)
-    {
-        _ListService.CancelBooking(id);
-        return Ok("取消預約成功");
-    }
+    // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    // #region 取消預約
+    // [HttpDelete("CancelBooking")]
+    // public IActionResult CancelBooking(Guid id)
+    // {
+    //     _ListService.CancelBooking(id);
+    //     return Ok("取消預約成功");
+    // }
     #endregion
 }
