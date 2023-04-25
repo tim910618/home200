@@ -28,6 +28,7 @@ public class HomeDetailController : ControllerBase
         _httpContextAccessor=httpContextAccessor;
     }
 
+    //尚未審核中全部資料
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "admin")]
     [HttpGet("AdminCheck")]
     public IActionResult AdminCheck(int Page = 1)
@@ -43,6 +44,26 @@ public class HomeDetailController : ControllerBase
             newBlock.AllData = _homeDBService.GetDataById(Id);
             if(newBlock.AllData.isDelete==false && newBlock.AllData.tenant == false)
             {
+                var imgPathList = new List<string>();
+                for (int i = 1; i <= 5; i++)
+                {
+                    var imgPath = newBlock.AllData.GetType().GetProperty($"img{i}").GetValue(newBlock.AllData) as string;
+                    if (!string.IsNullOrEmpty(imgPath))
+                    {
+                        imgPathList.Add($"http://localhost:5555/{imgPath.Replace("\\", "/")}");
+                    }
+                }
+                string ImagePath = string.Join(",", imgPathList);
+                
+                string[] imagePaths = ImagePath.Split(',');
+                if (imagePaths.Length >= 1) 
+                {
+                    newBlock.AllData.img1 = imagePaths[0];
+                }
+                if (imagePaths.Length >= 2) 
+                {
+                    newBlock.AllData.img2 = imagePaths[1];
+                }
                 Data.RentalBlock.Add(newBlock);
             }
         }
@@ -56,7 +77,6 @@ public class HomeDetailController : ControllerBase
         try
         {
             Rental data=_homeDBService.GetDataById(Id);
-            //var data = _homeDBService.GetDataById(Id);
             if (data.isDelete==true || data==null)
             {
                 return Ok("查無此資訊");

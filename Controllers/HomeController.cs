@@ -44,6 +44,26 @@ public class HomeController : ControllerBase
             newBlock.AllData = _homeDBService.GetDataById(Id);
             if(newBlock.AllData.isDelete==false || newBlock.AllData.tenant==true)
             {
+                var imgPathList = new List<string>();
+                for (int i = 1; i <= 5; i++)
+                {
+                    var imgPath = newBlock.AllData.GetType().GetProperty($"img{i}").GetValue(newBlock.AllData) as string;
+                    if (!string.IsNullOrEmpty(imgPath))
+                    {
+                        imgPathList.Add($"http://localhost:5555/{imgPath.Replace("\\", "/")}");
+                    }
+                }
+                string ImagePath = string.Join(",", imgPathList);
+                
+                string[] imagePaths = ImagePath.Split(',');
+                if (imagePaths.Length >= 1) 
+                {
+                    newBlock.AllData.img1 = imagePaths[0];
+                }
+                if (imagePaths.Length >= 2) 
+                {
+                    newBlock.AllData.img2 = imagePaths[1];
+                }
                 Data.RentalBlock.Add(newBlock);
             }
         }
@@ -65,6 +85,26 @@ public class HomeController : ControllerBase
             newBlock.AllData = _homeDBService.GetDataById(Id);
             if(newBlock.AllData.isDelete==false || newBlock.AllData.check==1 && newBlock.AllData.tenant==false)
             {
+                var imgPathList = new List<string>();
+                for (int i = 1; i <= 5; i++)
+                {
+                    var imgPath = newBlock.AllData.GetType().GetProperty($"img{i}").GetValue(newBlock.AllData) as string;
+                    if (!string.IsNullOrEmpty(imgPath))
+                    {
+                        imgPathList.Add($"http://localhost:5555/{imgPath.Replace("\\", "/")}");
+                    }
+                }
+                string ImagePath = string.Join(",", imgPathList);
+                
+                string[] imagePaths = ImagePath.Split(',');
+                if (imagePaths.Length >= 1) 
+                {
+                    newBlock.AllData.img1 = imagePaths[0];
+                }
+                if (imagePaths.Length >= 2) 
+                {
+                    newBlock.AllData.img2 = imagePaths[1];
+                }
                 Data.RentalBlock.Add(newBlock);
             }
         }
@@ -86,6 +126,26 @@ public class HomeController : ControllerBase
             newBlock.AllData = _homeDBService.GetDataById(Id);
             if(newBlock.AllData.isDelete==false || (newBlock.AllData.check == 0 || newBlock.AllData.check == 2) && newBlock.AllData.tenant==false)
             {
+                var imgPathList = new List<string>();
+                for (int i = 1; i <= 5; i++)
+                {
+                    var imgPath = newBlock.AllData.GetType().GetProperty($"img{i}").GetValue(newBlock.AllData) as string;
+                    if (!string.IsNullOrEmpty(imgPath))
+                    {
+                        imgPathList.Add($"http://localhost:5555/{imgPath.Replace("\\", "/")}");
+                    }
+                }
+                string ImagePath = string.Join(",", imgPathList);
+                
+                string[] imagePaths = ImagePath.Split(',');
+                if (imagePaths.Length >= 1) 
+                {
+                    newBlock.AllData.img1 = imagePaths[0];
+                }
+                if (imagePaths.Length >= 2) 
+                {
+                    newBlock.AllData.img2 = imagePaths[1];
+                }
                 Data.RentalBlock.Add(newBlock);
             }
         }

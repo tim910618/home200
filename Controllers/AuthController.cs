@@ -187,14 +187,8 @@ namespace api1.Controllers
             {
                 return BadRequest("查無此人");
             }
-            else
-            {
-                string imagePath = Data.img;
-                string imageFullPath = Path.Combine("MembersImg", imagePath);
-                byte[] imageBytes = System.IO.File.ReadAllBytes(imageFullPath);
-                string base64String = Convert.ToBase64String(imageBytes);
-                Data.img=base64String;
-            }
+            var imgPath = Data.GetType().GetProperty($"img").GetValue(Data) as string;
+            Data.img=$"http://localhost:5555/{imgPath.Replace("\\", "/")}";
             return Ok(Data);
         }
 

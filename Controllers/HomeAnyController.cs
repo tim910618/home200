@@ -52,7 +52,17 @@ public class HomeAnyController : ControllerBase
                         imgPathList.Add($"http://localhost:5555/{imgPath.Replace("\\", "/")}");
                     }
                 }
-                newBlock.ImagePath = string.Join(",", imgPathList);
+                string ImagePath = string.Join(",", imgPathList);
+                
+                string[] imagePaths = ImagePath.Split(',');
+                if (imagePaths.Length >= 1) 
+                {
+                    newBlock.AllData.img1 = imagePaths[0];
+                }
+                if (imagePaths.Length >= 2) 
+                {
+                    newBlock.AllData.img2 = imagePaths[1];
+                }
                 Data.RentalBlock.Add(newBlock);
             }
         }
@@ -83,7 +93,17 @@ public class HomeAnyController : ControllerBase
                         imgPathList.Add($"http://localhost:5555/{imgPath.Replace("\\", "/")}");
                     }
                 }
-                newBlock.ImagePath = string.Join(",", imgPathList);
+                string ImagePath = string.Join(",", imgPathList);
+                
+                string[] imagePaths = ImagePath.Split(',');
+                if (imagePaths.Length >= 1) 
+                {
+                    newBlock.AllData.img1 = imagePaths[0];
+                }
+                if (imagePaths.Length >= 2) 
+                {
+                    newBlock.AllData.img2 = imagePaths[1];
+                }
                 Data.RentalBlock.Add(newBlock);
             }
         }
@@ -115,7 +135,17 @@ public class HomeAnyController : ControllerBase
                         imgPathList.Add($"http://localhost:5555/{imgPath.Replace("\\", "/")}");
                     }
                 }
-                newBlock.ImagePath = string.Join(",", imgPathList);
+                string ImagePath = string.Join(",", imgPathList);
+                
+                string[] imagePaths = ImagePath.Split(',');
+                if (imagePaths.Length >= 1) 
+                {
+                    newBlock.AllData.img1 = imagePaths[0];
+                }
+                if (imagePaths.Length >= 2) 
+                {
+                    newBlock.AllData.img2 = imagePaths[1];
+                }
                 Data.RentalBlock.Add(newBlock);
             }
         }
@@ -151,7 +181,17 @@ public class HomeAnyController : ControllerBase
                         imgPathList.Add($"http://localhost:5555/{imgPath.Replace("\\", "/")}");
                     }
                 }
-                newBlock.ImagePath = string.Join(",", imgPathList);
+                string ImagePath = string.Join(",", imgPathList);
+                
+                string[] imagePaths = ImagePath.Split(',');
+                if (imagePaths.Length >= 1) 
+                {
+                    newBlock.AllData.img1 = imagePaths[0];
+                }
+                if (imagePaths.Length >= 2) 
+                {
+                    newBlock.AllData.img2 = imagePaths[1];
+                }
                 Data.RentalBlock.Add(newBlock);
             }
         }
@@ -214,7 +254,17 @@ public class HomeAnyController : ControllerBase
                         imgPathList.Add($"http://localhost:5555/{imgPath.Replace("\\", "/")}");
                     }
                 }
-                newBlock.ImagePath = string.Join(",", imgPathList);
+                string ImagePath = string.Join(",", imgPathList);
+                
+                string[] imagePaths = ImagePath.Split(',');
+                if (imagePaths.Length >= 1) 
+                {
+                    newBlock.AllData.img1 = imagePaths[0];
+                }
+                if (imagePaths.Length >= 2) 
+                {
+                    newBlock.AllData.img2 = imagePaths[1];
+                }
                 ViewData.RentalBlock.Add(newBlock);
             }
         }
