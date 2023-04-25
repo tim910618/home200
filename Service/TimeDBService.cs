@@ -421,11 +421,7 @@ namespace api1.Service
             }
 
             // 將新的時間段轉換成起始時間和結束時間
-            string[] newTimeParts = newTime.Split("-");
-            TimeOnly newStartTime = TimeOnly.Parse(newTimeParts[0]);
-            TimeOnly newEndTime = TimeOnly.Parse(newTimeParts[1]);
-
-            // 檢查新的時間段是否和已預約的時間段有重疊
+            string[] newTimeParts = newTime.Split(";");
             foreach (BookList bookedTime in bookedTimes)
             {
                 // 如果日期不相同，則跳過這個已預約的時間段
@@ -440,12 +436,13 @@ namespace api1.Service
                 TimeOnly bookedEndTime = TimeOnly.Parse(bookedTimeParts[1]);
 
                 // 檢查兩個時間段是否有重疊
-                if (newStartTime < bookedEndTime && bookedStartTime < newEndTime)
+                if (bookedStartTime < bookedEndTime && bookedStartTime < bookedEndTime)
                 {
                     // 有重疊，表示這個時間段已經被預約了
                     return true;
                 }
             }
+
 
             // 如果沒有任何重疊，則表示這個時間段還沒有被預約
             return false;
