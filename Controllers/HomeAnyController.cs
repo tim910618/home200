@@ -40,17 +40,16 @@ public class HomeAnyController : ControllerBase
         foreach (var Id in Data.IdList)
         {
             RentaldetailViewModel newBlock = new RentaldetailViewModel();
-            var rentalData = _homeDBService.GetDataById(Id);
-            if (rentalData != null)
+            newBlock.AllData = _homeDBService.GetDataById(Id);
+            if (newBlock.AllData != null)
             {
-                newBlock.AllData = rentalData;
                 var imgPathList = new List<string>();
                 for (int i = 1; i <= 5; i++)
                 {
-                    var imgPath = rentalData.GetType().GetProperty($"img{i}").GetValue(rentalData) as string;
+                    var imgPath = newBlock.AllData.GetType().GetProperty($"img{i}").GetValue(newBlock.AllData) as string;
                     if (!string.IsNullOrEmpty(imgPath))
                     {
-                        imgPathList.Add($"{Request.Scheme}://{Request.Host.Value}/{imgPath.Replace("\\", "/")}");
+                        imgPathList.Add($"http://localhost:5555/{imgPath.Replace("\\", "/")}");
                     }
                 }
                 newBlock.ImagePath = string.Join(",", imgPathList);
@@ -75,6 +74,16 @@ public class HomeAnyController : ControllerBase
             newBlock.AllData = _homeDBService.GetDataById(Id);
             if (newBlock.AllData != null)
             {
+                var imgPathList = new List<string>();
+                for (int i = 1; i <= 5; i++)
+                {
+                    var imgPath = newBlock.AllData.GetType().GetProperty($"img{i}").GetValue(newBlock.AllData) as string;
+                    if (!string.IsNullOrEmpty(imgPath))
+                    {
+                        imgPathList.Add($"http://localhost:5555/{imgPath.Replace("\\", "/")}");
+                    }
+                }
+                newBlock.ImagePath = string.Join(",", imgPathList);
                 Data.RentalBlock.Add(newBlock);
             }
         }
@@ -97,6 +106,16 @@ public class HomeAnyController : ControllerBase
             newBlock.AllData = _homeDBService.GetDataById(Id);
             if (newBlock.AllData != null)
             {
+                var imgPathList = new List<string>();
+                for (int i = 1; i <= 5; i++)
+                {
+                    var imgPath = newBlock.AllData.GetType().GetProperty($"img{i}").GetValue(newBlock.AllData) as string;
+                    if (!string.IsNullOrEmpty(imgPath))
+                    {
+                        imgPathList.Add($"http://localhost:5555/{imgPath.Replace("\\", "/")}");
+                    }
+                }
+                newBlock.ImagePath = string.Join(",", imgPathList);
                 Data.RentalBlock.Add(newBlock);
             }
         }
@@ -123,6 +142,16 @@ public class HomeAnyController : ControllerBase
             newBlock.AllData = _homeDBService.GetDataById(Id);
             if (newBlock.AllData != null)
             {
+                var imgPathList = new List<string>();
+                for (int i = 1; i <= 5; i++)
+                {
+                    var imgPath = newBlock.AllData.GetType().GetProperty($"img{i}").GetValue(newBlock.AllData) as string;
+                    if (!string.IsNullOrEmpty(imgPath))
+                    {
+                        imgPathList.Add($"http://localhost:5555/{imgPath.Replace("\\", "/")}");
+                    }
+                }
+                newBlock.ImagePath = string.Join(",", imgPathList);
                 Data.RentalBlock.Add(newBlock);
             }
         }
@@ -176,6 +205,16 @@ public class HomeAnyController : ControllerBase
             newBlock.AllData = _homeDBService.GetDataById(Id);
             if (newBlock.AllData != null)
             {
+                var imgPathList = new List<string>();
+                for (int i = 1; i <= 5; i++)
+                {
+                    var imgPath = newBlock.AllData.GetType().GetProperty($"img{i}").GetValue(newBlock.AllData) as string;
+                    if (!string.IsNullOrEmpty(imgPath))
+                    {
+                        imgPathList.Add($"http://localhost:5555/{imgPath.Replace("\\", "/")}");
+                    }
+                }
+                newBlock.ImagePath = string.Join(",", imgPathList);
                 ViewData.RentalBlock.Add(newBlock);
             }
         }
