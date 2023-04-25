@@ -147,6 +147,29 @@ public class HomeAnyController : ControllerBase
         }
     }
 
+
+
+    //蒐藏全部資料
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "renter")]
+    [HttpPost("AllCollect")]
+    public IActionResult AllCollect([FromQuery]Collect Data,int Page=1)
+    {
+        Data.renter=_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
+        RentalListViewModel ViewData = new RentalListViewModel();
+        ViewData.Paging = new ForPaging(Page);
+        ViewData.IdList = _homeanyDBService.GetIdListAllCollect(ViewData.Paging,Data.renter);
+        ViewData.RentalBlock = new List<RentaldetailViewModel>();
+        foreach (var Id in ViewData.IdList)
+        {
+            RentaldetailViewModel newBlock = new RentaldetailViewModel();
+            newBlock.AllData = _homeDBService.GetDataById(Id);
+            if (newBlock.AllData != null)
+            {
+                ViewData.RentalBlock.Add(newBlock);
+            }
+        }
+        return Ok(ViewData);
+    }
     //新增蒐藏
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "renter")]
     [HttpPost("AddCollect")]
