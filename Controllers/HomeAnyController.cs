@@ -40,9 +40,20 @@ public class HomeAnyController : ControllerBase
         foreach (var Id in Data.IdList)
         {
             RentaldetailViewModel newBlock = new RentaldetailViewModel();
-            newBlock.AllData = _homeDBService.GetDataById(Id);
-            if (newBlock.AllData != null)
+            var rentalData = _homeDBService.GetDataById(Id);
+            if (rentalData != null)
             {
+                newBlock.AllData = rentalData;
+                var imgPathList = new List<string>();
+                for (int i = 1; i <= 5; i++)
+                {
+                    var imgPath = rentalData.GetType().GetProperty($"img{i}").GetValue(rentalData) as string;
+                    if (!string.IsNullOrEmpty(imgPath))
+                    {
+                        imgPathList.Add($"{Request.Scheme}://{Request.Host.Value}/{imgPath.Replace("\\", "/")}");
+                    }
+                }
+                newBlock.ImagePath = string.Join(",", imgPathList);
                 Data.RentalBlock.Add(newBlock);
             }
         }
