@@ -62,15 +62,16 @@ public class ListController : ControllerBase
         }
         var rental = _homeDBService.GetDataById(Data.rental_id);
         Data.publisher = rental.publisher;
+        Members publisher = _membersSerivce.GetDataByAccount(Data.publisher);
         bool timeover = _ListService.IsTimeOverlap(Data.booktime, Data.bookdate, Data.renter);
+        bool booked = _ListService.CheckBooked(Data.renter, Data.bookdate, Data.booktime);
         if (timeover == true)
         {
-            bool booked = _ListService.CheckBooked(Data.renter, Data.bookdate, Data.booktime);
             return BadRequest("看房時間重疊！");
-            if (booked == true)
-            {
-                return BadRequest("您已預約看房！");
-            }
+        }
+        else if (booked == true)
+        {
+            return BadRequest("您已預約看房！");
         }
         else
         {
@@ -79,8 +80,8 @@ public class ListController : ControllerBase
         //寄預約信
         string filePath = @"Views/BookMail.html";
         string TempString = System.IO.File.ReadAllText(filePath);
-        string MailBody = _mailService.BookMailBody(TempString, User.Identity.Name, Data.bookdate, Data.booktime, rental.address);
-        _mailService.SentBookMail(MailBody, Members.email);
+        string MailBody = _mailService.BookMailBody(TempString, publisher.name, Data.bookdate, Data.booktime, rental.address);
+        _mailService.SentBookMail(MailBody, publisher.email);
         return Ok("新增預約成功");
     }
     #endregion
@@ -110,15 +111,8 @@ public class ListController : ControllerBase
     [HttpDelete("CancelBooking")]
     public IActionResult CancelBooking(Guid id)
     {
-        try
-        {
-            _ListService.CancelBooking(id);
-            return Ok("取消預約成功");
-        }
-        catch (Exception e)
-        {
-            return BadRequest(e.Message.ToString());
-        }
+        _ListService.CancelBooking(id);
+        return Ok("取消預約成功");
     }
     #endregion
 }
