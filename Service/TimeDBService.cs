@@ -387,5 +387,70 @@ namespace api1.Service
         }
 
         #endregion
+
+        public bool IsReserved(DateTime date, string newTime,string publisher)
+        {
+            // 取得所有已預約的時間
+            List<BookList> bookedTimes = new List<BookList>();
+            string sql = $@"select * from booklist where publisher=@publisher";
+            try
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@publisher", publisher);
+                SqlDataReader dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    BookList Data = new BookList();
+                    Data.renter = dr["renter"].ToString();
+                    Data.publisher = dr["publisher"].ToString();
+                    //Data.bookdate = DateOnly.FromDateTime(Convert.ToDateTime(dr["bookdate"]));
+                    Data.bookdate = DateOnly.FromDateTime(DateTime.Parse(dr["bookdate"].ToString()).Date);
+                    Data.booktime = dr["booktime"].ToString();
+                    Data.rental_id = (Guid)dr["rental_id"];
+                    Data.booklist_id = (Guid)dr["booklist_id"];
+                    bookedTimes.Add(Data);
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message.ToString());
+            }
+            finally
+            {
+                conn.Close();
+            }
+
+            // 將新的時間段轉換成起始時間和結束時間
+            string[] newTimeParts = newTime.Split("-");
+            DateTime newStartTime = DateTime.Parse(newTimeParts[0]);
+            DateTime newEndTime = DateTime.Parse(newTimeParts[1]);
+
+            // 檢查新的時間段是否和已預約的時間段有重疊
+            foreach (BookList bookedTime in bookedTimes)
+            {
+                
+                // 如果日期不相同，則跳過這個已預約的時間段
+                if (bookedTime.bookdate != date.Date)
+                {
+                    continue;
+                }
+
+                // 將已預約的時間段轉換成起始時間和結束時間
+                string[] bookedTimeParts = bookedTime.time.Split("-");
+                DateTime bookedStartTime = DateTime.Parse(bookedTimeParts[0]);
+                DateTime bookedEndTime = DateTime.Parse(bookedTimeParts[1]);
+
+                // 檢查兩個時間段是否有重疊
+                if (newStartTime < bookedEndTime && bookedStartTime < newEndTime)
+                {
+                    // 有重疊，表示這個時間段已經被預約了
+                    return true;
+                }
+            }
+
+            // 如果沒有任何重疊，則表示這個時間段還沒有被預約
+            return false;
+        }
     }
 }

@@ -59,6 +59,7 @@ public class TimeController : ControllerBase
         BookTime Data = _timeService.GetBookTime(account);
         return Ok(Data);
     }
+    
     #endregion
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "publisher")]
     #region 設定特別單一時段
@@ -76,6 +77,12 @@ public class TimeController : ControllerBase
         Data.special_id = _timeService.GetSpecialTime_Id(Data.publisher);
         // 根據日期取得原本的可預約時間
         string oldTime;
+
+        if(_timeService.IsReserved(Data.date,Data.newtime,Data.publisher))
+        {
+            return BadRequest("此時段有被預約，若要修改請先至預約總表取消預約");
+        }
+
         switch (Data.date.DayOfWeek)
         {
             case DayOfWeek.Monday:
