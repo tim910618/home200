@@ -8,5 +8,6 @@ namespace api1.Models
         public DateOnly bookdate{get;set;}
         public string booktime{get;set;}
         public Guid rental_id{get;set;}
+        public bool isDelete{get;set;}
     }
 }

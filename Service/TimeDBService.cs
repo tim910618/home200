@@ -356,17 +356,18 @@ namespace api1.Service
         }
         #endregion
 
-        #region 取得房東已被預約陣列
+        #region 取得房東已被預約陣列 
         public string[] GetBookedTimes(string account, DateTime date, string[] availableTimes)
         {
             List<string> bookedTimes = new List<string>();
-            string sql = $"SELECT booktime FROM booklist WHERE publisher = @account AND bookdate = @date AND booktime IN ({string.Join(",", availableTimes.Select(t => $"'{t}'"))})";
+            string sql = $"SELECT booktime FROM booklist WHERE isDelete=@isDelete and publisher = @account AND bookdate = @date AND booktime IN ({string.Join(",", availableTimes.Select(t => $"'{t}'"))})";
             try
             {
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@account", account);
                 cmd.Parameters.AddWithValue("@date", date);
+                cmd.Parameters.AddWithValue("@isDelete", '0');
                 SqlDataReader reader = cmd.ExecuteReader();
 
                 while (reader.Read())
@@ -392,12 +393,13 @@ namespace api1.Service
         {
             // 取得所有已預約的時間
             List<BookList> bookedTimes = new List<BookList>();
-            string sql = @"select * from booklist where publisher=@publisher";
+            string sql = @"select * from booklist where publisher=@publisher and isDelete=@isDelete";
             try
             {
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@publisher", publisher);
+                cmd.Parameters.AddWithValue("@isDelete", '0');
                 SqlDataReader dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {

@@ -123,6 +123,7 @@ namespace api1.Controllers
                 byte[] imageBytes = System.IO.File.ReadAllBytes(imageFullPath);
                 string base64String = Convert.ToBase64String(imageBytes);
                 //members.img=base64String;
+                members.password=null;
                 return Ok(new { token, members });
             }
             else
