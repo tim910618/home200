@@ -50,7 +50,7 @@ public class HomeDetailController : ControllerBase
                     var imgPath = newBlock.AllData.GetType().GetProperty($"img{i}").GetValue(newBlock.AllData) as string;
                     if (!string.IsNullOrEmpty(imgPath))
                     {
-                        imgPathList.Add($"http://localhost:5555/{imgPath.Replace("\\", "/")}");
+                        imgPathList.Add($"{Request.Scheme}://{Request.Host.Value}/{imgPath.Replace("\\", "/")}");
                     }
                 }
                 string ImagePath = string.Join(",", imgPathList);

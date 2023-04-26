@@ -17,7 +17,7 @@ public class Startup
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
-        app.UseStaticFiles();
+        app.UseStaticFiles();//這裡
 
         // 設定 IWebHostEnvironment.WebRootPath
         var configuration = new ConfigurationBuilder()

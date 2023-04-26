@@ -200,6 +200,7 @@ namespace api1.Service
                 Data.tenant = Convert.ToBoolean(dr["tenant"]);
                 Data.uploadtime = Convert.ToDateTime(dr["uploadtime"]);
                 Data.isDelete = Convert.ToBoolean(dr["isDelete"]);
+                Data.Member.account=dr["account"].ToString();
                 Data.Member.name = dr["name"].ToString();
                 Data.Member.isBlock = Convert.ToBoolean(dr["isBlock"]);
             }

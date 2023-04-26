@@ -49,7 +49,7 @@ public class HomeAnyController : ControllerBase
                     var imgPath = newBlock.AllData.GetType().GetProperty($"img{i}").GetValue(newBlock.AllData) as string;
                     if (!string.IsNullOrEmpty(imgPath))
                     {
-                        imgPathList.Add($"http://localhost:5555/{imgPath.Replace("\\", "/")}");
+                        imgPathList.Add($"{Request.Scheme}://{Request.Host.Value}/{imgPath.Replace("\\", "/")}");
                     }
                 }
                 string ImagePath = string.Join(",", imgPathList);
@@ -90,7 +90,7 @@ public class HomeAnyController : ControllerBase
                     var imgPath = newBlock.AllData.GetType().GetProperty($"img{i}").GetValue(newBlock.AllData) as string;
                     if (!string.IsNullOrEmpty(imgPath))
                     {
-                        imgPathList.Add($"http://localhost:5555/{imgPath.Replace("\\", "/")}");
+                        imgPathList.Add($"{Request.Scheme}://{Request.Host.Value}/{imgPath.Replace("\\", "/")}");
                     }
                 }
                 string ImagePath = string.Join(",", imgPathList);
@@ -132,7 +132,7 @@ public class HomeAnyController : ControllerBase
                     var imgPath = newBlock.AllData.GetType().GetProperty($"img{i}").GetValue(newBlock.AllData) as string;
                     if (!string.IsNullOrEmpty(imgPath))
                     {
-                        imgPathList.Add($"http://localhost:5555/{imgPath.Replace("\\", "/")}");
+                        imgPathList.Add($"{Request.Scheme}://{Request.Host.Value}/{imgPath.Replace("\\", "/")}");
                     }
                 }
                 string ImagePath = string.Join(",", imgPathList);
@@ -178,7 +178,7 @@ public class HomeAnyController : ControllerBase
                     var imgPath = newBlock.AllData.GetType().GetProperty($"img{i}").GetValue(newBlock.AllData) as string;
                     if (!string.IsNullOrEmpty(imgPath))
                     {
-                        imgPathList.Add($"http://localhost:5555/{imgPath.Replace("\\", "/")}");
+                        imgPathList.Add($"{Request.Scheme}://{Request.Host.Value}/{imgPath.Replace("\\", "/")}");
                     }
                 }
                 string ImagePath = string.Join(",", imgPathList);
@@ -232,7 +232,7 @@ public class HomeAnyController : ControllerBase
     //蒐藏全部資料
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "renter")]
     [HttpPost("AllCollect")]
-    public IActionResult AllCollect([FromQuery]Collect Data,int Page=1)
+    public IActionResult AllCollect(Collect Data,int Page=1)
     {
         Data.renter=_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
         RentalListViewModel ViewData = new RentalListViewModel();
@@ -251,7 +251,7 @@ public class HomeAnyController : ControllerBase
                     var imgPath = newBlock.AllData.GetType().GetProperty($"img{i}").GetValue(newBlock.AllData) as string;
                     if (!string.IsNullOrEmpty(imgPath))
                     {
-                        imgPathList.Add($"http://localhost:5555/{imgPath.Replace("\\", "/")}");
+                        imgPathList.Add($"{Request.Scheme}://{Request.Host.Value}/{imgPath.Replace("\\", "/")}");
                     }
                 }
                 string ImagePath = string.Join(",", imgPathList);
