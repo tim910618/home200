@@ -136,6 +136,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseStaticFiles();
 
 
 // 設定CORS
@@ -149,6 +150,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 app.UseAuthentication();//新增
+
 
 app.MapControllers();
 

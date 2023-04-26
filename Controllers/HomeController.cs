@@ -220,7 +220,7 @@ public class HomeController : ControllerBase
             Data.img5 = filenames.Count > 4 ? filenames[4] : null;
 
             _homeDBService.InsertHouse_Rental(Data);
-            return Ok(filenames);
+            return Ok("新增成功");
         }
         catch (Exception ex)
         {

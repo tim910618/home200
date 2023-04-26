@@ -49,7 +49,7 @@ public class HomeAnyController : ControllerBase
                     var imgPath = newBlock.AllData.GetType().GetProperty($"img{i}").GetValue(newBlock.AllData) as string;
                     if (!string.IsNullOrEmpty(imgPath))
                     {
-                        imgPathList.Add($"{Request.Scheme}://{Request.Host.Value}/{imgPath.Replace("\\", "/")}");
+                        imgPathList.Add($"{Request.Scheme}://{Request.Host.Value}/Image/{imgPath.Replace("\\", "/")}");
                     }
                 }
                 string ImagePath = string.Join(",", imgPathList);
