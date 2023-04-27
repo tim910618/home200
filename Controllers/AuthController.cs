@@ -188,8 +188,6 @@ namespace api1.Controllers
             {
                 return BadRequest("查無此人");
             }
-            var imgPath = Data.GetType().GetProperty($"img").GetValue(Data) as string;
-            Data.img=$"http://localhost:5555/{imgPath.Replace("\\", "/")}";
             return Ok(Data);
         }
 

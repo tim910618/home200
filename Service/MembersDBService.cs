@@ -94,6 +94,12 @@ namespace api1.Service
                 Data.score = Convert.ToDouble(dr["score"]);
                 Data.isBlock = Convert.ToBoolean(dr["isBlock"]);
                 Data.img = dr["img"].ToString();
+
+                var imgPath = dr["img"].ToString();
+                if (!string.IsNullOrEmpty(imgPath))
+                {
+                    Data.img = $"http://localhost:5190/Image/{imgPath.Replace("\\", "/")}";
+                }
             }
             catch (Exception)
             {
