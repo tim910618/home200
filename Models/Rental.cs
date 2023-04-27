@@ -1,3 +1,5 @@
+
+using System.Text.Json.Serialization;
 namespace api1.Models
 {
         public class Rental
@@ -19,15 +21,19 @@ namespace api1.Models
         public string? content { get; set; }
 
         public string? img1 { get; set; }
+        [JsonIgnore]
         public IFormFile? img1_1 { get; set; }
         public string? img2 { get; set; }
         public string? img3 { get; set; }
         public string? img4 { get; set; }
         public string? img5 { get; set; }
-
+        [JsonIgnore]
         public IFormFile? img1_2 { get; set; }
+        [JsonIgnore]
         public IFormFile? img1_3 { get; set; }
+        [JsonIgnore]
         public IFormFile? img1_4 { get; set; }
+        [JsonIgnore]
         public IFormFile? img1_5 { get; set; }
         public int? check { get; set; }
         public bool? tenant { get; set; }

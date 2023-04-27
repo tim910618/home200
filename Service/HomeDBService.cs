@@ -6,10 +6,11 @@ namespace api1.Service
     public class HomeDBService
     {
         private readonly SqlConnection conn;
-
-        public HomeDBService(SqlConnection connection)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public HomeDBService(SqlConnection connection,IHttpContextAccessor httpContextAccessor)
         {
             conn = connection;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public List<Guid> GetUpIdList(ForPaging Paging,string publisher)
@@ -205,6 +206,39 @@ namespace api1.Service
                 Data.Member.score = Convert.ToDouble(dr["score"]);
                 Data.Member.phone = dr["phone"].ToString();
                 Data.Member.isBlock = Convert.ToBoolean(dr["isBlock"]);
+
+                var imgPathList = new List<string>();
+                for (int i = 1; i <= 5; i++)
+                {
+                    var imgPath = dr[$"img{i}"].ToString();
+                    if (!string.IsNullOrEmpty(imgPath))
+                    {
+                        //imgPathList.Add($"{Request.Scheme}://{Request.Host.Value}/Image/{imgPath.Replace("\\", "/")}");
+                        imgPathList.Add($"http://localhost:5190/Image/{imgPath.Replace("\\", "/")}");
+                    }
+                }
+                var imagePaths = imgPathList.ToArray();
+                if (imagePaths.Length >= 1) 
+                {
+                    Data.img1 = imagePaths[0];
+                }
+                if (imagePaths.Length >= 2) 
+                {
+                    Data.img2 = imagePaths[1];
+                }
+                if (imagePaths.Length >= 3) 
+                {
+                    Data.img3 = imagePaths[2];
+                }
+                if (imagePaths.Length >= 4) 
+                {
+                    Data.img4 = imagePaths[3];
+                }
+                if (imagePaths.Length >= 5) 
+                {
+                    Data.img5 = imagePaths[4];
+                }
+
             }
             catch (Exception)
             {

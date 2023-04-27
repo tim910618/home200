@@ -44,30 +44,10 @@ public class HomeController : ControllerBase
             newBlock.AllData = _homeDBService.GetDataById(Id);
             if(newBlock.AllData.isDelete==false || newBlock.AllData.tenant==true)
             {
-                var imgPathList = new List<string>();
-                for (int i = 1; i <= 5; i++)
-                {
-                    var imgPath = newBlock.AllData.GetType().GetProperty($"img{i}").GetValue(newBlock.AllData) as string;
-                    if (!string.IsNullOrEmpty(imgPath))
-                    {
-                        imgPathList.Add($"{Request.Scheme}://{Request.Host.Value}/{imgPath.Replace("\\", "/")}");
-                    }
-                }
-                string ImagePath = string.Join(",", imgPathList);
-                
-                string[] imagePaths = ImagePath.Split(',');
-                if (imagePaths.Length >= 1) 
-                {
-                    newBlock.AllData.img1 = imagePaths[0];
-                }
-                if (imagePaths.Length >= 2) 
-                {
-                    newBlock.AllData.img2 = imagePaths[1];
-                }
                 Data.RentalBlock.Add(newBlock);
             }
         }
-        return Ok(Data);
+        return Ok(Data.RentalBlock);
     }
     //下架
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "publisher")]
@@ -85,30 +65,10 @@ public class HomeController : ControllerBase
             newBlock.AllData = _homeDBService.GetDataById(Id);
             if(newBlock.AllData.isDelete==false || newBlock.AllData.check==1 && newBlock.AllData.tenant==false)
             {
-                var imgPathList = new List<string>();
-                for (int i = 1; i <= 5; i++)
-                {
-                    var imgPath = newBlock.AllData.GetType().GetProperty($"img{i}").GetValue(newBlock.AllData) as string;
-                    if (!string.IsNullOrEmpty(imgPath))
-                    {
-                        imgPathList.Add($"{Request.Scheme}://{Request.Host.Value}/{imgPath.Replace("\\", "/")}");
-                    }
-                }
-                string ImagePath = string.Join(",", imgPathList);
-                
-                string[] imagePaths = ImagePath.Split(',');
-                if (imagePaths.Length >= 1) 
-                {
-                    newBlock.AllData.img1 = imagePaths[0];
-                }
-                if (imagePaths.Length >= 2) 
-                {
-                    newBlock.AllData.img2 = imagePaths[1];
-                }
                 Data.RentalBlock.Add(newBlock);
             }
         }
-        return Ok(Data);
+        return Ok(Data.RentalBlock);
     }
     //審核中
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "publisher")]
@@ -126,30 +86,10 @@ public class HomeController : ControllerBase
             newBlock.AllData = _homeDBService.GetDataById(Id);
             if(newBlock.AllData.isDelete==false || (newBlock.AllData.check == 0 || newBlock.AllData.check == 2) && newBlock.AllData.tenant==false)
             {
-                var imgPathList = new List<string>();
-                for (int i = 1; i <= 5; i++)
-                {
-                    var imgPath = newBlock.AllData.GetType().GetProperty($"img{i}").GetValue(newBlock.AllData) as string;
-                    if (!string.IsNullOrEmpty(imgPath))
-                    {
-                        imgPathList.Add($"{Request.Scheme}://{Request.Host.Value}/{imgPath.Replace("\\", "/")}");
-                    }
-                }
-                string ImagePath = string.Join(",", imgPathList);
-                
-                string[] imagePaths = ImagePath.Split(',');
-                if (imagePaths.Length >= 1) 
-                {
-                    newBlock.AllData.img1 = imagePaths[0];
-                }
-                if (imagePaths.Length >= 2) 
-                {
-                    newBlock.AllData.img2 = imagePaths[1];
-                }
                 Data.RentalBlock.Add(newBlock);
             }
         }
-        return Ok(Data);
+        return Ok(Data.RentalBlock);
     }
     //上架變下架
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "publisher")]
@@ -237,7 +177,7 @@ public class HomeController : ControllerBase
         try
         {
             Rental Data = _homeDBService.GetDataById(Id);
-
+            
             if (Data != null)
             {
                 if(Data.isDelete==true)
@@ -246,8 +186,11 @@ public class HomeController : ControllerBase
                 }
                 return Ok(Data);
             }
-            return Ok("查詢單筆資料");
-            
+            else
+            {
+                return Ok("查無此資料");
+            }
+
         }
         catch (Exception e)
         {
@@ -378,4 +321,27 @@ public class HomeController : ControllerBase
             return stream.ToArray();
         }
     }*/
+
+                /*var imgPathList = new List<string>();
+                for (int i = 1; i <= 5; i++)
+                {
+                    var imgPath = newBlock.AllData.GetType().GetProperty($"img{i}").GetValue(newBlock.AllData) as string;
+                    if (!string.IsNullOrEmpty(imgPath))
+                    {
+                        imgPathList.Add($"{Request.Scheme}://{Request.Host.Value}/{imgPath.Replace("\\", "/")}");
+                    }
+                }
+                string ImagePath = string.Join(",", imgPathList);
+                
+                string[] imagePaths = ImagePath.Split(',');
+                if (imagePaths.Length >= 1) 
+                {
+                    newBlock.AllData.img1 = imagePaths[0];
+                }
+                if (imagePaths.Length >= 2) 
+                {
+                    newBlock.AllData.img2 = imagePaths[1];
+                }*/
+
+
 }

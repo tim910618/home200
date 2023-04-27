@@ -44,30 +44,10 @@ public class HomeDetailController : ControllerBase
             newBlock.AllData = _homeDBService.GetDataById(Id);
             if(newBlock.AllData.isDelete==false && newBlock.AllData.tenant == false)
             {
-                var imgPathList = new List<string>();
-                for (int i = 1; i <= 5; i++)
-                {
-                    var imgPath = newBlock.AllData.GetType().GetProperty($"img{i}").GetValue(newBlock.AllData) as string;
-                    if (!string.IsNullOrEmpty(imgPath))
-                    {
-                        imgPathList.Add($"{Request.Scheme}://{Request.Host.Value}/{imgPath.Replace("\\", "/")}");
-                    }
-                }
-                string ImagePath = string.Join(",", imgPathList);
-                
-                string[] imagePaths = ImagePath.Split(',');
-                if (imagePaths.Length >= 1) 
-                {
-                    newBlock.AllData.img1 = imagePaths[0];
-                }
-                if (imagePaths.Length >= 2) 
-                {
-                    newBlock.AllData.img2 = imagePaths[1];
-                }
                 Data.RentalBlock.Add(newBlock);
             }
         }
-        return Ok(Data);
+        return Ok(Data.RentalBlock);
     }
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "admin")]

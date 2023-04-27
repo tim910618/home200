@@ -1,9 +1,11 @@
 
+using System.Text.Json.Serialization;
 namespace api1.Models
 {
 
         public class Members{
         public string? account { get; set; }
+        [JsonIgnore]
         public string? password { get; set; }
         public string? name { get; set; }
         public string? email { get; set; }
