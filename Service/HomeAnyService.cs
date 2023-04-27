@@ -14,6 +14,33 @@ namespace api1.Service
             conn = connection;
         }
 
+        public List<Guid> GetIdListSeePublisher(ForPaging Paging,string publisher)
+        {
+            SetMaxPaging(Paging);
+            List<Guid> IdList = new List<Guid>();
+            string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by uploadtime desc) AS sort,* FROM RENTAL WHERE publisher=@publisher AND tenant = 1 AND isDelete = 0) m WHERE m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
+            try
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@publisher", publisher);
+                SqlDataReader dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    IdList.Add(Guid.Parse(dr["rental_id"].ToString()));
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message.ToString());
+            }
+            finally
+            {
+                conn.Close();
+            }
+            return IdList;
+        }
+
         public List<Guid> GetIdListDown(ForPaging Paging)
         {
             SetMaxPaging(Paging);

@@ -202,6 +202,8 @@ namespace api1.Service
                 Data.isDelete = Convert.ToBoolean(dr["isDelete"]);
                 Data.Member.account=dr["account"].ToString();
                 Data.Member.name = dr["name"].ToString();
+                Data.Member.score = Convert.ToDouble(dr["score"]);
+                Data.Member.phone = dr["phone"].ToString();
                 Data.Member.isBlock = Convert.ToBoolean(dr["isBlock"]);
             }
             catch (Exception)

@@ -28,6 +28,60 @@ public class HomeAnyController : ControllerBase
         _httpContextAccessor=httpContextAccessor;
     }
 
+    //某個房東全部資料
+    [AllowAnonymous]
+    [HttpGet("HomeAnySeePublisher")]
+    public IActionResult HomeAnySeePublisher([FromQuery]string publisher,int Page = 1)
+    {
+        RentalListViewModel Data = new RentalListViewModel();
+        Data.Paging = new ForPaging(Page);
+        Data.IdList = _homeanyDBService.GetIdListSeePublisher(Data.Paging,publisher);
+        Data.RentalBlock = new List<RentaldetailViewModel>();
+        foreach (var Id in Data.IdList)
+        {
+            RentaldetailViewModel newBlock = new RentaldetailViewModel();
+            newBlock.AllData = _homeDBService.GetDataById(Id);
+            if (newBlock.AllData != null)
+            {
+                var imgPathList = new List<string>();
+                for (int i = 1; i <= 5; i++)
+                {
+                    var imgPath = newBlock.AllData.GetType().GetProperty($"img{i}").GetValue(newBlock.AllData) as string;
+                    if (!string.IsNullOrEmpty(imgPath))
+                    {
+                        imgPathList.Add($"{Request.Scheme}://{Request.Host.Value}/Image/{imgPath.Replace("\\", "/")}");
+                    }
+                }
+                string ImagePath = string.Join(",", imgPathList);
+                
+                string[] imagePaths = ImagePath.Split(',');
+                if (imagePaths.Length >= 1) 
+                {
+                    newBlock.AllData.img1 = imagePaths[0];
+                }
+                if (imagePaths.Length >= 2) 
+                {
+                    newBlock.AllData.img2 = imagePaths[1];
+                }
+                if (imagePaths.Length >= 3) 
+                {
+                    newBlock.AllData.img3 = imagePaths[2];
+                }
+                if (imagePaths.Length >= 4) 
+                {
+                    newBlock.AllData.img4 = imagePaths[3];
+                }
+                if (imagePaths.Length >= 5) 
+                {
+                    newBlock.AllData.img5 = imagePaths[4];
+                }
+                Data.RentalBlock.Add(newBlock);
+            }
+        }
+        return Ok(Data);
+    }
+
+
     //全部資料降冪
     [AllowAnonymous]
     [HttpGet("HomeAnyDownTime")]
@@ -62,6 +116,18 @@ public class HomeAnyController : ControllerBase
                 if (imagePaths.Length >= 2) 
                 {
                     newBlock.AllData.img2 = imagePaths[1];
+                }
+                if (imagePaths.Length >= 3) 
+                {
+                    newBlock.AllData.img3 = imagePaths[2];
+                }
+                if (imagePaths.Length >= 4) 
+                {
+                    newBlock.AllData.img4 = imagePaths[3];
+                }
+                if (imagePaths.Length >= 5) 
+                {
+                    newBlock.AllData.img5 = imagePaths[4];
                 }
                 Data.RentalBlock.Add(newBlock);
             }
