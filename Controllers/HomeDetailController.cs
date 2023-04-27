@@ -47,6 +47,10 @@ public class HomeDetailController : ControllerBase
                 Data.RentalBlock.Add(newBlock);
             }
         }
+        if(Data.RentalBlock.Count==0)
+        {
+            return Ok("無資料");
+        }
         return Ok(Data.RentalBlock);
     }
 
@@ -69,32 +73,27 @@ public class HomeDetailController : ControllerBase
         }
     }
 
-
+    //審核
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "admin")]
-    [HttpPut("{id:guid}")]
-    public IActionResult CheckImg(Guid Id, [FromForm] Rental CheckData)
+    [HttpPut("Check")]
+    public IActionResult Check([FromQuery]Guid Id,[FromQuery]int type)
     {
         var data = _homeDBService.GetDataById(Id);
-
+        Rental CheckData=new Rental();
         if (data.isDelete==true || data==null)
         {
             return Ok("查無此資訊");
         }
-
         CheckData.rental_id = Id;
+        CheckData.check=type;
         _homedetailDBService.CheckHome(CheckData);
-        if(CheckData.check==0)
-        {
-            return Ok("審核中");
-        }
-        else if(CheckData.check==1)
+        if(CheckData.check==1)
         {
             return Ok("審核通過");
         }
-        else if(CheckData.check==2)
+        else
         {
             return Ok("審核未通過");
         }
-        return Ok();
     }
 }

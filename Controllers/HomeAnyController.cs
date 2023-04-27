@@ -46,6 +46,10 @@ public class HomeAnyController : ControllerBase
                 Data.RentalBlock.Add(newBlock);
             }
         }
+        if(Data.RentalBlock.Count==0)
+        {
+            return Ok("此房東無上架房屋");
+        }
         return Ok(Data.RentalBlock);
     }
 
@@ -68,6 +72,10 @@ public class HomeAnyController : ControllerBase
                 Data.RentalBlock.Add(newBlock);
             }
         }
+        if(Data.RentalBlock.Count==0)
+        {
+            return Ok("無資料");
+        }
         return Ok(Data.RentalBlock);
     }
 
@@ -86,28 +94,12 @@ public class HomeAnyController : ControllerBase
             newBlock.AllData = _homeDBService.GetDataById(Id);
             if (newBlock.AllData != null)
             {
-                var imgPathList = new List<string>();
-                for (int i = 1; i <= 5; i++)
-                {
-                    var imgPath = newBlock.AllData.GetType().GetProperty($"img{i}").GetValue(newBlock.AllData) as string;
-                    if (!string.IsNullOrEmpty(imgPath))
-                    {
-                        imgPathList.Add($"{Request.Scheme}://{Request.Host.Value}/{imgPath.Replace("\\", "/")}");
-                    }
-                }
-                string ImagePath = string.Join(",", imgPathList);
-                
-                string[] imagePaths = ImagePath.Split(',');
-                if (imagePaths.Length >= 1) 
-                {
-                    newBlock.AllData.img1 = imagePaths[0];
-                }
-                if (imagePaths.Length >= 2) 
-                {
-                    newBlock.AllData.img2 = imagePaths[1];
-                }
                 Data.RentalBlock.Add(newBlock);
             }
+        }
+        if(Data.RentalBlock.Count==0)
+        {
+            return Ok("無資料");
         }
         return Ok(Data.RentalBlock);
     }
@@ -197,12 +189,13 @@ public class HomeAnyController : ControllerBase
     //蒐藏全部資料
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "renter")]
     [HttpPost("AllCollect")]
-    public IActionResult AllCollect(Collect Data,int Page=1)
+    public IActionResult AllCollect(int Page=1)
     {
-        Data.renter=_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
+        Collect collect=new Collect();
+        collect.renter=_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
         RentalListViewModel ViewData = new RentalListViewModel();
         ViewData.Paging = new ForPaging(Page);
-        ViewData.IdList = _homeanyDBService.GetIdListAllCollect(ViewData.Paging,Data.renter);
+        ViewData.IdList = _homeanyDBService.GetIdListAllCollect(ViewData.Paging,collect.renter);
         ViewData.RentalBlock = new List<RentaldetailViewModel>();
         foreach (var Id in ViewData.IdList)
         {
@@ -210,28 +203,12 @@ public class HomeAnyController : ControllerBase
             newBlock.AllData = _homeDBService.GetDataById(Id);
             if (newBlock.AllData != null)
             {
-                var imgPathList = new List<string>();
-                for (int i = 1; i <= 5; i++)
-                {
-                    var imgPath = newBlock.AllData.GetType().GetProperty($"img{i}").GetValue(newBlock.AllData) as string;
-                    if (!string.IsNullOrEmpty(imgPath))
-                    {
-                        imgPathList.Add($"{Request.Scheme}://{Request.Host.Value}/{imgPath.Replace("\\", "/")}");
-                    }
-                }
-                string ImagePath = string.Join(",", imgPathList);
-                
-                string[] imagePaths = ImagePath.Split(',');
-                if (imagePaths.Length >= 1) 
-                {
-                    newBlock.AllData.img1 = imagePaths[0];
-                }
-                if (imagePaths.Length >= 2) 
-                {
-                    newBlock.AllData.img2 = imagePaths[1];
-                }
                 ViewData.RentalBlock.Add(newBlock);
             }
+        }
+        if(ViewData.RentalBlock.Count==0)
+        {
+            return Ok("無資料");
         }
         return Ok(ViewData.RentalBlock);
     }
@@ -251,10 +228,15 @@ public class HomeAnyController : ControllerBase
     }
     //取消蒐藏
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "renter")]
-    [HttpDelete("RemoveCollect/{rental_id}")]
-    public IActionResult  RemoveCollect(Guid rental_id)
+    [HttpDelete("RemoveCollect")]
+    public IActionResult  RemoveCollect([FromQuery]Guid rental_id)
     {
         string renter=_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
+        bool CheckCollect=_homeanyDBService.CheckCollect(renter,rental_id);
+        if(CheckCollect==false)
+        {
+            return Ok("查無此蒐藏");
+        }
         _homeanyDBService.RemoveCollect(renter,rental_id);
         return Ok("取消蒐藏");
     }
