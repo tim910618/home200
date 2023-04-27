@@ -118,10 +118,10 @@ namespace api1.Controllers
                 });
                 Members members = _membersSerivce.GetDataByAccount(Data.Account);
                 //base64
-                string imagePath = members.img;
-                string imageFullPath = Path.Combine("MembersImg", imagePath);
-                byte[] imageBytes = System.IO.File.ReadAllBytes(imageFullPath);
-                string base64String = Convert.ToBase64String(imageBytes);
+                // string imagePath = members.img;
+                // string imageFullPath = Path.Combine("MembersImg", imagePath);
+                // byte[] imageBytes = System.IO.File.ReadAllBytes(imageFullPath);
+                // string base64String = Convert.ToBase64String(imageBytes);
                 //members.img=base64String;
                 members.password=null;
                 return Ok(new { token, members });
