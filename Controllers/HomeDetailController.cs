@@ -51,7 +51,7 @@ public class HomeDetailController : ControllerBase
         {
             return Ok("無資料");
         }
-        return Ok(Data.RentalBlock);
+        return Ok(Data);
     }
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "admin")]

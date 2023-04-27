@@ -47,7 +47,11 @@ public class HomeController : ControllerBase
                 Data.RentalBlock.Add(newBlock);
             }
         }
-        return Ok(Data.RentalBlock);
+        if(Data.RentalBlock.Count==0)
+        {
+            return Ok("無資料");
+        }
+        return Ok(Data);
     }
     //下架
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "publisher")]
@@ -68,7 +72,11 @@ public class HomeController : ControllerBase
                 Data.RentalBlock.Add(newBlock);
             }
         }
-        return Ok(Data.RentalBlock);
+        if(Data.RentalBlock.Count==0)
+        {
+            return Ok("無資料");
+        }
+        return Ok(Data);
     }
     //審核中
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "publisher")]
@@ -89,7 +97,11 @@ public class HomeController : ControllerBase
                 Data.RentalBlock.Add(newBlock);
             }
         }
-        return Ok(Data.RentalBlock);
+        if(Data.RentalBlock.Count==0)
+        {
+            return Ok("無資料");
+        }
+        return Ok(Data);
     }
     //上架變下架
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "publisher")]

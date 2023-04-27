@@ -50,7 +50,7 @@ public class HomeAnyController : ControllerBase
         {
             return Ok("此房東無上架房屋");
         }
-        return Ok(Data.RentalBlock);
+        return Ok(Data);
     }
 
 
@@ -76,7 +76,7 @@ public class HomeAnyController : ControllerBase
         {
             return Ok("無資料");
         }
-        return Ok(Data.RentalBlock);
+        return Ok(Data);
     }
 
     //全部資料升冪
@@ -101,7 +101,7 @@ public class HomeAnyController : ControllerBase
         {
             return Ok("無資料");
         }
-        return Ok(Data.RentalBlock);
+        return Ok(Data);
     }
 
     //有搜尋值降冪
@@ -127,7 +127,7 @@ public class HomeAnyController : ControllerBase
         {
             return Ok("查無此資料");
         }
-        return Ok(Data.RentalBlock);
+        return Ok(Data);
     }
     
     //有搜尋值升冪
@@ -153,7 +153,7 @@ public class HomeAnyController : ControllerBase
         {
             return Ok("查無此資料");
         }
-        return Ok(Data.RentalBlock);
+        return Ok(Data);
     }
 
     //單筆資料
@@ -210,7 +210,7 @@ public class HomeAnyController : ControllerBase
         {
             return Ok("無資料");
         }
-        return Ok(ViewData.RentalBlock);
+        return Ok(ViewData);
     }
     //新增蒐藏
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "renter")]
