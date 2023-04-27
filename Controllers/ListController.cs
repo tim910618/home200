@@ -93,9 +93,9 @@ public class ListController : ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     #region 取消預約
     [HttpPost("CancelBooking")]
-    public IActionResult CancelBooking(Guid id)
+    public IActionResult CancelBooking([FromBody] CancelBooking Data)
     {
-        _ListService.CancelBooking(id);
+        _ListService.CancelBooking(Data.BookList_id);
         return Ok("取消預約成功");
     }
     #endregion

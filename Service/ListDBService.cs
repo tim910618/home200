@@ -92,7 +92,7 @@ namespace api1.Service
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@id", id);
-                cmd.Parameters.AddWithValue("@isDelete", '0');
+                cmd.Parameters.AddWithValue("@isDelete", '1');
                 cmd.ExecuteNonQuery();
             }
             catch (Exception e)

@@ -157,14 +157,14 @@ public class TimeController : ControllerBase
     [AllowAnonymous]
     #region 取得單天的預約時間 取得房東 修改帶入方式再改抓資料
     [HttpGet("BookOfDay")]
-    public IActionResult BookOfDay([FromQuery] Guid rental_id, DateTime datetime)
+    public IActionResult BookOfDay([FromBody] BookOfDay Data)
     {
         // 先取得 Rental 的屋主是誰
-        Rental rental = _HomeDBService.GetDataById(rental_id);
+        Rental rental = _HomeDBService.GetDataById(Data.rental_id);
         string account = rental.publisher;
 
         // 先查詢 SpecialTime 表格中有沒有指定日期的資料
-        SpecialTime specialTime = _timeService.GetSpecialTime(account, datetime);
+        SpecialTime specialTime = _timeService.GetSpecialTime(account, Data.date);
         string availableTimes;
 
         if (specialTime != null)
@@ -176,7 +176,7 @@ public class TimeController : ControllerBase
         {
             // 如果沒有資料，就從 BookTime 中取得當天的可預約時段
             BookTime bookTime = _timeService.GetBookOfDay(account);
-            switch (datetime.DayOfWeek)
+            switch (Data.date.DayOfWeek)
             {
                 case DayOfWeek.Monday:
                     availableTimes = bookTime.mon;
@@ -208,7 +208,7 @@ public class TimeController : ControllerBase
         // 將當天所有可預約的時段轉成陣列
         string[] availableTimesArray = availableTimes.Split(';');
         // 抓取已被預約的時段轉成陣列
-        string[] bookedTimes = _timeService.GetBookedTimes(rental.publisher, datetime, availableTimesArray);   
+        string[] bookedTimes = _timeService.GetBookedTimes(rental.publisher, Data.date, availableTimesArray);   
         // 取得未被預約的時段
         string[] unbookedTimes = availableTimesArray.Except(bookedTimes).ToArray();
 
