@@ -38,6 +38,9 @@ namespace api1.Models
         public int? check { get; set; }
         public bool? tenant { get; set; }
         public DateTime? uploadtime { get; set; }
+
+
+        public string? reason{get;set;}
         public bool? isDelete{get;set;}
 
         public Members Member { get; set; } = new Members();

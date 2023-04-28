@@ -63,9 +63,9 @@ namespace api1.Service
             Paging.SetRightPage();
         }
 
-        public void CheckHome(Rental CheckData)
+        public void CheckHome(Rental CheckData,string Reason)
         {
-            string sql=$@"UPDATE RENTAL SET [check]=@check,tenant=@tenant WHERE rental_id = @Id;";  
+            string sql=$@"UPDATE RENTAL SET [check]=@check,tenant=@tenant,reason=@reason WHERE rental_id = @Id;";  
             try
             {
                 conn.Open();
@@ -74,16 +74,19 @@ namespace api1.Service
                 {
                     cmd.Parameters.AddWithValue("@check", 0);
                     cmd.Parameters.AddWithValue("@tenant", false);
+                    cmd.Parameters.AddWithValue("@reason", string.Empty);
                 }
                 else if (CheckData.check == 1)
                 {
                     cmd.Parameters.AddWithValue("@check", 1);
                     cmd.Parameters.AddWithValue("@tenant", true);
+                    cmd.Parameters.AddWithValue("@reason", string.Empty);
                 }
                 else
                 {
                     cmd.Parameters.AddWithValue("@check",2);
                     cmd.Parameters.AddWithValue("@tenant", false);
+                    cmd.Parameters.AddWithValue("@reason", Reason);
                 }
                 cmd.Parameters.AddWithValue("@Id", CheckData.rental_id);
                 cmd.ExecuteNonQuery();

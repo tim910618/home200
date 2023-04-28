@@ -15,14 +15,16 @@ public class HomeDetailController : ControllerBase
 {
     private readonly HomeDBService _homeDBService;
     private readonly HomeDetailDBService _homedetailDBService;
+    private readonly MailService _mailService;
     private readonly IWebHostEnvironment _env;
     private readonly IConfiguration _configuration;
 
     private readonly IHttpContextAccessor _httpContextAccessor;
-    public HomeDetailController(HomeDBService homeDBService,HomeDetailDBService homedetailDBService, IWebHostEnvironment env, IConfiguration configuration,IHttpContextAccessor httpContextAccessor)
+    public HomeDetailController(HomeDBService homeDBService,HomeDetailDBService homedetailDBService,MailService mailService, IWebHostEnvironment env, IConfiguration configuration,IHttpContextAccessor httpContextAccessor)
     {
         _homeDBService = homeDBService;
         _homedetailDBService=homedetailDBService;
+        _mailService=mailService;
         _env = env;
         _configuration = configuration;
         _httpContextAccessor=httpContextAccessor;
@@ -76,24 +78,40 @@ public class HomeDetailController : ControllerBase
     //審核
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "admin")]
     [HttpPut("Check")]
-    public IActionResult Check([FromQuery]Guid Id,[FromQuery]int type)
+    public IActionResult Check([FromBody]Guid Id,int Type,string? Reason)
     {
         var data = _homeDBService.GetDataById(Id);
+        
+        //data.reason=Reason;
         Rental CheckData=new Rental();
         if (data.isDelete==true || data==null)
         {
             return Ok("查無此資訊");
         }
         CheckData.rental_id = Id;
-        CheckData.check=type;
-        _homedetailDBService.CheckHome(CheckData);
-        if(CheckData.check==1)
+        CheckData.check=Type;
+        CheckData.reason=Reason;
+
+        if (Type == 1 || Type == 2 && !string.IsNullOrEmpty(Reason))
         {
-            return Ok("審核通過");
-        }
+            _homedetailDBService.CheckHome(CheckData,data.reason);
+            if(CheckData.check==1)
+            {
+                return Ok("審核通過");
+            }
+            else
+            {
+                //寄預約信
+                string filePath = @"Views/CheckBadMail.html";
+                string TempString = System.IO.File.ReadAllText(filePath);
+                string MailBody = _mailService.CheckBadMailBody(TempString, data.Member.name,data.reason,data.title);
+                _mailService.SentBookMail(MailBody, data.Member.email);
+                return Ok("審核未通過");
+            }
+        }   
         else
         {
-            return Ok("審核未通過");
+            return Ok("未寫未通過原因");
         }
     }
 }

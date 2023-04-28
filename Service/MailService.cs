@@ -95,5 +95,29 @@ namespace api1.Service
             SmtpServer.Send(mail);
         }
         #endregion
+        #region 審核失敗
+        public string CheckBadMailBody(string TempString, string UserName,string Reason,string Title)
+        {
+            TempString = TempString.Replace("{{UserName}}", UserName);
+            TempString = TempString.Replace("{{Reason}}", Reason);
+            TempString = TempString.Replace("{{Title}}", Title);
+            return TempString;
+        }
+        public void SentCheckBadMail(string MailBody, string ToEmail)
+        {
+            SmtpClient SmtpServer = new SmtpClient("smtp.gmail.com");
+            SmtpServer.Port = 587;
+            SmtpServer.Credentials = new System.Net.NetworkCredential(gmail_account, gmail_password);
+            SmtpServer.EnableSsl = true;
+            MailMessage mail = new MailMessage();
+            mail.From = new MailAddress(gmail_mail);
+            mail.To.Add(ToEmail);
+            mail.Subject = " 審核未通過通知 ";
+            mail.Body = MailBody;
+            mail.IsBodyHtml = true;
+            SmtpServer.Send(mail);
+        }
+        #endregion
+
     }
 }
