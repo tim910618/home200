@@ -16,10 +16,13 @@ namespace api1.Service
         }
 
         #region 取得預約清單
-        public List<BookList> GetBookTime(string account)
+        public List<GetBookListViewModel> GetBookTime(string account)
         {
-            List<BookList> DataList = new List<BookList>();
-            string sql = $@"select * from booklist where renter=@renter or publisher=@publisher and IsDelete=@isDelete";
+            List<GetBookListViewModel> DataList = new List<GetBookListViewModel>();
+            string sql = $@"
+                SELECT booklist.*, rental.address, rental.title FROM booklist 
+                INNER JOIN rental ON booklist.rental_id = rental.rental_id 
+                WHERE (booklist.renter=@renter OR booklist.publisher=@publisher) AND booklist.IsDelete=@isDelete";
             try
             {
                 conn.Open();
@@ -30,13 +33,15 @@ namespace api1.Service
                 SqlDataReader dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
-                    BookList Data = new BookList();
+                    GetBookListViewModel Data = new GetBookListViewModel();
                     Data.renter = dr["renter"].ToString();
                     Data.publisher = dr["publisher"].ToString();
                     Data.bookdate = DateOnly.FromDateTime(Convert.ToDateTime(dr["bookdate"]));
                     Data.booktime = dr["booktime"].ToString();
                     Data.rental_id = (Guid)dr["rental_id"];
                     Data.booklist_id = (Guid)dr["booklist_id"];
+                    Data.Title = dr["title"].ToString();
+                    Data.Address = dr["address"].ToString();
                     DataList.Add(Data);
                 }
             }
@@ -111,7 +116,7 @@ namespace api1.Service
         public bool IsBooked(DateOnly bookdate, string booktime, string publisher, string renter)
         {
             bool isBooked = false;
-            string sql = @"SELECT COUNT(*) FROM booklist WHERE publisher=@publisher AND bookdate=@bookdate AND booktime=@booktime AND renter != @renter and IsDelete=@IsDelete" ;
+            string sql = @"SELECT COUNT(*) FROM booklist WHERE publisher=@publisher AND bookdate=@bookdate AND booktime=@booktime AND renter != @renter and IsDelete=@IsDelete";
             try
             {
                 conn.Open();

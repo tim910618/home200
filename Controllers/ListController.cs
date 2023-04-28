@@ -41,7 +41,7 @@ public class ListController : ControllerBase
         {
             return BadRequest("請去登入");
         }
-        List<BookList> DataList = _ListService.GetBookTime(account);
+        List<GetBookListViewModel> DataList = _ListService.GetBookTime(account);
         if (DataList == null)
         {
             return Ok("無預約資訊");
