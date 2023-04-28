@@ -78,9 +78,9 @@ public class HomeDetailController : ControllerBase
     //審核
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "admin")]
     [HttpPut("Check")]
-    public IActionResult Check([FromBody]Guid Id,int Type,string? Reason)
+    public IActionResult Check([FromBody]CheckViewModel checkData)
     {
-        var data = _homeDBService.GetDataById(Id);
+        var data = _homeDBService.GetDataById(checkData.Id);
         
         //data.reason=Reason;
         Rental CheckData=new Rental();
@@ -88,13 +88,13 @@ public class HomeDetailController : ControllerBase
         {
             return Ok("查無此資訊");
         }
-        CheckData.rental_id = Id;
-        CheckData.check=Type;
-        CheckData.reason=Reason;
+        CheckData.rental_id = checkData.Id;
+        CheckData.check=checkData.Type;
+        CheckData.reason=checkData.Reason;
 
-        if (Type == 1 || Type == 2 && !string.IsNullOrEmpty(Reason))
+        if (checkData.Type == 1 || checkData.Type == 2 && !string.IsNullOrEmpty(checkData.Reason))
         {
-            _homedetailDBService.CheckHome(CheckData,data.reason);
+            _homedetailDBService.CheckHome(CheckData);
             if(CheckData.check==1)
             {
                 return Ok("審核通過");
@@ -104,8 +104,8 @@ public class HomeDetailController : ControllerBase
                 //寄預約信
                 string filePath = @"Views/CheckBadMail.html";
                 string TempString = System.IO.File.ReadAllText(filePath);
-                string MailBody = _mailService.CheckBadMailBody(TempString, data.Member.name,data.reason,data.title);
-                _mailService.SentBookMail(MailBody, data.Member.email);
+                string MailBody = _mailService.CheckBadMailBody(TempString, data.Member.name,CheckData.reason,data.title);
+                _mailService.SentCheckBadMail(MailBody, data.Member.email);
                 return Ok("審核未通過");
             }
         }   

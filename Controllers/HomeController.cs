@@ -67,7 +67,7 @@ public class HomeController : ControllerBase
         {
             RentaldetailViewModel newBlock = new RentaldetailViewModel();
             newBlock.AllData = _homeDBService.GetDataById(Id);
-            if(newBlock.AllData.isDelete==false || newBlock.AllData.check==1 && newBlock.AllData.tenant==false)
+            if(newBlock.AllData.isDelete==false || newBlock.AllData.check!=0 && newBlock.AllData.tenant==false)
             {
                 Data.RentalBlock.Add(newBlock);
             }
@@ -92,7 +92,7 @@ public class HomeController : ControllerBase
         {
             RentaldetailViewModel newBlock = new RentaldetailViewModel();
             newBlock.AllData = _homeDBService.GetDataById(Id);
-            if(newBlock.AllData.isDelete==false || (newBlock.AllData.check == 0 || newBlock.AllData.check == 2) && newBlock.AllData.tenant==false)
+            if(newBlock.AllData.isDelete==false || (newBlock.AllData.check == 0) && newBlock.AllData.tenant==false)
             {
                 Data.RentalBlock.Add(newBlock);
             }

@@ -17,7 +17,7 @@ namespace api1.Service
         {
             SetMaxPaging(Paging,publisher);
             List<Guid> IdList = new List<Guid>();
-            string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by rental_id desc) AS sort,* FROM RENTAL WHERE publisher = @publisher AND tenant = 1 AND [check] = 1 AND isDelete = 0) m WHERE m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
+            string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by uploadtime desc) AS sort,* FROM RENTAL WHERE publisher = @publisher AND tenant = 1 AND [check] = 1 AND isDelete = 0) m WHERE m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
             try
             {
                 conn.Open();
@@ -43,7 +43,7 @@ namespace api1.Service
         {
             SetMaxPaging(Paging,publisher);
             List<Guid> IdList = new List<Guid>();
-            string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by rental_id desc) AS sort,* FROM RENTAL WHERE publisher = @publisher AND tenant = 0 AND [check] = 1 AND isDelete = 0) m WHERE m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
+            string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by uploadtime desc) AS sort,* FROM RENTAL WHERE publisher = @publisher AND tenant = 0 AND [check] IN (1, 2) AND isDelete = 0) m WHERE m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
             try
             {
                 conn.Open();
@@ -69,7 +69,7 @@ namespace api1.Service
         {
             SetMaxPaging(Paging,publisher);
             List<Guid> IdList = new List<Guid>();
-            string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by rental_id desc) AS sort,* FROM RENTAL WHERE publisher = @publisher AND tenant = 0 AND [check] IN (0, 2) AND isDelete = 0) m WHERE m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
+            string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by uploadtime desc) AS sort,* FROM RENTAL WHERE publisher = @publisher AND tenant = 0 AND [check] = 0 AND isDelete = 0) m WHERE m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
             try
             {
                 conn.Open();
@@ -201,11 +201,13 @@ namespace api1.Service
                 Data.tenant = Convert.ToBoolean(dr["tenant"]);
                 Data.uploadtime = Convert.ToDateTime(dr["uploadtime"]);
                 Data.isDelete = Convert.ToBoolean(dr["isDelete"]);
+                Data.reason=dr["reason"].ToString();
                 Data.Member.account=dr["account"].ToString();
                 Data.Member.name = dr["name"].ToString();
                 Data.Member.score = Convert.ToDouble(dr["score"]);
                 Data.Member.phone = dr["phone"].ToString();
                 Data.Member.isBlock = Convert.ToBoolean(dr["isBlock"]);
+                Data.Member.email=dr["email"].ToString();
 
                 var imgPathList = new List<string>();
                 for (int i = 1; i <= 5; i++)
