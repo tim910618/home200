@@ -79,30 +79,6 @@ public class HomeAnyController : ControllerBase
         return Ok(Data);
     }
 
-    [AllowAnonymous]
-    [HttpGet("HomeAnyDownTime1")]
-    public IActionResult HomeAnyDownTime1(int Page = 1)
-    {
-        RentalListViewModel Data = new RentalListViewModel();
-        Data.Paging = new ForPaging(Page);
-        Data.IdList = _homeanyDBService.GetIdListDown(Data.Paging);
-        Data.RentalBlock = new List<RentaldetailViewModel>();
-        foreach (var Id in Data.IdList)
-        {
-            RentaldetailViewModel newBlock = new RentaldetailViewModel();
-            newBlock.AllData = _homeDBService.GetDataById(Id);
-            if (newBlock.AllData != null)
-            {
-                Data.RentalBlock.Add(newBlock);
-            }
-        }
-        if(Data.RentalBlock.Count==0)
-        {
-            return Ok("無資料");
-        }
-        return Ok(Data);
-    }
-
     //全部資料升冪
     [AllowAnonymous]
     [HttpGet("HomeAnyUpTime")]
@@ -237,6 +213,35 @@ public class HomeAnyController : ControllerBase
         }
         return Ok(ViewData);
     }
+
+    //蒐藏全部資料
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "renter")]
+    [HttpPost("AllCollectTEST")]
+    public IActionResult AllCollect1(int Page=1)
+    {
+        Collect collect=new Collect();
+        collect.renter=_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
+        AllCollectListViewModel ViewData = new AllCollectListViewModel();
+        ViewData.Paging = new ForPaging(Page);
+        ViewData.IdList = _homeanyDBService.GetIdListAllCollect(ViewData.Paging,collect.renter);
+        ViewData.RentalBlock = new List<AllCollectViewModel>();
+        foreach (var Id in ViewData.IdList)
+        {
+            AllCollectViewModel newBlock = new AllCollectViewModel();
+            newBlock.AllData = _homeDBService.GetDataById(Id);
+            if (newBlock.AllData != null)
+            {
+                newBlock.isDelete=false;
+                ViewData.RentalBlock.Add(newBlock);
+            }
+        }
+        if(ViewData.RentalBlock.Count==0)
+        {
+            return Ok("無資料");
+        }
+        return Ok(ViewData);
+    }
+
     //新增蒐藏
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "renter")]
     [HttpPost("AddCollect")]
