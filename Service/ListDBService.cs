@@ -223,6 +223,39 @@ namespace api1.Service
 
         #endregion
 
+        #region 取得單筆資料
+        public BookList GetBookTimeById(Guid Id)
+        {
+            BookList Data = new BookList();
+            string sql = $@"SELECT * FROM booklist WHERE booklist_id=@id and IsDelete=@isDelete";
+            try
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@id", Id);
+                cmd.Parameters.AddWithValue("@IsDelete", '0');
+                SqlDataReader dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    Data.renter = dr["renter"].ToString();
+                    Data.publisher = dr["publisher"].ToString();
+                    Data.bookdate = DateOnly.FromDateTime(Convert.ToDateTime(dr["bookdate"]));
+                    Data.booktime = dr["booktime"].ToString();
+                    Data.rental_id = (Guid)dr["rental_id"];
+                    Data.booklist_id = (Guid)dr["booklist_id"];
 
+                }
+            }
+            catch 
+            {
+                Data=null;
+            }
+            finally
+            {
+                conn.Close();
+            }
+            return (Data);
+        }
+        #endregion
     }
 }

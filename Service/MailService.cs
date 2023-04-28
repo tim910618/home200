@@ -118,6 +118,29 @@ namespace api1.Service
             SmtpServer.Send(mail);
         }
         #endregion
-
+        #region 取消看房
+        public string CancelMailBody(string TempString,string  publisher, DateOnly bookdate,string booktime,string title)
+        {
+            TempString = TempString.Replace("{{UserName}}", publisher);
+            TempString = TempString.Replace("{{Date}}", bookdate.ToString());
+            TempString = TempString.Replace("{{Time}}", booktime);
+            TempString = TempString.Replace("{{Title}}", title);
+            return TempString;
+        }
+        public void SentCancelMail(string MailBody, string ToEmail)
+        {
+            SmtpClient SmtpServer = new SmtpClient("smtp.gmail.com");
+            SmtpServer.Port = 587;
+            SmtpServer.Credentials = new System.Net.NetworkCredential(gmail_account, gmail_password);
+            SmtpServer.EnableSsl = true;
+            MailMessage mail = new MailMessage();
+            mail.From = new MailAddress(gmail_mail);
+            mail.To.Add(ToEmail);
+            mail.Subject = " 取消預約看房通知 ";
+            mail.Body = MailBody;
+            mail.IsBodyHtml = true;
+            SmtpServer.Send(mail);
+        }
+        #endregion
     }
 }

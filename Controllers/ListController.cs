@@ -73,7 +73,8 @@ public class ListController : ControllerBase
         else if (booked == true)
         {
             return BadRequest("您已預約看房！");
-        }else if(otherbooked==true)
+        }
+        else if (otherbooked == true)
         {
             return BadRequest("已被其他房客預約！");
         }
@@ -93,9 +94,29 @@ public class ListController : ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     #region 取消預約
     [HttpPost("CancelBooking")]
-    public IActionResult CancelBooking([FromBody] CancelBooking Data)
+    public IActionResult CancelBooking([FromBody] CancelBooking BookList)
     {
-        _ListService.CancelBooking(Data.BookList_id);
+        //取得Booklist、取得房東房客的Email
+        BookList Data = new BookList();
+        Data = _ListService.GetBookTimeById(BookList.BookList_id);
+        Rental rental=new Rental();
+        rental = _homeDBService.GetDataById(Data.rental_id);
+        if (Data == null)
+        {
+            return Ok("查無預約資料");
+        }
+        else
+        {
+            Members publisher = _membersSerivce.GetDataByAccount(Data.publisher);
+            Members renter = _membersSerivce.GetDataByAccount(Data.renter);
+            string filePath = @"Views/CancelBooking.html";
+            string TempString = System.IO.File.ReadAllText(filePath);
+            string MailBody = _mailService.CancelMailBody(TempString, publisher.name, Data.bookdate, Data.booktime,rental.title);
+            _mailService.SentBookMail(MailBody, publisher.email);
+            string MailBody2 = _mailService.CancelMailBody(TempString, renter.name, Data.bookdate, Data.booktime,rental.title);
+            _mailService.SentBookMail(MailBody2, renter.email);
+            _ListService.CancelBooking(BookList.BookList_id);
+        }
         return Ok("取消預約成功");
     }
     #endregion

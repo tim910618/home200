@@ -1,0 +1,11 @@
+
+namespace api1.ViewModel
+{
+    public class CancelBookingViewModel
+    {
+        public string publisher { get; set; }
+        public string rental { get; set; }
+        public string publisher_email { get; set; }
+        public string rental_email{ get; set; }
+    }
+}
