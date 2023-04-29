@@ -40,6 +40,7 @@ namespace api1.Service
                     Data.booktime = dr["booktime"].ToString();
                     Data.rental_id = (Guid)dr["rental_id"];
                     Data.booklist_id = (Guid)dr["booklist_id"];
+                    Data.isDelete=Convert.ToBoolean(dr["isDelete"]);
                     Data.Title = dr["title"].ToString();
                     Data.Address = dr["address"].ToString();
                     DataList.Add(Data);
@@ -227,13 +228,13 @@ namespace api1.Service
         public BookList GetBookTimeById(Guid Id)
         {
             BookList Data = new BookList();
-            string sql = $@"SELECT * FROM booklist WHERE booklist_id=@id and IsDelete=@isDelete";
+            string sql = $@"SELECT * FROM booklist WHERE booklist_id=@id";
             try
             {
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@id", Id);
-                cmd.Parameters.AddWithValue("@IsDelete", '0');
+                //cmd.Parameters.AddWithValue("@IsDelete", '0');
                 SqlDataReader dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
@@ -243,7 +244,7 @@ namespace api1.Service
                     Data.booktime = dr["booktime"].ToString();
                     Data.rental_id = (Guid)dr["rental_id"];
                     Data.booklist_id = (Guid)dr["booklist_id"];
-
+                    Data.isDelete=Convert.ToBoolean(dr["isDelete"]);
                 }
             }
             catch 

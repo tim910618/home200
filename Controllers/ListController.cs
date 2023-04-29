@@ -101,7 +101,7 @@ public class ListController : ControllerBase
         Data = _ListService.GetBookTimeById(BookList.BookList_id);
         Rental rental=new Rental();
         rental = _homeDBService.GetDataById(Data.rental_id);
-        if (Data == null)
+        if (Data == null || Data.isDelete==true)
         {
             return Ok("查無預約資料");
         }
@@ -110,11 +110,12 @@ public class ListController : ControllerBase
             Members publisher = _membersSerivce.GetDataByAccount(Data.publisher);
             Members renter = _membersSerivce.GetDataByAccount(Data.renter);
             string filePath = @"Views/CancelBooking.html";
-            string TempString = System.IO.File.ReadAllText(filePath);
-            string MailBody = _mailService.CancelMailBody(TempString, publisher.name, Data.bookdate, Data.booktime,rental.title);
+            string TempStringP = System.IO.File.ReadAllText(filePath);
+            string MailBody = _mailService.CancelMailBody(TempStringP, publisher.name, Data.bookdate, Data.booktime,rental.title);
             _mailService.SentBookMail(MailBody, publisher.email);
-            string MailBody2 = _mailService.CancelMailBody(TempString, renter.name, Data.bookdate, Data.booktime,rental.title);
-            _mailService.SentBookMail(MailBody2, renter.email);
+            string TempStringR = System.IO.File.ReadAllText(filePath);
+            string MailBodyR = _mailService.CancelMailBody(TempStringR, renter.name, Data.bookdate, Data.booktime,rental.title);
+            _mailService.SentBookMail(MailBodyR, renter.email);
             _ListService.CancelBooking(BookList.BookList_id);
         }
         return Ok("取消預約成功");
