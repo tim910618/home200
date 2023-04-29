@@ -72,12 +72,12 @@ namespace api1.Controllers
                     //var host = Request.Host.ToUriComponent();
                     var host="127.0.0.1:5555";
                     var pathBase = Request.PathBase.ToUriComponent();
-                    var controller = "Members";
+                    var controller = "api/Auth";
                     var action = "emailValidate";
                     var account = HttpUtility.UrlEncode(registerMember.newMember.account);
                     var authCode2 = HttpUtility.UrlEncode(registerMember.newMember.authcode);
 
-                    var url = $"{scheme}://{host}{pathBase}/{controller}/{action}?Account={account}&AuthCode={authCode2}";
+                    var url = $"{scheme}://{host}{pathBase}/{controller}/{action}?account={account}&authcode={authCode2}";
 
                     string mailBody = _mailService.GetRegisterMailBody(TempString, registerMember.newMember.name, url.ToString());
                     _mailService.SendRegisterMail(mailBody, registerMember.newMember.email);
