@@ -256,11 +256,19 @@ public class HomeController : ControllerBase
                         oldFilePath = data.img5;
                         break;
                 }
+
+                // 檢查路徑是否包含 http://localhost:5190/，如果包含，則從路徑中刪除它
+                if (!string.IsNullOrEmpty(oldFilePath) && oldFilePath.Contains("http://localhost:5190/Image/"))
+                {
+                    oldFilePath = oldFilePath.Replace("http://localhost:5190/Image/", "");
+                }
+                
                 if (!string.IsNullOrEmpty(oldFilePath) && System.IO.File.Exists(oldFilePath))
                 {
                     System.IO.File.Delete(oldFilePath);
                 }
 
+                
                 var path = Path.Combine(uploadPath, filename);
                 using (var stream = new FileStream(path, FileMode.Create))
                 {
