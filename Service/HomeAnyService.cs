@@ -445,16 +445,22 @@ namespace api1.Service
         //檢查是否已蒐藏
         public bool CheckCollect(string renter,Guid rental_id)
         {
-            string sql=$@"SELECT collect_id FROM COLLECT WHERE renter=@renter AND rental_id=@rental_id ;";
+            string sql=$@"SELECT COUNT(*) FROM COLLECT WHERE renter=@renter AND rental_id=@rental_id ;";
             try
             {
                 conn.Open();
                 SqlCommand cmd =new SqlCommand(sql,conn);
                 cmd.Parameters.AddWithValue("@renter",renter);
                 cmd.Parameters.AddWithValue("@rental_id",rental_id);
-                object collectIdObj=cmd.ExecuteScalar();
-
-                return collectIdObj !=null;
+                int count = (int)cmd.ExecuteScalar();
+                if(count>0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             catch(Exception e)
             {

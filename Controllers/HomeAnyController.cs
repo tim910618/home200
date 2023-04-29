@@ -203,35 +203,8 @@ public class HomeAnyController : ControllerBase
             newBlock.AllData = _homeDBService.GetDataById(Id);
             if (newBlock.AllData != null)
             {
-                newBlock.isDelete=false;
-                ViewData.RentalBlock.Add(newBlock);
-            }
-        }
-        if(ViewData.RentalBlock.Count==0)
-        {
-            return Ok("無資料");
-        }
-        return Ok(ViewData);
-    }
-
-    //蒐藏全部資料
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "renter")]
-    [HttpPost("AllCollectTEST")]
-    public IActionResult AllCollect1(int Page=1)
-    {
-        Collect collect=new Collect();
-        collect.renter=_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
-        AllCollectListViewModel ViewData = new AllCollectListViewModel();
-        ViewData.Paging = new ForPaging(Page);
-        ViewData.IdList = _homeanyDBService.GetIdListAllCollect(ViewData.Paging,collect.renter);
-        ViewData.RentalBlock = new List<AllCollectViewModel>();
-        foreach (var Id in ViewData.IdList)
-        {
-            AllCollectViewModel newBlock = new AllCollectViewModel();
-            newBlock.AllData = _homeDBService.GetDataById(Id);
-            if (newBlock.AllData != null)
-            {
-                newBlock.isDelete=false;
+                bool isCollected = _homeanyDBService.CheckCollect(collect.renter, Id);
+                newBlock.IsCollected = isCollected;
                 ViewData.RentalBlock.Add(newBlock);
             }
         }
