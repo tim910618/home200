@@ -215,7 +215,6 @@ namespace api1.Service
                     var imgPath = dr[$"img{i}"].ToString();
                     if (!string.IsNullOrEmpty(imgPath))
                     {
-                        //imgPathList.Add($"{Request.Scheme}://{Request.Host.Value}/Image/{imgPath.Replace("\\", "/")}");
                         imgPathList.Add($"http://localhost:5190/Image/{imgPath.Replace("\\", "/")}");
                     }
                 }
