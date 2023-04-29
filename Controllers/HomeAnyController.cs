@@ -43,6 +43,13 @@ public class HomeAnyController : ControllerBase
             newBlock.AllData = _homeDBService.GetDataById(Id);
             if (newBlock.AllData != null)
             {
+                bool isRenter = User.IsInRole("renter");
+                if (isRenter)
+                {
+                    string renter = User.Identity.Name;
+                    bool isCollected = _homeanyDBService.CheckCollect(renter, Id);
+                    newBlock.IsCollected = isCollected;
+                }
                 Data.RentalBlock.Add(newBlock);
             }
         }
@@ -59,6 +66,7 @@ public class HomeAnyController : ControllerBase
     [HttpGet("HomeAnyDownTime")]
     public IActionResult HomeAnyDownTime(int Page = 1)
     {
+        
         RentalListViewModel Data = new RentalListViewModel();
         Data.Paging = new ForPaging(Page);
         Data.IdList = _homeanyDBService.GetIdListDown(Data.Paging);
@@ -69,6 +77,13 @@ public class HomeAnyController : ControllerBase
             newBlock.AllData = _homeDBService.GetDataById(Id);
             if (newBlock.AllData != null)
             {
+                bool isRenter = User.IsInRole("renter");
+                if (isRenter)
+                {
+                    string renter = User.Identity.Name;
+                    bool isCollected = _homeanyDBService.CheckCollect(renter, Id);
+                    newBlock.IsCollected = isCollected;
+                }
                 Data.RentalBlock.Add(newBlock);
             }
         }
@@ -94,6 +109,13 @@ public class HomeAnyController : ControllerBase
             newBlock.AllData = _homeDBService.GetDataById(Id);
             if (newBlock.AllData != null)
             {
+                bool isRenter = User.IsInRole("renter");
+                if (isRenter)
+                {
+                    string renter = User.Identity.Name;
+                    bool isCollected = _homeanyDBService.CheckCollect(renter, Id);
+                    newBlock.IsCollected = isCollected;
+                }
                 Data.RentalBlock.Add(newBlock);
             }
         }
@@ -120,6 +142,13 @@ public class HomeAnyController : ControllerBase
             newBlock.AllData = _homeDBService.GetDataById(Id);
             if (newBlock.AllData != null)
             {
+                bool isRenter = User.IsInRole("renter");
+                if (isRenter)
+                {
+                    string renter = User.Identity.Name;
+                    bool isCollected = _homeanyDBService.CheckCollect(renter, Id);
+                    newBlock.IsCollected = isCollected;
+                }
                 Data.RentalBlock.Add(newBlock);
             }
         }
@@ -146,6 +175,13 @@ public class HomeAnyController : ControllerBase
             newBlock.AllData = _homeDBService.GetDataById(Id);
             if (newBlock.AllData != null)
             {
+                bool isRenter = User.IsInRole("renter");
+                if (isRenter)
+                {
+                    string renter = User.Identity.Name;
+                    bool isCollected = _homeanyDBService.CheckCollect(renter, Id);
+                    newBlock.IsCollected = isCollected;
+                }
                 Data.RentalBlock.Add(newBlock);
             }
         }
@@ -193,13 +229,13 @@ public class HomeAnyController : ControllerBase
     {
         Collect collect=new Collect();
         collect.renter=_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
-        AllCollectListViewModel ViewData = new AllCollectListViewModel();
+        RentalListViewModel ViewData = new RentalListViewModel();
         ViewData.Paging = new ForPaging(Page);
         ViewData.IdList = _homeanyDBService.GetIdListAllCollect(ViewData.Paging,collect.renter);
-        ViewData.RentalBlock = new List<AllCollectViewModel>();
+        ViewData.RentalBlock = new List<RentaldetailViewModel>();
         foreach (var Id in ViewData.IdList)
         {
-            AllCollectViewModel newBlock = new AllCollectViewModel();
+            RentaldetailViewModel newBlock = new RentaldetailViewModel();
             newBlock.AllData = _homeDBService.GetDataById(Id);
             if (newBlock.AllData != null)
             {

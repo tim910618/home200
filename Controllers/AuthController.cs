@@ -50,7 +50,7 @@ namespace api1.Controllers
                     if (registerMember.ProfileImage != null && registerMember.ProfileImage.Length > 0)
                     {
                         var fileName = Guid.NewGuid().ToString() + Path.GetExtension(registerMember.ProfileImage.FileName);
-                        var path = Path.Combine("MembersImg", fileName);
+                        var path = Path.Combine("wwwroot/MembersImg", fileName);
                         using (var stream = new FileStream(path, FileMode.Create))
                         {
                             await registerMember.ProfileImage.CopyToAsync(stream);
@@ -117,12 +117,6 @@ namespace api1.Controllers
                     Expires = DateTime.UtcNow.AddDays(1)
                 });
                 Members members = _membersSerivce.GetDataByAccount(Data.Account);
-                //base64
-                // string imagePath = members.img;
-                // string imageFullPath = Path.Combine("MembersImg", imagePath);
-                // byte[] imageBytes = System.IO.File.ReadAllBytes(imageFullPath);
-                // string base64String = Convert.ToBase64String(imageBytes);
-                //members.img=base64String;
                 members.password=null;
                 return Ok(new { token, members });
             }
@@ -216,14 +210,14 @@ namespace api1.Controllers
                 {
                     if (!string.IsNullOrEmpty(Data.img))
                     {
-                        var imagePath = Path.Combine("MembersImg", Data.img);
+                        var imagePath = Path.Combine("wwwroot/MembersImg", Data.img);
                         if (System.IO.File.Exists(imagePath))
                         {
                             System.IO.File.Delete(imagePath);
                         }
                     }
                     var fileName = Guid.NewGuid().ToString() + Path.GetExtension(UpdateData.img_upload.FileName);
-                    var path = Path.Combine("MembersImg", fileName);
+                    var path = Path.Combine("wwwroot/MembersImg", fileName);
                     using (var stream = new FileStream(path, FileMode.Create))
                     {
                         await UpdateData.img_upload.CopyToAsync(stream);
