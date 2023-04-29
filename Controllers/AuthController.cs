@@ -70,7 +70,7 @@ namespace api1.Controllers
                     string TempString = System.IO.File.ReadAllText(filePath);
                     var scheme = Request.Scheme;
                     //var host = Request.Host.ToUriComponent();
-                    var host="127.0.0.1:5555";
+                    var host="127.0.0.1:5190";
                     var pathBase = Request.PathBase.ToUriComponent();
                     var controller = "api/Auth";
                     var action = "emailValidate";
