@@ -73,7 +73,7 @@ namespace api1.Controllers
                     var host="127.0.0.1:5555";
                     var pathBase = Request.PathBase.ToUriComponent();
                     var controller = "Members";
-                    var action = "EmailValidate";
+                    var action = "emailValidate";
                     var account = HttpUtility.UrlEncode(registerMember.newMember.account);
                     var authCode2 = HttpUtility.UrlEncode(registerMember.newMember.authcode);
 
