@@ -98,7 +98,7 @@ namespace api1.Service
                 var imgPath = dr["img"].ToString();
                 if (!string.IsNullOrEmpty(imgPath))
                 {
-                    Data.img = $"http://localhost:5190/Image/{imgPath.Replace("\\", "/")}";
+                    Data.img = $"http://localhost:5190/MembersImg/{imgPath.Replace("\\", "/")}";
                 }
             }
             catch (Exception)
