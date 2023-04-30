@@ -20,7 +20,7 @@ namespace api1.Service
         {
             List<GetBookListViewModel> DataList = new List<GetBookListViewModel>();
             string sql = $@"
-                SELECT booklist.*, rental.address, rental.title FROM booklist 
+                SELECT booklist.*, rental.address, rental.title, rental.img1 FROM booklist 
                 INNER JOIN rental ON booklist.rental_id = rental.rental_id 
                 WHERE (booklist.renter=@renter OR booklist.publisher=@publisher) AND booklist.IsDelete=@isDelete";
             try
@@ -43,8 +43,20 @@ namespace api1.Service
                     Data.isDelete=Convert.ToBoolean(dr["isDelete"]);
                     Data.Title = dr["title"].ToString();
                     Data.Address = dr["address"].ToString();
+                    Data.img1=dr["img1"].ToString();
                     DataList.Add(Data);
+
+                    var imgPath = dr["img1"].ToString();
+                    if (!string.IsNullOrEmpty(imgPath))
+                    {
+                        if (!imgPath.Contains("http://"))
+                        {
+                            imgPath = $"http://localhost:5190/Image/{imgPath.Replace("\\", "/")}";
+                        }
+                        Data.img1 = imgPath;
+                    }
                 }
+                
             }
             catch (Exception e)
             {

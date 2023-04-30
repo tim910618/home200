@@ -11,5 +11,6 @@ namespace api1.Models
         public bool isDelete{get;set;}
         public string Title{get;set;}
         public string Address{get;set;}
+        public string img1{get;set;}
     }
 }
