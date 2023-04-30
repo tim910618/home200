@@ -19,35 +19,35 @@ public class HomeController : ControllerBase
     private readonly IConfiguration _configuration;
 
     private readonly IHttpContextAccessor _httpContextAccessor;
-    public HomeController(HomeDBService homeDBService, IWebHostEnvironment env, IConfiguration configuration,IHttpContextAccessor httpContextAccessor)
+    public HomeController(HomeDBService homeDBService, IWebHostEnvironment env, IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
     {
         _homeDBService = homeDBService;
         _env = env;
         _configuration = configuration;
-        _httpContextAccessor=httpContextAccessor;
+        _httpContextAccessor = httpContextAccessor;
     }
 
-    
+
     //上架 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "publisher")]
     [HttpGet("HomeUp")]
     public IActionResult HomeUpIndex(int Page = 1)
     {
-        var publisher=_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
+        var publisher = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
         RentalListViewModel Data = new RentalListViewModel();
         Data.Paging = new ForPaging(Page);
-        Data.IdList = _homeDBService.GetUpIdList(Data.Paging,publisher);
+        Data.IdList = _homeDBService.GetUpIdList(Data.Paging, publisher);
         Data.RentalBlock = new List<RentaldetailViewModel>();
         foreach (var Id in Data.IdList)
         {
             RentaldetailViewModel newBlock = new RentaldetailViewModel();
             newBlock.AllData = _homeDBService.GetDataById(Id);
-            if(newBlock.AllData.isDelete==false || newBlock.AllData.tenant==true)
+            if (newBlock.AllData.isDelete == false || newBlock.AllData.tenant == true)
             {
                 Data.RentalBlock.Add(newBlock);
             }
         }
-        if(Data.RentalBlock.Count==0)
+        if (Data.RentalBlock.Count == 0)
         {
             return Ok("無資料");
         }
@@ -58,21 +58,21 @@ public class HomeController : ControllerBase
     [HttpGet("HomeDown")]
     public IActionResult HomeDownIndex(int Page = 1)
     {
-        var publisher=_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
+        var publisher = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
         RentalListViewModel Data = new RentalListViewModel();
         Data.Paging = new ForPaging(Page);
-        Data.IdList = _homeDBService.GetDownIdList(Data.Paging,publisher);
+        Data.IdList = _homeDBService.GetDownIdList(Data.Paging, publisher);
         Data.RentalBlock = new List<RentaldetailViewModel>();
         foreach (var Id in Data.IdList)
         {
             RentaldetailViewModel newBlock = new RentaldetailViewModel();
             newBlock.AllData = _homeDBService.GetDataById(Id);
-            if(newBlock.AllData.isDelete==false || newBlock.AllData.check!=0 && newBlock.AllData.tenant==false)
+            if (newBlock.AllData.isDelete == false || newBlock.AllData.check != 0 && newBlock.AllData.tenant == false)
             {
                 Data.RentalBlock.Add(newBlock);
             }
         }
-        if(Data.RentalBlock.Count==0)
+        if (Data.RentalBlock.Count == 0)
         {
             return Ok("無資料");
         }
@@ -83,21 +83,21 @@ public class HomeController : ControllerBase
     [HttpGet("HomeCheck")]
     public IActionResult HomeCheckIndex(int Page = 1)
     {
-        var publisher=_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
+        var publisher = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
         RentalListViewModel Data = new RentalListViewModel();
         Data.Paging = new ForPaging(Page);
-        Data.IdList = _homeDBService.GetCheckIdList(Data.Paging,publisher);
+        Data.IdList = _homeDBService.GetCheckIdList(Data.Paging, publisher);
         Data.RentalBlock = new List<RentaldetailViewModel>();
         foreach (var Id in Data.IdList)
         {
             RentaldetailViewModel newBlock = new RentaldetailViewModel();
             newBlock.AllData = _homeDBService.GetDataById(Id);
-            if(newBlock.AllData.isDelete==false || (newBlock.AllData.check == 0) && newBlock.AllData.tenant==false)
+            if (newBlock.AllData.isDelete == false || (newBlock.AllData.check == 0) && newBlock.AllData.tenant == false)
             {
                 Data.RentalBlock.Add(newBlock);
             }
         }
-        if(Data.RentalBlock.Count==0)
+        if (Data.RentalBlock.Count == 0)
         {
             return Ok("無資料");
         }
@@ -108,7 +108,7 @@ public class HomeController : ControllerBase
     [HttpPut("HomeUpToDown/{id:guid}")]
     public IActionResult HomeUpToDown(Guid Id, [FromForm] Rental UpToDownData)
     {
-        UpToDownData.rental_id=Id;
+        UpToDownData.rental_id = Id;
         _homeDBService.UpToDown(UpToDownData);
         return Ok("已下架");
     }
@@ -117,18 +117,18 @@ public class HomeController : ControllerBase
     [HttpPut("HomeDownToCheck/{id:guid}")]
     public IActionResult HomeDownToCheck(Guid Id, [FromForm] Rental DownToCheckData)
     {
-        DownToCheckData.rental_id=Id;
+        DownToCheckData.rental_id = Id;
         _homeDBService.DownToCheck(DownToCheckData);
         return Ok("已送出審查");
     }
 
-    
+
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "publisher")]
     [HttpPost("InsertRental")]
     public IActionResult InsertRental([FromForm] Rental Data)
     {
-        Data.publisher=_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
+        Data.publisher = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
         try
         {
             // 檢查檔案是否存在
@@ -189,10 +189,10 @@ public class HomeController : ControllerBase
         try
         {
             Rental Data = _homeDBService.GetDataById(Id);
-            
+
             if (Data != null)
             {
-                if(Data.isDelete==true)
+                if (Data.isDelete == true)
                 {
                     return Ok("已被刪除");
                 }
@@ -219,7 +219,7 @@ public class HomeController : ControllerBase
     {
         var data = _homeDBService.GetDataById(Id);
 
-        if (data.isDelete==true)
+        if (data.isDelete == true)
         {
             return Ok("查無此資訊");
         }
@@ -277,26 +277,11 @@ public class HomeController : ControllerBase
                 updateData.GetType().GetProperty($"img{i + 1}").SetValue(updateData, newImgUrl.Replace("http://localhost:5190/Image/", ""), null);
             }
         }
-        if (!string.IsNullOrEmpty(data.img1))
-        {
-            updateData.img1 = filenames.Count > 0 ? filenames[0].Replace("http://localhost:5190/Image/", "") : data.img1;
-        }
-        if (!string.IsNullOrEmpty(data.img2))
-        {
-            updateData.img2 = filenames.Count > 1 ? filenames[1].Replace("http://localhost:5190/Image/", "") : data.img2;
-        }
-        if (!string.IsNullOrEmpty(data.img3))
-        {
-            updateData.img3 = filenames.Count > 2 ? filenames[2].Replace("http://localhost:5190/Image/", "") : data.img3;
-        }
-        if (!string.IsNullOrEmpty(data.img4))
-        {
-            updateData.img4 = filenames.Count > 3 ? filenames[3].Replace("http://localhost:5190/Image/", "") : data.img4;
-        }
-        if (!string.IsNullOrEmpty(data.img5))
-        {
-            updateData.img5 = filenames.Count > 4 ? filenames[4].Replace("http://localhost:5190/Image/", "") : data.img5;
-        }
+        updateData.img1 = filenames.Count > 0 ? filenames[0].Replace("http://localhost:5190/Image/", "") : (updateData.img1 ?? data.img1);
+        updateData.img2 = filenames.Count > 1 ? filenames[1].Replace("http://localhost:5190/Image/", "") : (updateData.img2 ?? data.img2);
+        updateData.img3 = filenames.Count > 2 ? filenames[2].Replace("http://localhost:5190/Image/", "") : (updateData.img3 ?? data.img3);
+        updateData.img4 = filenames.Count > 3 ? filenames[3].Replace("http://localhost:5190/Image/", "") : (updateData.img4 ?? data.img4);
+        updateData.img5 = filenames.Count > 4 ? filenames[4].Replace("http://localhost:5190/Image/", "") : (updateData.img5 ?? data.img5);
 
         /*updateData.img1 = filenames.Count > 0 ? filenames[0] : data.img1;
         updateData.img2 = filenames.Count > 1 ? filenames[1] : data.img2;
@@ -364,26 +349,26 @@ public class HomeController : ControllerBase
         }
     }*/
 
-                /*var imgPathList = new List<string>();
-                for (int i = 1; i <= 5; i++)
-                {
-                    var imgPath = newBlock.AllData.GetType().GetProperty($"img{i}").GetValue(newBlock.AllData) as string;
-                    if (!string.IsNullOrEmpty(imgPath))
-                    {
-                        imgPathList.Add($"{Request.Scheme}://{Request.Host.Value}/{imgPath.Replace("\\", "/")}");
-                    }
-                }
-                string ImagePath = string.Join(",", imgPathList);
-                
-                string[] imagePaths = ImagePath.Split(',');
-                if (imagePaths.Length >= 1) 
-                {
-                    newBlock.AllData.img1 = imagePaths[0];
-                }
-                if (imagePaths.Length >= 2) 
-                {
-                    newBlock.AllData.img2 = imagePaths[1];
-                }*/
+    /*var imgPathList = new List<string>();
+    for (int i = 1; i <= 5; i++)
+    {
+        var imgPath = newBlock.AllData.GetType().GetProperty($"img{i}").GetValue(newBlock.AllData) as string;
+        if (!string.IsNullOrEmpty(imgPath))
+        {
+            imgPathList.Add($"{Request.Scheme}://{Request.Host.Value}/{imgPath.Replace("\\", "/")}");
+        }
+    }
+    string ImagePath = string.Join(",", imgPathList);
+
+    string[] imagePaths = ImagePath.Split(',');
+    if (imagePaths.Length >= 1) 
+    {
+        newBlock.AllData.img1 = imagePaths[0];
+    }
+    if (imagePaths.Length >= 2) 
+    {
+        newBlock.AllData.img2 = imagePaths[1];
+    }*/
 
 
 }
