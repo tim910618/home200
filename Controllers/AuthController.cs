@@ -122,7 +122,7 @@ namespace api1.Controllers
             }
             else
             {
-                return BadRequest(Validate);
+                return Ok(Validate);
             }
         }
 
