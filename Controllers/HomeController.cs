@@ -311,11 +311,6 @@ public class HomeController : ControllerBase
         // 產生檔名，以避免重複
         List<string> filenames = new List<string>();
         IFormFile[] files = { updateData.img1_1, updateData.img1_2, updateData.img1_3, updateData.img1_4, updateData.img1_5 };
-        updateData.img1=data.img1;
-        updateData.img2=data.img2;
-        updateData.img3=data.img3;
-        updateData.img4=data.img4;
-        updateData.img5=data.img5;
         for (int i = 0; i < files.Length; i++)
         {
             if (files[i] != null && files[i].Length > 0)

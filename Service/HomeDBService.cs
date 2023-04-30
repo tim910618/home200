@@ -215,8 +215,16 @@ namespace api1.Service
                     var imgPath = dr[$"img{i}"].ToString();
                     if (!string.IsNullOrEmpty(imgPath))
                     {
-                        imgPathList.Add($"http://localhost:5190/Image/{imgPath.Replace("\\", "/")}");
+                        if (!imgPath.Contains("http://"))
+                        {
+                            imgPath = $"http://localhost:5190/Image/{imgPath.Replace("\\", "/")}";
+                        }
+                        imgPathList.Add(imgPath);
                     }
+                    /*if (!string.IsNullOrEmpty(imgPath))
+                    {
+                        imgPathList.Add($"http://localhost:5190/Image/{imgPath.Replace("\\", "/")}");
+                    }*/
                 }
                 var imagePaths = imgPathList.ToArray();
                 if (imagePaths.Length >= 1) 
