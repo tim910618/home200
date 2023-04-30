@@ -2,13 +2,22 @@
 <html>
 <head>
 	<meta charset="utf-8" />
-	<title>忘記密碼</title>
+	<title>預約通知信</title>
 </head>
 <body>
-	<p>親愛的 {{UserName}}，您好：</p>
-	<p>您的預約日期：{{Date}}</p>
-	<p>您的預約時間：{{Time}}</p>
-	<p>看房地址：{{Address}}</p>
-    <p>請準時</p>
+	<h2>親愛的 {{UserName}}房東您好，</h2>
+	<p>已有租戶已經預約了您的房屋，以下是預約詳細資訊：</p>
+	<ul>
+		<li>預約日期：{{Date}}</li>
+		<li>預約時間：{{Time}}</li>
+		<li>看房地址：{{Address}}</li>
+	</ul>
+    <p>請您在預約時間前做好準備，並確認您的聯絡方式是否正確。</p>
+    <p>如有任何疑問，請隨時聯繫我們。</p>
+    <p>謝謝。</p>
+    <br>
+    <p>此致</p>
+    <br>
+    <p>HomeFinder團隊</p>
 </body>
 </html>
