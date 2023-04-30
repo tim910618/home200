@@ -262,7 +262,6 @@ public class HomeController : ControllerBase
                     oldFilePath = oldFilePath.Replace("http://localhost:5190/Image/", "");
                 }
 
-
                 if (!string.IsNullOrEmpty(oldFilePath) && System.IO.File.Exists(oldFilePath))
                 {
                     System.IO.File.Delete(oldFilePath);
@@ -274,14 +273,23 @@ public class HomeController : ControllerBase
                 }
 
                 var newImgUrl = Path.Combine(uploadFolderPath, filename);
-                updateData.GetType().GetProperty($"img{i + 1}").SetValue(updateData, newImgUrl.Replace("http://localhost:5190/Image/", ""), null);
+                updateData.GetType().GetProperty($"img{i + 1}").SetValue(updateData, newImgUrl, null);
             }
         }
+<<<<<<< Updated upstream
         updateData.img1 = filenames.Count > 0 ? filenames[0].Replace("http://localhost:5190/Image/", "") : (updateData.img1 ?? data.img1);
         updateData.img2 = filenames.Count > 1 ? filenames[1].Replace("http://localhost:5190/Image/", "") : (updateData.img2 ?? data.img2);
         updateData.img3 = filenames.Count > 2 ? filenames[2].Replace("http://localhost:5190/Image/", "") : (updateData.img3 ?? data.img3);
         updateData.img4 = filenames.Count > 3 ? filenames[3].Replace("http://localhost:5190/Image/", "") : (updateData.img4 ?? data.img4);
         updateData.img5 = filenames.Count > 4 ? filenames[4].Replace("http://localhost:5190/Image/", "") : (updateData.img5 ?? data.img5);
+=======
+
+        updateData.img1 = filenames.Count > 0 ? filenames[0].Replace("http://localhost:5190/Image/", "") : data.img1;
+        updateData.img2 = filenames.Count > 1 ? filenames[1].Replace("http://localhost:5190/Image/", "") : data.img2;
+        updateData.img3 = filenames.Count > 2 ? filenames[2].Replace("http://localhost:5190/Image/", "") : data.img3;
+        updateData.img4 = filenames.Count > 3 ? filenames[3].Replace("http://localhost:5190/Image/", "") : data.img4;
+        updateData.img5 = filenames.Count > 4 ? filenames[4].Replace("http://localhost:5190/Image/", "") : data.img5;
+>>>>>>> Stashed changes
 
         /*updateData.img1 = filenames.Count > 0 ? filenames[0] : data.img1;
         updateData.img2 = filenames.Count > 1 ? filenames[1] : data.img2;

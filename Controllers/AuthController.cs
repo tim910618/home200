@@ -220,8 +220,11 @@ namespace api1.Controllers
             {
                 Members Data = _membersSerivce.GetDataByAccount(User.Identity.Name);
                 Data.name = UpdateData.name;
+
+                // 如果使用者有上傳新照片，則更新資料庫中的照片欄位
                 if (UpdateData.img_upload != null && UpdateData.img_upload.Length > 0)
                 {
+                    // 刪除原有的照片檔案
                     if (!string.IsNullOrEmpty(Data.img))
                     {
                         var imagePath = Path.Combine("wwwroot/MembersImg", Data.img);
@@ -230,6 +233,8 @@ namespace api1.Controllers
                             System.IO.File.Delete(imagePath);
                         }
                     }
+
+                    // 儲存新的照片檔案
                     var fileName = Guid.NewGuid().ToString() + Path.GetExtension(UpdateData.img_upload.FileName);
                     var path = Path.Combine("wwwroot/MembersImg", fileName);
                     using (var stream = new FileStream(path, FileMode.Create))
