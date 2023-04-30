@@ -36,15 +36,15 @@ public class ListController : ControllerBase
     [HttpGet]
     public IActionResult GetBookList()
     {
-        string account = User.Identity.Name;
-        if (User.Identity.Name == null)
+        if (!User.Identity.IsAuthenticated)
         {
-            return BadRequest("請去登入");
+            return BadRequest("請登入");
         }
+        string account = User.Identity.Name;
         List<GetBookListViewModel> DataList = _ListService.GetBookTime(account);
         if (DataList == null)
         {
-            return Ok("無預約資訊");
+            return BadRequest("無預約資訊");
         }
         return Ok(DataList);
     }
@@ -54,12 +54,12 @@ public class ListController : ControllerBase
     [HttpPost("AddBooking")]
     public IActionResult AddBooking(BookList Data)
     {
+        if (!User.Identity.IsAuthenticated)
+        {
+            return Ok("請登入");
+        }
         Data.renter = User.Identity.Name;
         Members Members = _membersSerivce.GetDataByAccount(Data.renter);
-        if (User.Identity.Name == null)
-        {
-            return BadRequest("請去登入");
-        }
         var rental = _homeDBService.GetDataById(Data.rental_id);
         Data.publisher = rental.publisher;
         Members publisher = _membersSerivce.GetDataByAccount(Data.publisher);
@@ -96,14 +96,18 @@ public class ListController : ControllerBase
     [HttpPost("CancelBooking")]
     public IActionResult CancelBooking([FromBody] CancelBooking BookList)
     {
+        if (!User.Identity.IsAuthenticated)
+        {
+            return BadRequest("請登入");
+        }
         //取得Booklist、取得房東房客的Email
         BookList Data = new BookList();
         Data = _ListService.GetBookTimeById(BookList.BookList_id);
-        Rental rental=new Rental();
+        Rental rental = new Rental();
         rental = _homeDBService.GetDataById(Data.rental_id);
-        if (Data == null || Data.isDelete==true)
+        if (Data == null || Data.isDelete == true)
         {
-            return Ok("查無預約資料");
+            return BadRequest("查無預約資料");
         }
         else
         {
@@ -111,10 +115,10 @@ public class ListController : ControllerBase
             Members renter = _membersSerivce.GetDataByAccount(Data.renter);
             string filePath = @"Views/CancelBooking.html";
             string TempStringP = System.IO.File.ReadAllText(filePath);
-            string MailBody = _mailService.CancelMailBody(TempStringP, publisher.name, Data.bookdate, Data.booktime,rental.title);
+            string MailBody = _mailService.CancelMailBody(TempStringP, publisher.name, Data.bookdate, Data.booktime, rental.title);
             _mailService.SentBookMail(MailBody, publisher.email);
             string TempStringR = System.IO.File.ReadAllText(filePath);
-            string MailBodyR = _mailService.CancelMailBody(TempStringR, renter.name, Data.bookdate, Data.booktime,rental.title);
+            string MailBodyR = _mailService.CancelMailBody(TempStringR, renter.name, Data.bookdate, Data.booktime, rental.title);
             _mailService.SentBookMail(MailBodyR, renter.email);
             _ListService.CancelBooking(BookList.BookList_id);
         }

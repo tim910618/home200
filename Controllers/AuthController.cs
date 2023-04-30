@@ -60,7 +60,7 @@ namespace api1.Controllers
                     }
                     else
                     {
-                        return Ok(new { message = "請上傳照片" });
+                        return BadRequest(new { message = "請上傳照片" });
                     }
                     registerMember.newMember.password = registerMember.password;
                     string authCode = _mailService.GetValidateCode();
@@ -70,7 +70,7 @@ namespace api1.Controllers
                     string TempString = System.IO.File.ReadAllText(filePath);
                     var scheme = Request.Scheme;
                     //var host = Request.Host.ToUriComponent();
-                    var host="127.0.0.1:5190";
+                    var host = "127.0.0.1:5190";
                     var pathBase = Request.PathBase.ToUriComponent();
                     var controller = "api/Auth";
                     var action = "emailValidate";
@@ -85,12 +85,12 @@ namespace api1.Controllers
                 }
                 else
                 {
-                    return Ok("已被註冊");
+                    return BadRequest("已被註冊");
                 }
             }
             registerMember.password = null;
             registerMember.passwordCheck = null;
-            return Ok(registerMember);
+            return BadRequest(registerMember);
         }
 
         [AllowAnonymous]
@@ -117,12 +117,12 @@ namespace api1.Controllers
                     Expires = DateTime.UtcNow.AddDays(1)
                 });
                 Members members = _membersSerivce.GetDataByAccount(Data.Account);
-                members.password=null;
+                members.password = null;
                 return Ok(new { token, members });
             }
             else
             {
-                return Ok(Validate);
+                return BadRequest(Validate);
             }
         }
 
@@ -132,7 +132,7 @@ namespace api1.Controllers
         {
             if (!User.Identity.IsAuthenticated)
             {
-                return Ok("請登入");
+                return BadRequest("請登入");
             }
             else
             {
@@ -145,8 +145,15 @@ namespace api1.Controllers
         [HttpPost("changePassword")]
         public IActionResult ChangePassword(ChangePasswordViewModel Data)
         {
-            string ChangePasswordStr = _membersSerivce.ChangePassword(Data.Account, Data.Password, Data.NewPassword);
-            return Ok(ChangePasswordStr);
+            if (!User.Identity.IsAuthenticated)
+            {
+                return BadRequest("請登入");
+            }
+            else
+            {
+                string ChangePasswordStr = _membersSerivce.ChangePassword(Data.Account, Data.Password, Data.NewPassword);
+                return Ok(ChangePasswordStr);
+            }
         }
 
 
@@ -168,7 +175,7 @@ namespace api1.Controllers
             }
             else
             {
-                return Ok("請確認資料");
+                return BadRequest("請確認資料");
             }
         }
 
@@ -180,7 +187,7 @@ namespace api1.Controllers
             Members Data = _membersSerivce.GetDataByAccount(account);
             if (Data == null)
             {
-                return Ok("查無此人");
+                return BadRequest("查無此人");
             }
             return Ok(Data);
         }
@@ -190,9 +197,16 @@ namespace api1.Controllers
         [HttpGet("memberList")]
         public IActionResult GetMemberList()
         {
-            List<MemberListViewModel> Data = new List<MemberListViewModel>();
-            Data = _membersSerivce.GetDataList();
-            return Ok(Data);
+            if (!User.Identity.IsAuthenticated)
+            {
+                return BadRequest("請登入");
+            }
+            else
+            {
+                List<MemberListViewModel> Data = new List<MemberListViewModel>();
+                Data = _membersSerivce.GetDataList();
+                return Ok(Data);
+            }
         }
         #endregion
 
@@ -227,7 +241,7 @@ namespace api1.Controllers
                 }
                 else
                 {
-                    return Ok(new { message = "請上傳照片" });
+                    return BadRequest(new { message = "請上傳照片" });
                 }
                 Data.phone = UpdateData.phone;
                 _membersSerivce.UpdatePro(Data);
@@ -235,7 +249,7 @@ namespace api1.Controllers
             }
             else
             {
-                return Ok("請去登入");
+                return BadRequest("請登入");
             }
 
         }

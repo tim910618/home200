@@ -35,11 +35,11 @@ public class TimeController : ControllerBase
     [HttpPost("SetBookTime")]
     public IActionResult SetBookTime([FromBody] BookTime Data)
     {
-        Data.publisher = User.Identity.Name;
-        if (User.Identity.Name == null)
+        if (!User.Identity.IsAuthenticated)
         {
-            return BadRequest("請去登入");
+            return BadRequest("請登入");
         }
+        Data.publisher = User.Identity.Name;
         Data.booktime_id = _timeService.GetBookTime_Id(Data.publisher);
 
         _timeService.SetBookTime(Data.publisher, Data);
@@ -52,33 +52,33 @@ public class TimeController : ControllerBase
     public IActionResult BookTimeData()
     {
         string account = User.Identity.Name;
-        if (User.Identity.Name == null)
+        if (!User.Identity.IsAuthenticated)
         {
-            return BadRequest("請去登入");
+            return BadRequest("請登入");
         }
         BookTime Data = _timeService.GetBookTime(account);
         return Ok(Data);
     }
-    
+
     #endregion
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "publisher")]
     #region 設定特別單一時段
     [HttpPost("SetSpecialTime")]
     public IActionResult AddSpecialTime([FromBody] SpecialTime Data)
     {
+        if (!User.Identity.IsAuthenticated)
+        {
+            return BadRequest("請登入");
+        }
         // 檢查使用者是否有權限新增 SpecialTime 資料
         Data.publisher = User.Identity.Name;
-        if (User.Identity.Name == null)
-        {
-            return BadRequest("請去登入");
-        }
         // 取得原本的 BookTime 資料
         BookTime bookTime = _timeService.GetBookTime(Data.publisher);
         Data.special_id = _timeService.GetSpecialTime_Id(Data.publisher);
         // 根據日期取得原本的可預約時間
         string oldTime;
 
-        if(_timeService.IsReserved(Data.date,Data.newtime,Data.publisher))
+        if (_timeService.IsReserved(Data.date, Data.newtime, Data.publisher))
         {
             return BadRequest("此時段有被預約，若要修改請先至預約總表取消預約");
         }
@@ -159,22 +159,21 @@ public class TimeController : ControllerBase
     [HttpGet("BookOfDay")]
     public IActionResult BookOfDay([FromBody] BookOfDay Data)
     {
-        // 先取得 Rental 的屋主是誰
+        // 取得房東是誰，因為要抓房東的時間
         Rental rental = _HomeDBService.GetDataById(Data.rental_id);
         string account = rental.publisher;
 
-        // 先查詢 SpecialTime 表格中有沒有指定日期的資料
+        // 再查詢 SpecialTime 有沒有特殊時間
         SpecialTime specialTime = _timeService.GetSpecialTime(account, Data.date);
         string availableTimes;
 
+        //判斷有沒有特殊天資料
         if (specialTime != null)
         {
-            // 如果有資料，就以該筆資料的可預約時段為主
             availableTimes = specialTime.newtime;
         }
         else
         {
-            // 如果沒有資料，就從 BookTime 中取得當天的可預約時段
             BookTime bookTime = _timeService.GetBookOfDay(account);
             switch (Data.date.DayOfWeek)
             {
@@ -208,7 +207,7 @@ public class TimeController : ControllerBase
         // 將當天所有可預約的時段轉成陣列
         string[] availableTimesArray = availableTimes.Split(';');
         // 抓取已被預約的時段轉成陣列
-        string[] bookedTimes = _timeService.GetBookedTimes(rental.publisher, Data.date, availableTimesArray);   
+        string[] bookedTimes = _timeService.GetBookedTimes(rental.publisher, Data.date, availableTimesArray);
         // 取得未被預約的時段
         string[] unbookedTimes = availableTimesArray.Except(bookedTimes).ToArray();
 
