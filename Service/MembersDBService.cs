@@ -190,7 +190,7 @@ namespace api1.Service
                 }
                 else
                 {
-                    return "您已被停權，請聯繫客服04-22195240";
+                    return "您已被停權";
                 }
 
             }
