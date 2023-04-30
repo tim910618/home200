@@ -257,24 +257,27 @@ public class HomeController : ControllerBase
                         break;
                 }
 
-                
+                if (!string.IsNullOrEmpty(oldFilePath) && oldFilePath.Contains("http://localhost:5190/Image/"))
+                {
+                    oldFilePath = oldFilePath.Replace("http://localhost:5190/Image/", "");
+                }
+
+
                 if (!string.IsNullOrEmpty(oldFilePath) && System.IO.File.Exists(oldFilePath))
                 {
                     System.IO.File.Delete(oldFilePath);
                 }
-
-                
                 var path = Path.Combine(uploadPath, filename);
                 using (var stream = new FileStream(path, FileMode.Create))
                 {
                     files[i].CopyToAsync(stream);
                 }
 
-                //var newImgUrl = Path.Combine(uploadFolderPath, filename);
-                //updateData.GetType().GetProperty($"img{i + 1}").SetValue(updateData, newImgUrl.Replace("http://localhost:5190/Image/", ""), null);
+                var newImgUrl = Path.Combine(uploadFolderPath, filename);
+                updateData.GetType().GetProperty($"img{i + 1}").SetValue(updateData, newImgUrl.Replace("http://localhost:5190/Image/", ""), null);
             }
         }
-
+        
         updateData.img1 = filenames.Count > 0 ? filenames[0].Replace("http://localhost:5190/Image/", "") : data.img1;
         updateData.img2 = filenames.Count > 1 ? filenames[1].Replace("http://localhost:5190/Image/", "") : data.img2;
         updateData.img3 = filenames.Count > 2 ? filenames[2].Replace("http://localhost:5190/Image/", "") : data.img3;
