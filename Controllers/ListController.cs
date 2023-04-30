@@ -80,6 +80,11 @@ public class ListController : ControllerBase
         }
         else
         {
+            //無法預約今天(含)以前的判斷
+            if (DateTime.Compare(Data.bookdate.ToDateTime(new TimeOnly()), DateTime.Now) < 0)
+            {
+                return BadRequest("超過預約期間，不可預約");
+            }
             _ListService.Addbooking(Data);
         }
         //寄預約信
