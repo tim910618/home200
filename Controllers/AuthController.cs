@@ -244,10 +244,10 @@ namespace api1.Controllers
                     //registerMember.newMember.img = path;
                     Data.img = fileName;
                 }
-                else
-                {
-                    return BadRequest(new { message = "請上傳照片" });
-                }
+                //else
+                //{
+                    //return BadRequest(new { message = "請上傳照片" });
+                //}
                 Data.phone = UpdateData.phone;
                 _membersSerivce.UpdatePro(Data);
                 Members memberData = _membersSerivce.GetDataByAccount(User.Identity.Name);
