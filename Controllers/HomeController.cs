@@ -211,91 +211,7 @@ public class HomeController : ControllerBase
     }
 
 
-
     /*[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "publisher")]
-    [HttpPut("{id:guid}")]
-    public async Task<IActionResult> UpdateImgAsync(Guid Id, [FromForm] Rental updateData)
-    {
-        var data = _homeDBService.GetDataById(Id);
-
-        if (data.isDelete == true)
-        {
-            return Ok("查無此資訊");
-        }
-
-        string uploadPath = _configuration.GetSection("UploadPath").Value;
-        string uploadFolderPath = Path.Combine(uploadPath, "Uploads");
-        // 產生檔名，以避免重複
-        List<string> filenames = new List<string>();
-        IFormFile[] files = { updateData.img1_1, updateData.img1_2, updateData.img1_3, updateData.img1_4, updateData.img1_5 };
-        for (int i = 0; i < files.Length; i++)
-        {
-            if (files[i] != null && files[i].Length > 0)
-            {
-                string filename = Guid.NewGuid().ToString() + Path.GetExtension(files[i].FileName);
-                filenames.Add(filename);
-
-                // 刪除原本的檔案
-                string oldFilePath = null;
-                switch (i + 1)
-                {
-                    case 1:
-                        oldFilePath = data.img1;
-                        break;
-                    case 2:
-                        oldFilePath = data.img2;
-                        break;
-                    case 3:
-                        oldFilePath = data.img3;
-                        break;
-                    case 4:
-                        oldFilePath = data.img4;
-                        break;
-                    case 5:
-                        oldFilePath = data.img5;
-                        break;
-                }
-
-                if (!string.IsNullOrEmpty(oldFilePath) && oldFilePath.Contains("http://localhost:5190/Image/"))
-                {
-                    oldFilePath = oldFilePath.Replace("http://localhost:5190/Image/", "");
-                }
-
-                if (!string.IsNullOrEmpty(oldFilePath) && System.IO.File.Exists(oldFilePath))
-                {
-                    System.IO.File.Delete(oldFilePath);
-                }
-                var path = Path.Combine(uploadPath, filename);
-                using (var stream = new FileStream(path, FileMode.Create))
-                {
-                    await files[i].CopyToAsync(stream);
-                    //files[i].CopyToAsync(stream);
-                }
-
-                var newImgUrl = Path.Combine(uploadFolderPath, filename);
-                updateData.GetType().GetProperty($"img{i + 1}").SetValue(updateData, newImgUrl, null);
-            }
-        }
-
-        updateData.img1 = filenames.Count > 0 ? filenames[0].Replace("http://localhost:5190/Image/", "") : data.img1;
-        updateData.img2 = filenames.Count > 1 ? filenames[1].Replace("http://localhost:5190/Image/", "") : data.img2;
-        updateData.img3 = filenames.Count > 2 ? filenames[2].Replace("http://localhost:5190/Image/", "") : data.img3;
-        updateData.img4 = filenames.Count > 3 ? filenames[3].Replace("http://localhost:5190/Image/", "") : data.img4;
-        updateData.img5 = filenames.Count > 4 ? filenames[4].Replace("http://localhost:5190/Image/", "") : data.img5;
-
-        /*updateData.img1 = filenames.Count > 0 ? filenames[0] : data.img1;
-        updateData.img2 = filenames.Count > 1 ? filenames[1] : data.img2;
-        updateData.img3 = filenames.Count > 2 ? filenames[2] : data.img3;
-        updateData.img4 = filenames.Count > 3 ? filenames[3] : data.img4;
-        updateData.img5 = filenames.Count > 4 ? filenames[4] : data.img5;
-
-        updateData.rental_id = Id;
-        _homeDBService.UpdateImgData(updateData);
-
-        return Ok(updateData);
-    }*/
-
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "publisher")]
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdateImgAsync(Guid Id, [FromForm] Rental updateData)
     {
@@ -364,7 +280,7 @@ public class HomeController : ControllerBase
         updateData.img2 = filenames.Count > 1 ? filenames[1].Replace("http://localhost:5190/Image/", "") : data.img2;
         updateData.img3 = filenames.Count > 2 ? filenames[2].Replace("http://localhost:5190/Image/", "") : data.img3;
         updateData.img4 = filenames.Count > 3 ? filenames[3].Replace("http://localhost:5190/Image/", "") : data.img4;
-        updateData.img5 = filenames.Count > 4 ? filenames[4].Replace("http://localhost:5190/Image/", "") : data.img5;*/
+        updateData.img5 = filenames.Count > 4 ? filenames[4].Replace("http://localhost:5190/Image/", "") : data.img5;
 
         updateData.img1 = filenames.Count > 0 ? filenames[0] : data.img1;
         updateData.img2 = filenames.Count > 1 ? filenames[1] : data.img2;
@@ -376,8 +292,49 @@ public class HomeController : ControllerBase
         _homeDBService.UpdateImgData(updateData);
 
         return Ok(updateData);
-    }
+    }*/
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "publisher")]
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> UpdateImgAsync(Guid Id, [FromForm] Rental updateData)
+    {
+        var data = _homeDBService.GetDataById(Id);
 
+        if (data.isDelete == true)
+        {
+            return Ok("查無此資訊");
+        }
+
+        if(updateData.img1_1 != null)
+        {
+            _homeDBService.OldFileCheck(data.img1);
+            updateData.img1 = _homeDBService.CreateOneImage(updateData.img1_1);
+        }
+        if(updateData.img1_2 != null)
+        {
+            _homeDBService.OldFileCheck(data.img2);
+            updateData.img2 = _homeDBService.CreateOneImage(updateData.img1_2);
+        }
+        if(updateData.img1_3 != null)
+        {
+            _homeDBService.OldFileCheck(data.img3);
+            updateData.img3 = _homeDBService.CreateOneImage(updateData.img1_3);
+        }
+        if(updateData.img1_4 != null)
+        {
+            _homeDBService.OldFileCheck(data.img4);
+            updateData.img4 = _homeDBService.CreateOneImage(updateData.img1_4);
+        }
+        if(updateData.img1_5 != null)
+        {
+            _homeDBService.OldFileCheck(data.img5);
+            updateData.img5 = _homeDBService.CreateOneImage(updateData.img1_5);
+        }
+
+        updateData.rental_id = Id;
+        _homeDBService.UpdateImgData(updateData);
+
+        return Ok(updateData);
+    }
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "publisher")]
     [HttpDelete("{id:guid}")]

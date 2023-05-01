@@ -379,5 +379,43 @@ namespace api1.Service
         }
 
 
+
+        public void OldFileCheck(string image)
+        {
+            if(!string.IsNullOrEmpty(image))
+            {
+                var filepath = Path.Combine("wwwroot/Image", image);
+                string oldFilePath = filepath;
+                if (System.IO.File.Exists(oldFilePath))
+                {
+                    System.IO.File.Delete(oldFilePath);
+                }
+            }
+        }
+        public string? CreateOneImage(IFormFile FormImage)
+        {
+
+            if (FormImage != null)
+            {
+                if(!FormImage.ContentType.StartsWith("image/"))
+                {
+                    return "檔案格式不正確";
+                }
+
+                string uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(FormImage.FileName);
+
+                var filePath = Path.Combine("wwwroot/Image", uniqueFileName);
+                using(var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    FormImage.CopyTo(stream);
+                }
+
+                return uniqueFileName;
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 }
