@@ -60,7 +60,7 @@ namespace api1.Controllers
                     }
                     else
                     {
-                        return BadRequest(new { message = "請上傳照片" });
+                        return Ok(new { message = "請上傳照片" });
                     }
                     registerMember.newMember.password = registerMember.password;
                     string authCode = _mailService.GetValidateCode();
@@ -85,7 +85,7 @@ namespace api1.Controllers
                 }
                 else
                 {
-                    return BadRequest("已被註冊");
+                    return Ok("此帳號已被註冊");
                 }
             }
             registerMember.password = null;
