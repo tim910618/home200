@@ -83,6 +83,11 @@ namespace api1.Controllers
                     _mailService.SendRegisterMail(mailBody, registerMember.newMember.email);
                     return Ok(new { message = "註冊成功，請去收信以來驗證EMAIL" });
                 }
+                else if (!ModelState.IsValid)
+                {
+                    return Ok("請確認輸入資料");
+
+                }
                 else
                 {
                     return Ok("此帳號已被註冊");
@@ -246,12 +251,12 @@ namespace api1.Controllers
                 }
                 //else
                 //{
-                    //return BadRequest(new { message = "請上傳照片" });
+                //return BadRequest(new { message = "請上傳照片" });
                 //}
                 Data.phone = UpdateData.phone;
                 _membersSerivce.UpdatePro(Data);
                 Members memberData = _membersSerivce.GetDataByAccount(User.Identity.Name);
-                return Ok("修改成功"+","+memberData.img);
+                return Ok("修改成功" + "," + memberData.img);
             }
             else
             {
