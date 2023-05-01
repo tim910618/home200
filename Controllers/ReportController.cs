@@ -50,12 +50,16 @@ namespace api1.Controllers
 
         #endregion
 
-        #region 停權帳號(停權/取消停權)
+        #region 停權帳號(停權/取消停權)s
         [HttpPost("isBlock")]
         //管理員審核
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public IActionResult BlockAccount([FromBody] BlockAccount Data)
         {
+            if(Data.isblock==false)
+            {
+                _reportService.BlockCancelBooked(Data.reported);
+            }
             string Validate= _reportService.isBlockAccount(Data.reported,Data.isblock);
             return Ok(Validate);
         }

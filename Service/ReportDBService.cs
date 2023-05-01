@@ -113,6 +113,26 @@ namespace api1.Service
             return DataList;
         }
 
-
+        public void BlockCancelBooked(string account)
+        {
+            string sql = $@"update booklist set isDelete=@isDelete where renter = @account or publisher = @account";
+            try
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@account", account);
+                //cmd.Parameters.AddWithValue("@publisher",account);
+                cmd.Parameters.AddWithValue("@isDelete", '1');
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message.ToString());
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
     }
 }
