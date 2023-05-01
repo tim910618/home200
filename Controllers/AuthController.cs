@@ -70,10 +70,10 @@ namespace api1.Controllers
                     string TempString = System.IO.File.ReadAllText(filePath);
                     var scheme = Request.Scheme;
                     //var host = Request.Host.ToUriComponent();
-                    var host = "127.0.0.1:5190";
+                    var host = "127.0.0.1:5555";
                     var pathBase = Request.PathBase.ToUriComponent();
-                    var controller = "api/Auth";
-                    var action = "emailValidate";
+                    var controller = "Members";
+                    var action = "EmailValidate.html";
                     var account = HttpUtility.UrlEncode(registerMember.newMember.account);
                     var authCode2 = HttpUtility.UrlEncode(registerMember.newMember.authcode);
 
