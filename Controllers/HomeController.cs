@@ -309,26 +309,36 @@ public class HomeController : ControllerBase
             _homeDBService.OldFileCheck(data.img1);
             updateData.img1 = _homeDBService.CreateOneImage(updateData.img1_1);
         }
+        else
+            updateData.img1=data.img1;
         if(updateData.img1_2 != null)
         {
             _homeDBService.OldFileCheck(data.img2);
             updateData.img2 = _homeDBService.CreateOneImage(updateData.img1_2);
         }
+        else
+            updateData.img2=data.img2;
         if(updateData.img1_3 != null)
         {
             _homeDBService.OldFileCheck(data.img3);
             updateData.img3 = _homeDBService.CreateOneImage(updateData.img1_3);
         }
+        else
+            updateData.img3=data.img3;
         if(updateData.img1_4 != null)
         {
             _homeDBService.OldFileCheck(data.img4);
             updateData.img4 = _homeDBService.CreateOneImage(updateData.img1_4);
         }
+        else
+            updateData.img4=data.img4;
         if(updateData.img1_5 != null)
         {
             _homeDBService.OldFileCheck(data.img5);
             updateData.img5 = _homeDBService.CreateOneImage(updateData.img1_5);
         }
+        else
+            updateData.img5=data.img5;
 
         updateData.rental_id = Id;
         _homeDBService.UpdateImgData(updateData);
