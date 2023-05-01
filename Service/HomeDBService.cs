@@ -294,11 +294,11 @@ namespace api1.Service
                 cmd.Parameters.AddWithValue("@area", UpdateData.area);
                 cmd.Parameters.AddWithValue("@equipmentname", UpdateData.equipmentname);
                 cmd.Parameters.AddWithValue("@content", UpdateData.content);
-                cmd.Parameters.AddWithValue("@img1", UpdateData.img1);
-                cmd.Parameters.AddWithValue("@img2", UpdateData.img2);
-                cmd.Parameters.AddWithValue("@img3", UpdateData.img3);
-                cmd.Parameters.AddWithValue("@img4", UpdateData.img4);
-                cmd.Parameters.AddWithValue("@img5", UpdateData.img5);
+                cmd.Parameters.AddWithValue("@img1", string.IsNullOrEmpty(UpdateData.img1) ? DBNull.Value : (object)UpdateData.img1);
+cmd.Parameters.AddWithValue("@img2", string.IsNullOrEmpty(UpdateData.img2) ? DBNull.Value : (object)UpdateData.img2);
+cmd.Parameters.AddWithValue("@img3", string.IsNullOrEmpty(UpdateData.img3) ? DBNull.Value : (object)UpdateData.img3);
+cmd.Parameters.AddWithValue("@img4", string.IsNullOrEmpty(UpdateData.img4) ? DBNull.Value : (object)UpdateData.img4);
+cmd.Parameters.AddWithValue("@img5", string.IsNullOrEmpty(UpdateData.img5) ? DBNull.Value : (object)UpdateData.img5);
                 cmd.Parameters.AddWithValue("@rental_id", UpdateData.rental_id);
                 cmd.Parameters.AddWithValue("@uploadtime", DateTime.Now);
                 cmd.Parameters.AddWithValue("@check", 0);
