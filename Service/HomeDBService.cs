@@ -7,15 +7,15 @@ namespace api1.Service
     {
         private readonly SqlConnection conn;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public HomeDBService(SqlConnection connection,IHttpContextAccessor httpContextAccessor)
+        public HomeDBService(SqlConnection connection, IHttpContextAccessor httpContextAccessor)
         {
             conn = connection;
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public List<Guid> GetUpIdList(ForPaging Paging,string publisher)
+        public List<Guid> GetUpIdList(ForPaging Paging, string publisher)
         {
-            SetMaxPaging(Paging,publisher);
+            SetMaxPaging(Paging, publisher);
             List<Guid> IdList = new List<Guid>();
             string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by uploadtime desc) AS sort,* FROM RENTAL WHERE publisher = @publisher AND tenant = 1 AND [check] = 1 AND isDelete = 0) m WHERE m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
             try
@@ -39,9 +39,9 @@ namespace api1.Service
             }
             return IdList;
         }
-        public List<Guid> GetDownIdList(ForPaging Paging,string publisher)
+        public List<Guid> GetDownIdList(ForPaging Paging, string publisher)
         {
-            SetMaxPaging(Paging,publisher);
+            SetMaxPaging(Paging, publisher);
             List<Guid> IdList = new List<Guid>();
             string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by uploadtime desc) AS sort,* FROM RENTAL WHERE publisher = @publisher AND tenant = 0 AND [check] IN (1, 2) AND isDelete = 0) m WHERE m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
             try
@@ -65,9 +65,9 @@ namespace api1.Service
             }
             return IdList;
         }
-        public List<Guid> GetCheckIdList(ForPaging Paging,string publisher)
+        public List<Guid> GetCheckIdList(ForPaging Paging, string publisher)
         {
-            SetMaxPaging(Paging,publisher);
+            SetMaxPaging(Paging, publisher);
             List<Guid> IdList = new List<Guid>();
             string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by uploadtime desc) AS sort,* FROM RENTAL WHERE publisher = @publisher AND tenant = 0 AND [check] = 0 AND isDelete = 0) m WHERE m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
             try
@@ -91,7 +91,7 @@ namespace api1.Service
             }
             return IdList;
         }
-        public void SetMaxPaging(ForPaging Paging,string publisher)
+        public void SetMaxPaging(ForPaging Paging, string publisher)
         {
             int Row = 0;
             string sql = $@" SELECT * FROM RENTAL WHERE publisher = @publisher; ";
@@ -101,7 +101,7 @@ namespace api1.Service
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@publisher", publisher);
                 SqlDataReader dr = cmd.ExecuteReader();
-                while (dr.Read()) 
+                while (dr.Read())
                 {
                     Row++;
                 }
@@ -121,17 +121,17 @@ namespace api1.Service
 
         public void UpToDown(Rental UpToDownData)
         {
-            string sql=$@"UPDATE RENTAL SET [check]=@check ,tenant=@tenant WHERE rental_id = @Id;";
+            string sql = $@"UPDATE RENTAL SET [check]=@check ,tenant=@tenant WHERE rental_id = @Id;";
             try
             {
                 conn.Open();
-                SqlCommand cmd =new SqlCommand(sql,conn);
-                cmd.Parameters.AddWithValue("@Id",UpToDownData.rental_id);
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@Id", UpToDownData.rental_id);
                 cmd.Parameters.AddWithValue("@check", 1);
                 cmd.Parameters.AddWithValue("@tenant", false);
                 cmd.ExecuteNonQuery();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 throw new Exception(e.Message.ToString());
             }
@@ -142,17 +142,17 @@ namespace api1.Service
         }
         public void DownToCheck(Rental DownToCheckData)
         {
-            string sql=$@"UPDATE RENTAL SET [check]=@check ,tenant=@tenant WHERE rental_id = @Id;";
+            string sql = $@"UPDATE RENTAL SET [check]=@check ,tenant=@tenant WHERE rental_id = @Id;";
             try
             {
                 conn.Open();
-                SqlCommand cmd =new SqlCommand(sql,conn);
-                cmd.Parameters.AddWithValue("@Id",DownToCheckData.rental_id);
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@Id", DownToCheckData.rental_id);
                 cmd.Parameters.AddWithValue("@check", 0);
                 cmd.Parameters.AddWithValue("@tenant", false);
                 cmd.ExecuteNonQuery();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 throw new Exception(e.Message.ToString());
             }
@@ -201,14 +201,18 @@ namespace api1.Service
                 Data.tenant = Convert.ToBoolean(dr["tenant"]);
                 Data.uploadtime = Convert.ToDateTime(dr["uploadtime"]);
                 Data.isDelete = Convert.ToBoolean(dr["isDelete"]);
-                Data.reason=dr["reason"].ToString();
-                Data.Member.account=dr["account"].ToString();
+                Data.reason = dr["reason"].ToString();
+                Data.Member.account = dr["account"].ToString();
                 Data.Member.name = dr["name"].ToString();
                 Data.Member.score = Convert.ToDouble(dr["score"]);
                 Data.Member.phone = dr["phone"].ToString();
                 Data.Member.isBlock = Convert.ToBoolean(dr["isBlock"]);
-                Data.Member.email=dr["email"].ToString();
-
+                Data.Member.email = dr["email"].ToString();
+                var MemimgPath = dr["img"].ToString();
+                if (!string.IsNullOrEmpty(MemimgPath))
+                {
+                    Data.Member.img = $"http://localhost:5190/MembersImg/{MemimgPath.Replace("\\", "/")}";
+                }
                 var imgPathList = new List<string>();
                 for (int i = 1; i <= 5; i++)
                 {
@@ -227,23 +231,23 @@ namespace api1.Service
                     }*/
                 }
                 var imagePaths = imgPathList.ToArray();
-                if (imagePaths.Length >= 1) 
+                if (imagePaths.Length >= 1)
                 {
                     Data.img1 = imagePaths[0];
                 }
-                if (imagePaths.Length >= 2) 
+                if (imagePaths.Length >= 2)
                 {
                     Data.img2 = imagePaths[1];
                 }
-                if (imagePaths.Length >= 3) 
+                if (imagePaths.Length >= 3)
                 {
                     Data.img3 = imagePaths[2];
                 }
-                if (imagePaths.Length >= 4) 
+                if (imagePaths.Length >= 4)
                 {
                     Data.img4 = imagePaths[3];
                 }
-                if (imagePaths.Length >= 5) 
+                if (imagePaths.Length >= 5)
                 {
                     Data.img5 = imagePaths[4];
                 }
@@ -257,7 +261,7 @@ namespace api1.Service
             {
                 conn.Close();
             }
-            if (Data == null || Data.Member.isBlock==true)
+            if (Data == null || Data.Member.isBlock == true)
             {
                 return null;
             }
@@ -271,11 +275,11 @@ namespace api1.Service
 
             string sql = $@"UPDATE RENTAL SET genre=@genre, pattern=@pattern, type=@type, title=@title, address=@address, rent=@rent, waterfee=@waterfee, electricitybill=@electricitybill, adminfee=@adminfee, floor=@floor, area=@area,
                 equipmentname=@equipmentname, content=@content, img1=@img1, img2=@img2,img3=@img3,img4=@img4,img5=@img5,uploadtime=@uploadtime ,[check]=@check,tenant=@tenant
-                WHERE rental_id = @Id;";                
+                WHERE rental_id = @Id;";
             try
             {
                 conn.Open();
-                SqlCommand cmd = new SqlCommand(sql,conn);
+                SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@Id", UpdateData.rental_id);
                 cmd.Parameters.AddWithValue("@genre", UpdateData.genre);
                 cmd.Parameters.AddWithValue("@pattern", UpdateData.pattern);
@@ -301,7 +305,7 @@ namespace api1.Service
                 cmd.Parameters.AddWithValue("@tenant", false);
                 cmd.ExecuteNonQuery();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 throw new Exception(e.Message.ToString());
             }
@@ -313,7 +317,7 @@ namespace api1.Service
 
         public void DeleteImgData(Guid id)
         {
-            string sql=$@"UPDATE RENTAL SET isDelete = 1 WHERE rental_id = @Id;";
+            string sql = $@"UPDATE RENTAL SET isDelete = 1 WHERE rental_id = @Id;";
             try
             {
                 conn.Open();
@@ -332,7 +336,7 @@ namespace api1.Service
         }
 
 
-        
+
         public void InsertHouse_Rental(Rental newData)
         {
             string sql = @"INSERT INTO RENTAL(publisher,genre,pattern,type,title,address,rent,waterfee,electricitybill,adminfee,floor,area,equipmentname,content,img1,img2,img3,img4,img5,[check],tenant,uploadtime,isDelete) 
