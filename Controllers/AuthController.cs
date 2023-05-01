@@ -250,7 +250,8 @@ namespace api1.Controllers
                 }
                 Data.phone = UpdateData.phone;
                 _membersSerivce.UpdatePro(Data);
-                return Ok("修改成功");
+                Members memberData = _membersSerivce.GetDataByAccount(User.Identity.Name);
+                return Ok("修改成功"+","+memberData.img);
             }
             else
             {
