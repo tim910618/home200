@@ -16,8 +16,8 @@ namespace api1.Service
         public void AddReport(Report AddData)
         {
             Report Data = new Report();
-            string sql = @"INSERT INTO REPORT(Reported,Reporter,Reason,ReportTime,isCheck) 
-                        VALUES (@Reported, @Reporter, @Reason, @ReportTime, '0')";
+            string sql = @"INSERT INTO REPORT(Reported,Reporter,Reason,ReportTime) 
+                        VALUES (@Reported, @Reporter, @Reason, @ReportTime)";
             try
             {
                 conn.Open();
