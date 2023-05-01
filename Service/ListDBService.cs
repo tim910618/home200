@@ -3,6 +3,7 @@ using api1.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.RegularExpressions;
 using System.Globalization;
+using System.Data;
 
 namespace api1.Service
 {
@@ -25,6 +26,10 @@ namespace api1.Service
                 WHERE (booklist.renter=@renter OR booklist.publisher=@publisher) AND booklist.IsDelete=@isDelete";
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@renter", account);
@@ -76,6 +81,10 @@ namespace api1.Service
             string sql = @"insert into booklist(booklist_id,renter,publisher,bookdate,booktime,rental_id,isDelete) values (@booklist_id,@renter,@publisher,@bookdate,@booktime,@rental_id,@isDelete)";
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@renter", Data.renter);
@@ -107,6 +116,10 @@ namespace api1.Service
             string sql = @"update booklist set isDelete=@isDelete where booklist_id = @id";
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@id", id);
@@ -132,6 +145,10 @@ namespace api1.Service
             string sql = @"SELECT COUNT(*) FROM booklist WHERE publisher=@publisher AND bookdate=@bookdate AND booktime=@booktime AND renter != @renter and IsDelete=@IsDelete";
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@publisher", publisher);
@@ -164,6 +181,10 @@ namespace api1.Service
             string sql = @"select * from booklist where renter=@renter and publisher=@publisher and bookdate=@date and booktime=@time and isDelete=@IsDelete";
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@renter", renter);
@@ -199,6 +220,10 @@ namespace api1.Service
             string sql = @"select booktime from booklist where (renter=@renter or publisher=@publisher) and bookdate=@date and IsDelete=@isDelete";
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@renter", account);
@@ -243,6 +268,10 @@ namespace api1.Service
             string sql = $@"SELECT * FROM booklist WHERE booklist_id=@id";
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@id", Id);

@@ -17,7 +17,7 @@ namespace api1.Service
 
         public List<Guid> GetIdListSeePublisher(ForPaging Paging,string publisher)
         {
-            //SetMaxPaging(Paging);
+            SetMaxPaging(Paging);
             List<Guid> IdList = new List<Guid>();
             string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by uploadtime desc) AS sort,* FROM RENTAL WHERE publisher=@publisher AND tenant = 1 AND isDelete = 0) m WHERE m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
             try
@@ -48,7 +48,7 @@ namespace api1.Service
 
         public List<Guid> GetIdListDown(ForPaging Paging)
         {
-            //SetMaxPaging(Paging);
+            SetMaxPaging(Paging);
             List<Guid> IdList = new List<Guid>();
             string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by uploadtime desc) AS sort,* FROM RENTAL WHERE tenant = 1 AND isDelete = 0) m WHERE m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
             try
@@ -77,7 +77,7 @@ namespace api1.Service
         }
         public List<Guid> GetIdListUp(ForPaging Paging)
         {
-            //SetMaxPaging(Paging);
+            SetMaxPaging(Paging);
             List<Guid> IdList = new List<Guid>();
             string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by uploadtime asc) AS sort,* FROM RENTAL WHERE tenant = 1 AND isDelete = 0) m WHERE m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
             try
@@ -107,7 +107,7 @@ namespace api1.Service
 
         public List<Guid> GetIdListDown(ForPaging Paging,AnySearchViewModel search)
         {
-            //SetMaxPaging(Paging);
+            SetMaxPaging(Paging);
             List<Guid> IdList = new List<Guid>(); 
             //string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by rental_id desc) AS sort,* FROM RENTAL WHERE tenant = 1 AND isDelete = 0) m WHERE m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
             try
@@ -220,7 +220,7 @@ namespace api1.Service
         }
         public List<Guid> GetIdListUp(ForPaging Paging,AnySearchViewModel search)
         {
-            //SetMaxPaging(Paging);
+            SetMaxPaging(Paging);
             List<Guid> IdList = new List<Guid>(); 
             //string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by rental_id desc) AS sort,* FROM RENTAL WHERE tenant = 1 AND isDelete = 0) m WHERE m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
             try
@@ -360,7 +360,7 @@ namespace api1.Service
         //讀取全部蒐藏資料
         public List<Guid> GetIdListAllCollect(ForPaging Paging,string renter)
         {
-            //CollectSetMaxPaging(Paging,renter);
+            CollectSetMaxPaging(Paging,renter);
             List<Guid> IdList = new List<Guid>();
             string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by collect_id desc) AS sort,* FROM COLLECT WHERE renter = @renter) m WHERE m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
             try
