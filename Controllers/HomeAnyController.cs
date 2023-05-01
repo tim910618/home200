@@ -199,15 +199,23 @@ public class HomeAnyController : ControllerBase
     {
         try
         {
-            Rental Data = _homeDBService.GetDataById(Id);
-
-            if (Data != null)
+            //Rental Data = _homeDBService.GetDataById(Id);
+            RentaldetailViewModel newBlock = new RentaldetailViewModel();
+            newBlock.AllData=_homeDBService.GetDataById(Id);
+            if (newBlock.AllData != null)
             {
-                if(Data.isDelete==true || Data.tenant==false)
+                if(newBlock.AllData.isDelete==true || newBlock.AllData.tenant==false)
                 {
                     return Ok("資訊已移除");
                 }
-                return Ok(Data);
+                bool isRenter = User.IsInRole("renter");
+                if (isRenter)
+                {
+                    string renter = User.Identity.Name;
+                    bool isCollected = _homeanyDBService.CheckCollect(renter, Id);
+                    newBlock.IsCollected = isCollected;
+                }
+                return Ok(newBlock);
             }
             else
             {
