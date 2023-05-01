@@ -15,7 +15,7 @@ namespace api1.Service
 
         public List<Guid> GetUpIdList(ForPaging Paging, string publisher)
         {
-            SetMaxPaging(Paging, publisher);
+            //SetMaxPaging(Paging, publisher);
             List<Guid> IdList = new List<Guid>();
             string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by uploadtime desc) AS sort,* FROM RENTAL WHERE publisher = @publisher AND tenant = 1 AND [check] = 1 AND isDelete = 0) m WHERE m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
             try
@@ -41,7 +41,7 @@ namespace api1.Service
         }
         public List<Guid> GetDownIdList(ForPaging Paging, string publisher)
         {
-            SetMaxPaging(Paging, publisher);
+            //SetMaxPaging(Paging, publisher);
             List<Guid> IdList = new List<Guid>();
             string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by uploadtime desc) AS sort,* FROM RENTAL WHERE publisher = @publisher AND tenant = 0 AND [check] IN (1, 2) AND isDelete = 0) m WHERE m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
             try
@@ -67,7 +67,7 @@ namespace api1.Service
         }
         public List<Guid> GetCheckIdList(ForPaging Paging, string publisher)
         {
-            SetMaxPaging(Paging, publisher);
+            //SetMaxPaging(Paging, publisher);
             List<Guid> IdList = new List<Guid>();
             string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by uploadtime desc) AS sort,* FROM RENTAL WHERE publisher = @publisher AND tenant = 0 AND [check] = 0 AND isDelete = 0) m WHERE m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
             try
