@@ -231,17 +231,18 @@ namespace api1.Controllers
                 if(UpdateData.img_upload != null)
                 {
                     _homeDBService.MembersImgOldFileCheck(Data.img);
-                    Data.img = _homeDBService.MembersImgCreateOneImage(UpdateData.img_upload);
+                    UpdateData.img = _homeDBService.MembersImgCreateOneImage(UpdateData.img_upload);
                 }
                 else
                 {
-                    Data.img=UpdateData.img;
+                    UpdateData.img=Data.img;
                 }
-                    
                 Data.phone = UpdateData.phone;
+                Data.img=UpdateData.img;
+                Data.name=UpdateData.name;
                 _membersSerivce.UpdatePro(Data);
-                //Members memberData = _membersSerivce.GetDataByAccount(User.Identity.Name);
-                return Ok("更新成功");
+                Members memberData = _membersSerivce.GetDataByAccount(User.Identity.Name);
+                return Ok(memberData.img);
             }
             else
             {
