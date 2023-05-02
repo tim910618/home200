@@ -154,7 +154,7 @@ namespace api1.Controllers
         {
             if (!User.Identity.IsAuthenticated)
             {
-                return BadRequest("請登入");
+                return Ok("請登入");
             }
             else
             {
@@ -170,6 +170,10 @@ namespace api1.Controllers
         {
             Members memberForget = _membersSerivce.GetDataByAccount(Data.Account);
             string isAccount = _membersSerivce.ForgetPasswordAccount(Data.Account);
+            if(memberForget==null)
+            {
+                return Ok("帳號不存在");
+            }
             if (string.IsNullOrWhiteSpace(isAccount))
             {
                 string password = _membersSerivce.ForgetPassword();
