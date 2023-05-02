@@ -4,9 +4,8 @@ using api1.Models;
 
 namespace api1.ViewModel
 {
-    public class AllCollectViewModel
+    public class HomeViewModel
     {
         public Rental AllData { get; set; } 
-        public bool IsCollected {get;set;}
     }
 }
