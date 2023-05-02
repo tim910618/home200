@@ -61,10 +61,23 @@ namespace api1.Controllers
             if (Data.isblock == false)
             {
                 _reportService.BlockCancelBooked(Data.reported);
+                var booked = _reportService.BookedList(Data.reported);
+                foreach (var bookData in booked)
+                {
+                    var publisher = _membersSerivce.GetDataByAccount(bookData.publisher);
+                    var renter = _membersSerivce.GetDataByAccount(bookData.renter);
+                    string Path = @"Views/CancelBooking.html";
+                    string TempStringP = System.IO.File.ReadAllText(Path);
+                    string MailBodyP = _mailService.CancelMailBody(TempStringP, publisher.name, bookData.bookdate, bookData.booktime);
+                    _mailService.SentBookMail(MailBodyP, publisher.email);
+                    string TempStringR = System.IO.File.ReadAllText(Path);
+                    string MailBodyR = _mailService.CancelMailBody(TempStringR, renter.name, bookData.bookdate, bookData.booktime);
+                    _mailService.SentBookMail(MailBodyR, renter.email);
+                }
                 string filePath = @"Views/BlockMail.html";
                 string TempString = System.IO.File.ReadAllText(filePath);
                 string MailBody = _mailService.BlockMailBody(TempString, Data.reported);
-                Members members=_membersSerivce.GetDataByAccount(Data.reported);
+                Members members = _membersSerivce.GetDataByAccount(Data.reported);
                 _mailService.SentBlockMailBody(MailBody, members.email);
             }
             string Validate = _reportService.isBlockAccount(Data.reported, Data.isblock);
@@ -85,5 +98,7 @@ namespace api1.Controllers
             return Ok(DataList);
         }
         #endregion
+
+
     }
 }

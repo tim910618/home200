@@ -54,21 +54,19 @@ namespace api1.Secruity
             var audience = _config["Jwt:Audience"];
             var expireTimeInMinutes = int.Parse(_config["Jwt:ExpireTimeInMinutes"]);
 
-
-            // 创建一个 ClaimsIdentity 对象，用于描述 JWT 中包含的声明信息
             var claimsIdentity = new ClaimsIdentity(new[]
             {
                 new Claim(ClaimTypes.Name, Account),
                 new Claim(ClaimTypes.Role, role)
             });
 
-            // 创建一个 SymmetricSecurityKey 对象，用于对 JWT 的签名进行验证
+            // 創 SymmetricSecurityKey ，對JWT進行編碼驗證
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
 
-            // 创建一个 SigningCredentials 对象，用于指定 JWT 的签名算法和密钥
+            // 創 SigningCredentials ，指定type
             var signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            // 创建一个 JwtSecurityToken 对象，并设置其中包含的声明信息、签名凭证、发布者、受众者和过期时间
+            // 創 JwtSecurityToken，設定角色、簽章、發布者、接收者等
             var token = new JwtSecurityToken(
                 issuer: issuer,
                 audience: audience,
@@ -77,7 +75,6 @@ namespace api1.Secruity
                 signingCredentials: signingCredentials
             );
             //claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role));
-            // 生成 JWT 字符串，并返回
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 

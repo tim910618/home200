@@ -1,6 +1,7 @@
 using Microsoft.Data.SqlClient;
 using api1.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 namespace api1.Service
 {
@@ -134,5 +135,48 @@ namespace api1.Service
                 conn.Close();
             }
         }
+        #region 取得預約清單
+        public List<BookList> BookedList(string account)
+        {
+            List<BookList> DataList = new List<BookList>();
+            string sql = $@"
+                SELECT booklist.* FROM booklist 
+                WHERE booklist.publisher = @account or booklist.renter = @account and  booklist.IsDelete=@isDelete";
+            try
+            {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@account", account);
+                cmd.Parameters.AddWithValue("@IsDelete", '0');
+                SqlDataReader dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    BookList Data = new BookList();
+                    Data.renter = dr["renter"].ToString();
+                    Data.publisher = dr["publisher"].ToString();
+                    Data.bookdate = DateOnly.FromDateTime(Convert.ToDateTime(dr["bookdate"]));
+                    Data.booktime = dr["booktime"].ToString();
+                    Data.rental_id = (Guid)dr["rental_id"];
+                    Data.booklist_id = (Guid)dr["booklist_id"];
+                    Data.isDelete = Convert.ToBoolean(dr["isDelete"]);
+                    DataList.Add(Data);
+                }
+
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message.ToString());
+            }
+            finally
+            {
+                conn.Close();
+            }
+            return (DataList);
+        }
+        #endregion
     }
 }

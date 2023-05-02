@@ -127,6 +127,13 @@ namespace api1.Service
             TempString = TempString.Replace("{{Title}}", title);
             return TempString;
         }
+        public string CancelMailBody(string TempString, string publisher, DateOnly bookdate, string booktime)
+        {
+            TempString = TempString.Replace("{{UserName}}", publisher);
+            TempString = TempString.Replace("{{Date}}", bookdate.ToString());
+            TempString = TempString.Replace("{{Time}}", booktime);
+            return TempString;
+        }
         public void SentCancelMail(string MailBody, string ToEmail)
         {
             SmtpClient SmtpServer = new SmtpClient("smtp.gmail.com");
