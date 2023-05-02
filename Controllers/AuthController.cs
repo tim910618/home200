@@ -22,15 +22,17 @@ namespace api1.Controllers
     {
         private readonly IConfiguration _configuration;
         private readonly MembersDBService _membersSerivce;
+        private readonly HomeDBService _homeDBService;
         private readonly JwtService _jwtService;
         private readonly MailService _mailService;
         private readonly IWebHostEnvironment _env;
 
 
-        public AuthController(IConfiguration configuration, MembersDBService membersDBService, JwtService jwtService, MailService mailService, IWebHostEnvironment env)
+        public AuthController(IConfiguration configuration, MembersDBService membersDBService,HomeDBService homeDBService, JwtService jwtService, MailService mailService, IWebHostEnvironment env)
         {
             _configuration = configuration;
             _membersSerivce = membersDBService;
+            _homeDBService = homeDBService;
             _jwtService = jwtService;
             _mailService = mailService;
             _env = env;
@@ -226,6 +228,49 @@ namespace api1.Controllers
                 Members Data = _membersSerivce.GetDataByAccount(User.Identity.Name);
                 Data.name = UpdateData.name;
 
+                if(UpdateData.img_upload != null)
+                {
+                    _homeDBService.MembersImgOldFileCheck(Data.img);
+                    Data.img = _homeDBService.MembersImgCreateOneImage(UpdateData.img_upload);
+                }
+                else
+                {
+                    Data.img=UpdateData.img;
+                }
+                    
+                Data.phone = UpdateData.phone;
+                _membersSerivce.UpdatePro(Data);
+                //Members memberData = _membersSerivce.GetDataByAccount(User.Identity.Name);
+                return Ok("更新成功");
+            }
+            else
+            {
+                return BadRequest("請登入");
+            }
+
+        }
+        #endregion
+
+        #region 信用分數
+        public IActionResult Score()
+        {
+            return Ok();
+        }
+        #endregion
+    }
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+    /*#region 編輯資料
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost("EditProfile")]
+        public async Task<IActionResult> EditProfileAsync([FromForm] EditMembersViewModel UpdateData)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                Members Data = _membersSerivce.GetDataByAccount(User.Identity.Name);
+                Data.name = UpdateData.name;
+
                 // 如果使用者有上傳新照片，則更新資料庫中的照片欄位
                 if (UpdateData.img_upload != null && UpdateData.img_upload.Length > 0)
                 {
@@ -264,13 +309,4 @@ namespace api1.Controllers
             }
 
         }
-        #endregion
-
-        #region 信用分數
-        public IActionResult Score()
-        {
-            return Ok();
-        }
-        #endregion
-    }
-}
+    #endregion*/

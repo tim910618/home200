@@ -376,7 +376,7 @@ cmd.Parameters.AddWithValue("@img5", string.IsNullOrEmpty(UpdateData.img5) ? DBN
         }
 
 
-
+        #region Image
         public void OldFileCheck(string image)
         {
             if(!string.IsNullOrEmpty(image))
@@ -414,5 +414,45 @@ cmd.Parameters.AddWithValue("@img5", string.IsNullOrEmpty(UpdateData.img5) ? DBN
                 return null;
             }
         }
+        #endregion
+        #region MembersImg
+        public void MembersImgOldFileCheck(string image)
+        {
+            if(!string.IsNullOrEmpty(image))
+            {
+                var filepath = Path.Combine("wwwroot/MembersImg", image);
+                string oldFilePath = filepath;
+                if (System.IO.File.Exists(oldFilePath))
+                {
+                    System.IO.File.Delete(oldFilePath);
+                }
+            }
+        }
+        public string? MembersImgCreateOneImage(IFormFile FormImage)
+        {
+
+            if (FormImage != null)
+            {
+                if(!FormImage.ContentType.StartsWith("image/"))
+                {
+                    return "檔案格式不正確";
+                }
+
+                string uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(FormImage.FileName);
+
+                var filePath = Path.Combine("wwwroot/MembersImg", uniqueFileName);
+                using(var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    FormImage.CopyTo(stream);
+                }
+
+                return uniqueFileName;
+            }
+            else
+            {
+                return null;
+            }
+        }
+        #endregion
     }
 }
