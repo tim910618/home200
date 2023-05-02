@@ -1,5 +1,6 @@
 using Microsoft.Data.SqlClient;
 using api1.Models;
+using System.Data;
 
 namespace api1.Service
 {
@@ -19,6 +20,10 @@ namespace api1.Service
             string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by uploadtime desc) AS sort,* FROM RENTAL WHERE tenant = 0 AND isDelete = 0 AND [check] = 0 ) m WHERE m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 SqlDataReader dr = cmd.ExecuteReader();
@@ -68,6 +73,10 @@ namespace api1.Service
             string sql=$@"UPDATE RENTAL SET [check]=@check,tenant=@tenant,reason=@reason WHERE rental_id = @Id;";  
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 if (CheckData.check == 0)

@@ -21,6 +21,10 @@ namespace api1.Service
                         VALUES (@Reported, @Reporter, @Reason, @ReportTime)";
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@Reported", AddData.reported);
@@ -54,6 +58,10 @@ namespace api1.Service
             string message = string.Empty;
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@BlockMember", BlockMember);
@@ -86,6 +94,10 @@ namespace api1.Service
             string sql = @"select * from Report m inner join Members d on m.reported = d.Account where d.Account = @Account";
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 using (SqlCommand cmd = new SqlCommand(sql, conn))
                 {
@@ -119,6 +131,10 @@ namespace api1.Service
             string sql = $@"update booklist set isDelete=@isDelete where renter = @account or publisher = @account";
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@account", account);

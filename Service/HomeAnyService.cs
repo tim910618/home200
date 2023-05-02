@@ -420,6 +420,10 @@ namespace api1.Service
             string sql = @"INSERT INTO COLLECT(renter,rental_id) VALUES (@renter,@rental_id) ;";
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@renter",newData.renter);
@@ -441,6 +445,10 @@ namespace api1.Service
             string sql = @"SELECT collect_id FROM COLLECT WHERE renter = @renter AND rental_id = @rental_id;";
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@renter", renter);
@@ -473,6 +481,10 @@ namespace api1.Service
             string sql=$@"SELECT COUNT(*) FROM COLLECT WHERE renter=@renter AND rental_id=@rental_id ;";
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 SqlCommand cmd =new SqlCommand(sql,conn);
                 cmd.Parameters.AddWithValue("@renter",renter);

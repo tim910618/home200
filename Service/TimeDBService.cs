@@ -3,6 +3,7 @@ using api1.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.RegularExpressions;
 using System.Globalization;
+using System.Data;
 
 namespace api1.Service
 {
@@ -48,6 +49,10 @@ namespace api1.Service
             string sql = string.Empty;
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 SqlCommand cmd;
                 if (bookTime.booktime_id != Guid.Empty)
@@ -115,6 +120,10 @@ namespace api1.Service
             string sql = $@"select * from BookTime where publisher=@publisher";
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@publisher", account);
@@ -149,6 +158,10 @@ namespace api1.Service
             string sql = $@"select * from BookTime where publisher=@publisher";
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@publisher", account);
@@ -223,6 +236,10 @@ namespace api1.Service
             string sql = "SELECT * FROM SpecialTime WHERE publisher=@publisher AND Date=@date";
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@publisher", publisher);
@@ -258,6 +275,10 @@ namespace api1.Service
             string sql = $@"select booktime_id from BookTime where publisher=@publisher";
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@publisher", account);
@@ -287,6 +308,10 @@ namespace api1.Service
             string sql = $@"select Special_id from SpecialTime where publisher=@publisher";
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@publisher", account);
@@ -314,6 +339,10 @@ namespace api1.Service
         {
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 // 檢查資料庫中是否已有該日期的特殊時間設定
                 string selectSql = "SELECT COUNT(*) FROM SpecialTime WHERE publisher = @publisher AND date = @date";
@@ -363,6 +392,10 @@ namespace api1.Service
             string sql = $"SELECT booktime FROM booklist WHERE isDelete=@isDelete and publisher = @account AND bookdate = @date AND booktime IN ({string.Join(",", availableTimes.Select(t => $"'{t}'"))})";
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@account", account);
@@ -396,6 +429,10 @@ namespace api1.Service
             string sql = @"select * from booklist where publisher=@publisher and isDelete=@isDelete";
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@publisher", publisher);

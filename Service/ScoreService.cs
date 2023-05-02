@@ -1,3 +1,4 @@
+using System.Data;
 using api1.Models;
 using Microsoft.Data.SqlClient;
 
@@ -21,6 +22,10 @@ namespace api1.Service
             string sql=$@"UPDATE Members SET score=@score WHERE Account=@account ;";
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@score", Data.score);

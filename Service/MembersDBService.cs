@@ -3,7 +3,7 @@ using System.Text;
 using Microsoft.Data.SqlClient;
 using api1.Models;
 using api1.ViewModel;
-
+using System.Data;
 
 namespace api1.Service
 {
@@ -35,6 +35,10 @@ namespace api1.Service
             }
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@account", newMember.account);
@@ -80,6 +84,10 @@ namespace api1.Service
             string sql = $@"SELECT * FROM MEMBERS WHERE account='{Account}' ";
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 SqlDataReader dr = cmd.ExecuteReader();
@@ -142,6 +150,10 @@ namespace api1.Service
                     string sql = $@"UPDATE MEMBERS SET authcode='{string.Empty}' WHERE account='{Account}' ";
                     try
                     {
+                        if (conn.State != ConnectionState.Closed)
+                        {
+                            conn.Close();
+                        }
                         conn.Open();
                         SqlCommand cmd = new SqlCommand(sql, conn);
                         cmd.ExecuteNonQuery();
@@ -241,6 +253,10 @@ namespace api1.Service
                 string sql = $@"UPDATE MEMBERS SET password = '{LoginMember.password}' WHERE account='{Account}' ";
                 try
                 {
+                    if (conn.State != ConnectionState.Closed)
+                    {
+                        conn.Close();
+                    }
                     conn.Open();
                     SqlCommand cmd = new SqlCommand(sql, conn);
                     cmd.ExecuteNonQuery();
@@ -280,6 +296,10 @@ namespace api1.Service
                 string sql = "UPDATE MEMBERS SET password=@Password WHERE account=@Account";
                 try
                 {
+                    if (conn.State != ConnectionState.Closed)
+                    {
+                        conn.Close();
+                    }
                     conn.Open();
                     SqlCommand cmd = new SqlCommand(sql, conn);
                     cmd.Parameters.AddWithValue("@Password", Data.password);
@@ -323,6 +343,10 @@ namespace api1.Service
                         FROM Members m";
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 SqlDataReader dr = cmd.ExecuteReader();
@@ -362,6 +386,10 @@ namespace api1.Service
             string sql = @"UPDATE Members SET name=@name, phone=@phone, img=@img WHERE account=@account";
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@account", UpdateData.account);

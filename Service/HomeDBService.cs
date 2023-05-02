@@ -1,5 +1,6 @@
 using Microsoft.Data.SqlClient;
 using api1.Models;
+using System.Data;
 
 namespace api1.Service
 {
@@ -19,6 +20,10 @@ namespace api1.Service
             string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by uploadtime desc) AS sort,* FROM RENTAL WHERE publisher = @publisher AND tenant = 1 AND [check] = 1 AND isDelete = 0) m ORDER BY m.sort;";
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@publisher", publisher);
@@ -44,6 +49,10 @@ namespace api1.Service
             string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by uploadtime desc) AS sort,* FROM RENTAL WHERE publisher = @publisher AND tenant = 0 AND [check] IN (1, 2) AND isDelete = 0) m ORDER BY m.sort;";
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@publisher", publisher);
@@ -69,6 +78,10 @@ namespace api1.Service
             string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by uploadtime desc) AS sort,* FROM RENTAL WHERE publisher = @publisher AND tenant = 0 AND [check] = 0 AND isDelete = 0) m ORDER BY m.sort;";
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@publisher", publisher);
@@ -121,6 +134,10 @@ namespace api1.Service
             string sql = $@"UPDATE RENTAL SET [check]=@check ,tenant=@tenant WHERE rental_id = @Id;";
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@Id", UpToDownData.rental_id);
@@ -142,6 +159,10 @@ namespace api1.Service
             string sql = $@"UPDATE RENTAL SET [check]=@check ,tenant=@tenant WHERE rental_id = @Id;";
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@Id", DownToCheckData.rental_id);
@@ -169,6 +190,10 @@ namespace api1.Service
             string sql = $@"SELECT m.*,d.* FROM RENTAL m INNER JOIN MEMBERS d ON m.publisher = d.Account WHERE m.rental_id = @Id;";
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@Id", Id);
@@ -275,6 +300,10 @@ namespace api1.Service
                 WHERE rental_id = @Id;";
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@Id", UpdateData.rental_id);
@@ -292,10 +321,10 @@ namespace api1.Service
                 cmd.Parameters.AddWithValue("@equipmentname", UpdateData.equipmentname);
                 cmd.Parameters.AddWithValue("@content", UpdateData.content);
                 cmd.Parameters.AddWithValue("@img1", string.IsNullOrEmpty(UpdateData.img1) ? DBNull.Value : (object)UpdateData.img1);
-cmd.Parameters.AddWithValue("@img2", string.IsNullOrEmpty(UpdateData.img2) ? DBNull.Value : (object)UpdateData.img2);
-cmd.Parameters.AddWithValue("@img3", string.IsNullOrEmpty(UpdateData.img3) ? DBNull.Value : (object)UpdateData.img3);
-cmd.Parameters.AddWithValue("@img4", string.IsNullOrEmpty(UpdateData.img4) ? DBNull.Value : (object)UpdateData.img4);
-cmd.Parameters.AddWithValue("@img5", string.IsNullOrEmpty(UpdateData.img5) ? DBNull.Value : (object)UpdateData.img5);
+                cmd.Parameters.AddWithValue("@img2", string.IsNullOrEmpty(UpdateData.img2) ? DBNull.Value : (object)UpdateData.img2);
+                cmd.Parameters.AddWithValue("@img3", string.IsNullOrEmpty(UpdateData.img3) ? DBNull.Value : (object)UpdateData.img3);
+                cmd.Parameters.AddWithValue("@img4", string.IsNullOrEmpty(UpdateData.img4) ? DBNull.Value : (object)UpdateData.img4);
+                cmd.Parameters.AddWithValue("@img5", string.IsNullOrEmpty(UpdateData.img5) ? DBNull.Value : (object)UpdateData.img5);
                 cmd.Parameters.AddWithValue("@rental_id", UpdateData.rental_id);
                 cmd.Parameters.AddWithValue("@uploadtime", DateTime.Now);
                 cmd.Parameters.AddWithValue("@check", 0);
@@ -317,6 +346,10 @@ cmd.Parameters.AddWithValue("@img5", string.IsNullOrEmpty(UpdateData.img5) ? DBN
             string sql = $@"UPDATE RENTAL SET isDelete = 1 WHERE rental_id = @Id;";
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@Id", id);
@@ -340,6 +373,10 @@ cmd.Parameters.AddWithValue("@img5", string.IsNullOrEmpty(UpdateData.img5) ? DBN
                         VALUES (@publisher,@genre, @pattern, @type, @title, @address, @rent, @waterfee, @electricitybill, @adminfee, @floor, @area, @equipmentname, @content, @img1, @img2, @img3, @img4, @img5, 0, 0, @uploadtime, 0)";
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@publisher", newData.publisher);
