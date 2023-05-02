@@ -151,7 +151,7 @@ namespace api1.Service
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@account", account);
-                cmd.Parameters.AddWithValue("@IsDelete", '0');
+                cmd.Parameters.AddWithValue("@IsDelete", 0);
                 SqlDataReader dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {

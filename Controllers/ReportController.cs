@@ -60,8 +60,8 @@ namespace api1.Controllers
         {
             if (Data.isblock == false)
             {
-                _reportService.BlockCancelBooked(Data.reported);
                 var booked = _reportService.BookedList(Data.reported);
+                _reportService.BlockCancelBooked(Data.reported);
                 foreach (var bookData in booked)
                 {
                     var publisher = _membersSerivce.GetDataByAccount(bookData.publisher);
