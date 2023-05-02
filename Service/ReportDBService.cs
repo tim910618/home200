@@ -141,7 +141,7 @@ namespace api1.Service
             List<BookList> DataList = new List<BookList>();
             string sql = $@"
                 SELECT booklist.* FROM booklist 
-                WHERE booklist.publisher = @account or booklist.renter = @account and  booklist.IsDelete=@isDelete";
+                WHERE (booklist.publisher = @account OR booklist.renter = @account) AND booklist.IsDelete = @IsDelete";
             try
             {
                 if (conn.State != ConnectionState.Closed)
