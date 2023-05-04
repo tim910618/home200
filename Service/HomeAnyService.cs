@@ -337,6 +337,10 @@ namespace api1.Service
             string sql = $@" SELECT * FROM RENTAL; ";
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 SqlDataReader dr = cmd.ExecuteReader();
@@ -394,6 +398,10 @@ namespace api1.Service
             string sql = $@" SELECT * FROM COLLECT WHERE renter=@renter; ";
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@renter", renter);
