@@ -72,12 +72,13 @@ namespace api1.Service
         #endregion
 
         #region 預約看房信
-        public string BookMailBody(string TempString, string UserName, DateOnly Date, string Time, string address)
+        public string BookMailBody(string TempString, string UserName, DateOnly Date, string Time, string address,Guid? Id)
         {
             TempString = TempString.Replace("{{UserName}}", UserName);
             TempString = TempString.Replace("{{Date}}", Date.ToString("yyyy/MM/dd"));
             TempString = TempString.Replace("{{Time}}", Time);
             TempString = TempString.Replace("{{Address}}", address);
+            TempString = TempString.Replace("{{BookingId}}", Id.ToString());
             return TempString;
         }
         public void SentBookMail(string MailBody, string ToEmail)
@@ -89,7 +90,7 @@ namespace api1.Service
             MailMessage mail = new MailMessage();
             mail.From = new MailAddress(gmail_mail);
             mail.To.Add(ToEmail);
-            mail.Subject = " 預約看房信 ";
+            mail.Subject = " 預約看房確認信 ";
             mail.Body = MailBody;
             mail.IsBodyHtml = true;
             SmtpServer.Send(mail);

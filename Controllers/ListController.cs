@@ -90,8 +90,8 @@ public class ListController : ControllerBase
         //寄預約信
         string filePath = @"Views/BookMail.html";
         string TempString = System.IO.File.ReadAllText(filePath);
-        string MailBody = _mailService.BookMailBody(TempString, publisher.name, Data.bookdate, Data.booktime, rental.address);
-        _mailService.SentBookMail(MailBody, publisher.email);
+        // string MailBody = _mailService.BookMailBody(TempString, publisher.name, Data.bookdate, Data.booktime, rental.address);
+        // _mailService.SentBookMail(MailBody, publisher.email);
         return Ok(Data);
     }
     #endregion
@@ -130,4 +130,62 @@ public class ListController : ControllerBase
         return Ok("取消預約成功");
     }
     #endregion
+
+    //////////////////////////////////////////////////////////////////////////
+    #region 
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [HttpPost("SentBookingCheck")]
+    public IActionResult SentBookingCheck(BookList Data)
+    {
+        if (!User.Identity.IsAuthenticated)
+        {
+            return Ok("請登入");
+        }
+        Data.renter = User.Identity.Name;
+        Members Members = _membersSerivce.GetDataByAccount(Data.renter);
+        var rental = _homeDBService.GetDataById(Data.rental_id);
+        Data.publisher = rental.publisher;
+        Members publisher = _membersSerivce.GetDataByAccount(Data.publisher);
+        bool otherbooked = _ListService.IsBooked(Data.bookdate, Data.booktime, Data.publisher, Data.renter);
+        if (otherbooked == true)
+        {
+            return Ok("已被其他房客預約！");
+        }
+        bool timeover = _ListService.IsTimeOverlap(Data.booktime, Data.bookdate, Data.renter);
+        if (timeover == true)
+        {
+            return Ok("看房時間重疊！");
+        }
+        bool booked = _ListService.CheckBooked(Data.renter, rental.publisher, Data.bookdate, Data.booktime);
+        if (booked == true)
+        {
+            return Ok("您已預約看房！");
+        }
+        else
+        {
+            //無法預約今天(含)以前的判斷
+            if (DateTime.Compare(Data.bookdate.ToDateTime(new TimeOnly()), DateTime.Now) < 0)
+            {
+                return Ok("超過預約期間，不可預約");
+            }
+            _ListService.Addbooking(Data);
+            Guid? Book_Id = Data.booklist_id;
+            //寄確認預約信
+            string filePath = @"Views/BookMail.html";
+            string TempString = System.IO.File.ReadAllText(filePath);
+            string MailBody = _mailService.BookMailBody(TempString, publisher.name, Data.bookdate, Data.booktime, rental.address, Book_Id);
+            _mailService.SentBookMail(MailBody, publisher.email);
+            return Ok(Data);
+        }
+    }
+    #endregion
+
+    //還要在信寄信通知
+    [AllowAnonymous]
+    [HttpPost("CheckBooking")]
+    public IActionResult CheckBooking([FromBody]CheckBookingViewModel Data)
+    {
+        string CheckString= _ListService.CheckBooking(Data.Book_Id,Data.state);
+        return Ok(CheckString);
+    }
 }

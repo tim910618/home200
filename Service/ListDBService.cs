@@ -45,10 +45,10 @@ namespace api1.Service
                     Data.booktime = dr["booktime"].ToString();
                     Data.rental_id = (Guid)dr["rental_id"];
                     Data.booklist_id = (Guid)dr["booklist_id"];
-                    Data.isDelete=Convert.ToBoolean(dr["isDelete"]);
+                    Data.isDelete = Convert.ToBoolean(dr["isDelete"]);
                     Data.Title = dr["title"].ToString();
                     Data.Address = dr["address"].ToString();
-                    Data.img1=dr["img1"].ToString();
+                    Data.img1 = dr["img1"].ToString();
                     DataList.Add(Data);
 
                     var imgPath = dr["img1"].ToString();
@@ -61,7 +61,7 @@ namespace api1.Service
                         Data.img1 = imgPath;
                     }
                 }
-                
+
             }
             catch (Exception e)
             {
@@ -78,7 +78,8 @@ namespace api1.Service
         #region 新增可預約時間
         public void Addbooking(BookList Data)
         {
-            string sql = @"insert into booklist(booklist_id,renter,publisher,bookdate,booktime,rental_id,isDelete) values (@booklist_id,@renter,@publisher,@bookdate,@booktime,@rental_id,@isDelete)";
+            string sql = @"insert into booklist(booklist_id, renter, publisher, bookdate, booktime, rental_id, isCheck, isDelete) 
+                    values (@booklist_id, @renter, @publisher, @bookdate, @booktime, @rental_id, @isCheck, @isDelete)";
             try
             {
                 if (conn.State != ConnectionState.Closed)
@@ -93,6 +94,7 @@ namespace api1.Service
                 cmd.Parameters.AddWithValue("@booktime", Data.booktime);
                 cmd.Parameters.AddWithValue("@rental_id", Data.rental_id);
                 cmd.Parameters.AddWithValue("@isDelete", '0');
+                cmd.Parameters.AddWithValue("@isCheck", '0');
                 // 產生新的 GUID 並加入到 BookList 物件中
                 Data.booklist_id = Guid.NewGuid();
                 // 將 GUID 加入到 SQL INSERT 語句中
@@ -285,18 +287,50 @@ namespace api1.Service
                     Data.booktime = dr["booktime"].ToString();
                     Data.rental_id = (Guid)dr["rental_id"];
                     Data.booklist_id = (Guid)dr["booklist_id"];
-                    Data.isDelete=Convert.ToBoolean(dr["isDelete"]);
+                    Data.isDelete = Convert.ToBoolean(dr["isDelete"]);
                 }
             }
-            catch 
+            catch
             {
-                Data=null;
+                Data = null;
             }
             finally
             {
                 conn.Close();
             }
             return (Data);
+        }
+        #endregion
+
+        #region 房東確認是否預約
+        public string CheckBooking(Guid Book_Id, string state)
+        {
+            if (state == "1")
+            {
+                string sql = $@"update booklist set isCheck=@state where booklist_Id=@Id";
+                try
+                {
+                    if (conn.State != ConnectionState.Closed)
+                    {
+                        conn.Close();
+                    }
+                    conn.Open();
+                    SqlCommand cmd = new SqlCommand(sql, conn);
+                    cmd.Parameters.AddWithValue("@state", '1');
+                    cmd.Parameters.AddWithValue("@Id", Book_Id);
+                    cmd.ExecuteNonQuery();
+                }
+                catch (Exception e)
+                {
+                    throw new Exception(e.Message.ToString());
+                }
+                finally
+                {
+                    conn.Close();
+                }
+                return "預約成功";
+            }
+            return "預約失敗";
         }
         #endregion
     }
