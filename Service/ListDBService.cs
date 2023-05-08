@@ -16,14 +16,14 @@ namespace api1.Service
             conn = connection;
         }
 
-        #region 取得預約清單
-        public List<GetBookListViewModel> GetBookTime(string account)
+        #region 取得已預約清單
+        public List<GetBookListViewModel> GetBookTime1(string account)
         {
             List<GetBookListViewModel> DataList = new List<GetBookListViewModel>();
             string sql = $@"
                 SELECT booklist.*, rental.address, rental.title, rental.img1 FROM booklist 
                 INNER JOIN rental ON booklist.rental_id = rental.rental_id 
-                WHERE (booklist.renter=@renter OR booklist.publisher=@publisher) AND booklist.IsDelete=@isDelete";
+                WHERE (booklist.renter=@renter OR booklist.publisher=@publisher) AND booklist.IsDelete=@isDelete AND booklist.isCheck=@isCheck";
             try
             {
                 if (conn.State != ConnectionState.Closed)
@@ -35,6 +35,7 @@ namespace api1.Service
                 cmd.Parameters.AddWithValue("@renter", account);
                 cmd.Parameters.AddWithValue("@publisher", account);
                 cmd.Parameters.AddWithValue("@IsDelete", '0');
+                cmd.Parameters.AddWithValue("@isCheck", '1');
                 SqlDataReader dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
@@ -49,6 +50,68 @@ namespace api1.Service
                     Data.Title = dr["title"].ToString();
                     Data.Address = dr["address"].ToString();
                     Data.img1 = dr["img1"].ToString();
+                    Data.isCheck = Convert.ToBoolean(dr["isCheck"]);
+                    DataList.Add(Data);
+
+                    var imgPath = dr["img1"].ToString();
+                    if (!string.IsNullOrEmpty(imgPath))
+                    {
+                        if (!imgPath.Contains("http://"))
+                        {
+                            imgPath = $"http://localhost:5190/Image/{imgPath.Replace("\\", "/")}";
+                        }
+                        Data.img1 = imgPath;
+                    }
+                }
+
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message.ToString());
+            }
+            finally
+            {
+                conn.Close();
+            }
+            return (DataList);
+        }
+        #endregion
+
+        #region 取得未預約清單
+        public List<GetBookListViewModel> GetBookTime0(string account)
+        {
+            List<GetBookListViewModel> DataList = new List<GetBookListViewModel>();
+            string sql = $@"
+                SELECT booklist.*, rental.address, rental.title, rental.img1 FROM booklist 
+                INNER JOIN rental ON booklist.rental_id = rental.rental_id 
+                WHERE (booklist.renter=@renter OR booklist.publisher=@publisher) AND booklist.IsDelete=@isDelete AND booklist.isCheck=@isCheck";
+            try
+            {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@renter", account);
+                cmd.Parameters.AddWithValue("@publisher", account);
+                cmd.Parameters.AddWithValue("@IsDelete", '0');
+                cmd.Parameters.AddWithValue("@isCheck", '0');
+                SqlDataReader dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    GetBookListViewModel Data = new GetBookListViewModel();
+                    Data.renter = dr["renter"].ToString();
+                    Data.publisher = dr["publisher"].ToString();
+                    Data.bookdate = DateOnly.FromDateTime(Convert.ToDateTime(dr["bookdate"]));
+                    Data.booktime = dr["booktime"].ToString();
+                    Data.rental_id = (Guid)dr["rental_id"];
+                    Data.booklist_id = (Guid)dr["booklist_id"];
+                    Data.isDelete = Convert.ToBoolean(dr["isDelete"]);
+                    Data.Title = dr["title"].ToString();
+                    Data.Address = dr["address"].ToString();
+                    Data.img1 = dr["img1"].ToString();
+                    Data.isCheck = Convert.ToBoolean(dr["isCheck"]);
                     DataList.Add(Data);
 
                     var imgPath = dr["img1"].ToString();
@@ -330,7 +393,32 @@ namespace api1.Service
                 }
                 return "預約成功";
             }
-            return "預約失敗";
+            else
+            {
+                string sql = $@"update booklist set isCheck=@state,isDelete=@Delete where booklist_Id=@Id";
+                try
+                {
+                    if (conn.State != ConnectionState.Closed)
+                    {
+                        conn.Close();
+                    }
+                    conn.Open();
+                    SqlCommand cmd = new SqlCommand(sql, conn);
+                    cmd.Parameters.AddWithValue("@state", '1');
+                    cmd.Parameters.AddWithValue("@Delete", '1');
+                    cmd.Parameters.AddWithValue("@Id", Book_Id);
+                    cmd.ExecuteNonQuery();
+                }
+                catch (Exception e)
+                {
+                    throw new Exception(e.Message.ToString());
+                }
+                finally
+                {
+                    conn.Close();
+                }
+            }
+            return "取消預約成功";
         }
         #endregion
     }

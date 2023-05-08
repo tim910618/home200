@@ -41,12 +41,9 @@ public class ListController : ControllerBase
             return BadRequest("請登入");
         }
         string account = User.Identity.Name;
-        List<GetBookListViewModel> DataList = _ListService.GetBookTime(account);
-        if (DataList == null)
-        {
-            return BadRequest("無預約資訊");
-        }
-        return Ok(DataList);
+        List<GetBookListViewModel> DataList0 = _ListService.GetBookTime0(account);
+        List<GetBookListViewModel> DataList1 = _ListService.GetBookTime1(account);
+        return Ok(new { DataList0,DataList1 });
     }
     #endregion
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "renter")]
@@ -180,12 +177,12 @@ public class ListController : ControllerBase
     }
     #endregion
 
-    //還要在信寄信通知
+    //還要在信寄信通知，如果房東同意State->1，isCheck1、isDelete0，房東不同意isCheck1、isDelete1
     [AllowAnonymous]
     [HttpPost("CheckBooking")]
-    public IActionResult CheckBooking([FromBody]CheckBookingViewModel Data)
+    public IActionResult CheckBooking([FromBody] CheckBookingViewModel Data)
     {
-        string CheckString= _ListService.CheckBooking(Data.Book_Id,Data.state);
+        string CheckString = _ListService.CheckBooking(Data.Book_Id, Data.state);
         return Ok(CheckString);
     }
 }

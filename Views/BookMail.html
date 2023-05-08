@@ -19,10 +19,11 @@
     <p>此致</p>
     <br>
     <p>HomeFinder團隊</p>
-	<form method="post">
-        <input type="hidden" name="bookingId" value="{{BookingId}}" />
-        <button type="submit" name="confirmBooking" value="0">確認預約</button>
-        <button type="submit" name="cancelBooking" value="1">取消預約</button>
+    <form method="post" action="http://localhost:5190/api/List/CheckBooking">
+        <input type="hidden" name="Book_Id" value="{{Book_Id}}" />
+        <button type="submit" name="confirmBooking" value='{"state": 0}'>確認預約</button>
+        <button type="submit" name="cancelBooking" value='{"state": 1}'>取消預約</button>
+        <input type="hidden" name="Content-Type" value="application/json">
     </form>
 </body>
 </html>
