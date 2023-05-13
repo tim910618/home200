@@ -159,8 +159,13 @@ public class TimeController : ControllerBase
     [HttpGet("BookOfDay")]
     public IActionResult BookOfDay([FromForm] BookOfDay Data)
     {
+        string guidString = Data.rental_id;
+        Guid guid = Guid.Parse(guidString);
         // 取得房東是誰，因為要抓房東的時間
-        Rental rental = _HomeDBService.GetDataById(Data.rental_id);
+        Rental rental = _HomeDBService.GetDataById(guid);
+        if(rental==null){
+            return Ok("查無資訊");
+        }
         string account = rental.publisher;
 
         // 再查詢 SpecialTime 有沒有特殊時間
