@@ -157,7 +157,7 @@ public class TimeController : ControllerBase
     [AllowAnonymous]
     #region 取得單天的預約時間 取得房東 修改帶入方式再改抓資料
     [HttpGet("BookOfDay")]
-    public IActionResult BookOfDay([FromBody] BookOfDay Data)
+    public IActionResult BookOfDay([FromForm] BookOfDay Data)
     {
         // 取得房東是誰，因為要抓房東的時間
         Rental rental = _HomeDBService.GetDataById(Data.rental_id);
