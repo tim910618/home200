@@ -156,7 +156,7 @@ public class TimeController : ControllerBase
     #endregion
     [AllowAnonymous]
     #region 取得單天的預約時間 取得房東 修改帶入方式再改抓資料
-    [HttpGet("BookOfDay")]
+    [HttpPost("BookOfDay")]
     public IActionResult BookOfDay([FromForm] BookOfDay Data)
     {
         string guidString = Data.rental_id;
