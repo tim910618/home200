@@ -172,5 +172,9 @@ namespace api1.Service
             SmtpServer.Send(mail);
         }
         #endregion
+
+        #region 預約成功或失敗信
+        
+        #endregion
     }
 }

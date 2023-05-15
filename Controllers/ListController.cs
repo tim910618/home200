@@ -43,7 +43,7 @@ public class ListController : ControllerBase
         string account = User.Identity.Name;
         List<GetBookListViewModel> DataList0 = _ListService.GetBookTime0(account);
         List<GetBookListViewModel> DataList1 = _ListService.GetBookTime1(account);
-        return Ok(new { DataList0,DataList1 });
+        return Ok(new { DataList0, DataList1 });
     }
     #endregion
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "renter")]
@@ -58,6 +58,10 @@ public class ListController : ControllerBase
         Data.renter = User.Identity.Name;
         Members Members = _membersSerivce.GetDataByAccount(Data.renter);
         var rental = _homeDBService.GetDataById(Data.rental_id);
+        if (rental == null)
+        {
+            return Ok("查無房屋資訊");
+        }
         Data.publisher = rental.publisher;
         Members publisher = _membersSerivce.GetDataByAccount(Data.publisher);
         bool otherbooked = _ListService.IsBooked(Data.bookdate, Data.booktime, Data.publisher, Data.renter);
@@ -183,6 +187,25 @@ public class ListController : ControllerBase
     public IActionResult CheckBooking([FromBody] CheckBookingViewModel Data)
     {
         string CheckString = _ListService.CheckBooking(Data.Book_Id, Data.state);
+        BookList BookData = _ListService.GetBookTimeById(Data.Book_Id);
+        Members renter = _membersSerivce.GetDataByAccount(BookData.renter);
+        Rental rental = new Rental();
+        rental = _homeDBService.GetDataById(BookData.rental_id);
+        if (CheckString == "預約成功")
+        {
+            string filePath = @"Views/BookDetail.html";
+            string TempStringR = System.IO.File.ReadAllText(filePath);
+            string MailBodyR = _mailService.BookMailBody(TempStringR, renter.name, BookData.bookdate, BookData.booktime, rental.address, BookData.booklist_id);
+            _mailService.SentBookMail(MailBodyR, renter.email);
+        }
+        else
+        {
+            string filePath = @"Views/CancelBooking.html";
+            string TempStringR = System.IO.File.ReadAllText(filePath);
+            string MailBodyR = _mailService.CancelMailBody(TempStringR, renter.name, BookData.bookdate, BookData.booktime, rental.title);
+            _mailService.SentCancelMail(MailBodyR, renter.email);
+            _ListService.CancelBooking(Data.Book_Id);
+        }
         return Ok(CheckString);
     }
 }
