@@ -158,7 +158,7 @@ namespace api1.Service
             return DataList;
         }
 
-        public List<string> Allmon(string day)
+        public List<string> Allday(string day)
         {
             List<string> DataList = new List<string>();
             string sql=$@"SELECT {day.ToLower()} FROM BOOKTIME";

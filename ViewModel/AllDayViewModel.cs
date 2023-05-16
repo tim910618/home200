@@ -2,12 +2,12 @@ namespace api1.ViewModel
 {
     public class AllDayViewModel
     {
-        public List<string> Mon{get;set;}
-        public List<string> Tue{get;set;}
-        public List<string> Wed{get;set;}
-        public List<string> Thu{get;set;}
-        public List<string> Fri{get;set;}
-        public List<string> Sat{get;set;}
-        public List<string> Sun{get;set;}
+        public List<string> monday{get;set;}
+        public List<string> tuesday{get;set;}
+        public List<string> wednesday{get;set;}
+        public List<string> thursday{get;set;}
+        public List<string> friday{get;set;}
+        public List<string> saturday{get;set;}
+        public List<string> sunday{get;set;}
     }
 }
