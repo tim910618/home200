@@ -13,9 +13,10 @@ namespace api1.Service
             conn = connection;
         }
 
-        public List<string> AllHomegenre()
+        public Dictionary<string, int> AllHomegenre()
         {
-            List<string> DataList = new List<string>();
+            Dictionary<string, int> genreCount = new Dictionary<string, int>();
+            //List<string> DataList = new List<string>();
             string sql=$@"SELECT * FROM RENTAL";
             try
             {
@@ -28,7 +29,16 @@ namespace api1.Service
                 SqlDataReader dr = cmd.ExecuteReader();
                 while(dr.Read())
                 {
-                    DataList.Add(dr["genre"].ToString());
+                    string genre = dr["genre"].ToString();
+                    if (genreCount.ContainsKey(genre))
+                    {
+                        genreCount[genre]++;
+                    }
+                    else
+                    {
+                        genreCount[genre] = 1;
+                    }
+                    //DataList.Add(dr["genre"].ToString());
                 }
             }
             catch (Exception e)
@@ -39,11 +49,14 @@ namespace api1.Service
             {
                 conn.Close();
             }
-            return DataList;
+            return genreCount;
         }
-        public List<string> AllHometype()
+        /*這裡使用了 Dictionary<string, int> 來儲存每個類型（genre）及其出現次數。
+        在讀取資料時，如果 genreCount 中已經有相同的類型，則次數加一；
+        如果沒有，則新增該類型到 genreCount 並設置次數為 1。*/
+        public Dictionary<string,int> AllHometype()
         {
-            List<string> DataList = new List<string>();
+            Dictionary<string,int> typeConut = new Dictionary<string,int>();
             string sql=$@"SELECT * FROM RENTAL";
             try
             {
@@ -56,7 +69,15 @@ namespace api1.Service
                 SqlDataReader dr = cmd.ExecuteReader();
                 while(dr.Read())
                 {
-                    DataList.Add(dr["type"].ToString());
+                    string type= dr["type"].ToString();
+                    if(typeConut.ContainsKey(type))
+                    {
+                        typeConut[type]++;
+                    }
+                    else
+                    {
+                        typeConut[type]=1;
+                    }
                 }
             }
             catch (Exception e)
@@ -67,11 +88,11 @@ namespace api1.Service
             {
                 conn.Close();
             }
-            return DataList;
+            return typeConut;
         }
-        public List<string> AllHomeaddress()
+        public Dictionary<string,int> AllHomeaddress()
         {
-            List<string> DataList = new List<string>();
+            Dictionary<string,int> addressCount = new Dictionary<string,int>();
             string sql=$@"SELECT * FROM RENTAL";
             try
             {
@@ -86,7 +107,44 @@ namespace api1.Service
                 {
                     string address = dr["address"].ToString();
                     string firstThreeChars = address.Substring(0, Math.Min(address.Length, 3));
-                    DataList.Add(firstThreeChars);
+                    if(addressCount.ContainsKey(firstThreeChars))
+                    {
+                        addressCount[firstThreeChars]++;
+                    }
+                    else
+                    {
+                        addressCount[firstThreeChars]=1;
+                    }
+                    //DataList.Add(firstThreeChars);
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message.ToString());
+            }
+            finally
+            {
+                conn.Close();
+            }
+            return addressCount;
+        }
+
+        public List<string> AllReason()
+        {
+            List<string> DataList = new List<string>();
+            string sql=$@"SELECT * FROM REPORT";
+            try
+            {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
+                conn.Open();
+                SqlCommand cmd=new SqlCommand(sql,conn);
+                SqlDataReader dr = cmd.ExecuteReader();
+                while(dr.Read())
+                {
+                    DataList.Add(dr["Reason"].ToString());
                 }
             }
             catch (Exception e)
@@ -99,5 +157,35 @@ namespace api1.Service
             }
             return DataList;
         }
+
+        public List<string> Allmon(string day)
+        {
+            List<string> DataList = new List<string>();
+            string sql=$@"SELECT {day.ToLower()} FROM BOOKTIME";
+            try
+            {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
+                conn.Open();
+                SqlCommand cmd=new SqlCommand(sql,conn);
+                SqlDataReader dr = cmd.ExecuteReader();
+                while(dr.Read())
+                {
+                    DataList.Add(dr.GetString(0));
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message.ToString());
+            }
+            finally
+            {
+                conn.Close();
+            }
+            return DataList;
+        }
+        
     }
 }
