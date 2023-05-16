@@ -126,6 +126,7 @@ builder.Services.AddSingleton<ListDBService>();
 builder.Services.AddSingleton<HomeDetailDBService>();
 builder.Services.AddSingleton<ScoreService>();
 builder.Services.AddSingleton<JwtService>();
+builder.Services.AddSingleton<AllDataDBService>();
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
