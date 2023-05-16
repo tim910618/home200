@@ -78,7 +78,7 @@ namespace api1.Service
             TempString = TempString.Replace("{{Date}}", Date.ToString("yyyy/MM/dd"));
             TempString = TempString.Replace("{{Time}}", Time);
             TempString = TempString.Replace("{{Address}}", address);
-            TempString = TempString.Replace("{{BookingId}}", Id.ToString());
+            TempString = TempString.Replace("{{Book_Id}}", Id.ToString());
             return TempString;
         }
         public void SentBookMail(string MailBody, string ToEmail)

@@ -1,5 +1,15 @@
 <!DOCTYPE html>
 <html>
+    <style>
+        .my-button {
+            background-color: #007bff; /* 改變背景顏色 */
+            color: #fff; /* 改變文字顏色 */
+            border: none; /* 去掉邊框 */
+            border-radius: 10px; /* 圓角 */
+            font-size: 24px; /* 改變字型大小 */
+            padding: 20px 40px; /* 改變 padding */
+        }
+    </style>
 <head>
 	<meta charset="utf-8" />
 	<title>預約通知信</title>
@@ -21,9 +31,10 @@
     <p>HomeFinder團隊</p>
     <form method="post" action="http://localhost:5190/api/List/CheckBooking">
         <input type="hidden" name="Book_Id" value="{{Book_Id}}" />
-        <button type="submit" name="confirmBooking" value='{"state": 0}'>確認預約</button>
-        <button type="submit" name="cancelBooking" value='{"state": 1}'>取消預約</button>
+        <button type="submit" name="state" value="1" class="my-button">確認預約</button>
+        <button type="submit" name="state" value="0" class="my-button">取消預約</button>
         <input type="hidden" name="Content-Type" value="application/json">
     </form>
 </body>
 </html>
+

@@ -184,10 +184,15 @@ public class ListController : ControllerBase
     //還要在信寄信通知，如果房東同意State->1，isCheck1、isDelete0，房東不同意isCheck1、isDelete1
     [AllowAnonymous]
     [HttpPost("CheckBooking")]
-    public IActionResult CheckBooking([FromBody] CheckBookingViewModel Data)
+    public IActionResult CheckBooking([FromForm] CheckBookingViewModel Data)
     {
-        string CheckString = _ListService.CheckBooking(Data.Book_Id, Data.state);
         BookList BookData = _ListService.GetBookTimeById(Data.Book_Id);
+        if (DateTime.Parse(BookData.bookdate.ToShortDateString()) == DateTime.Today)
+        {
+            Data.state = "0";
+            return Ok("請於前一日確認，已自動取消預約");
+        }
+        string CheckString = _ListService.CheckBooking(Data.Book_Id, Data.state);
         Members renter = _membersSerivce.GetDataByAccount(BookData.renter);
         Rental rental = new Rental();
         rental = _homeDBService.GetDataById(BookData.rental_id);
