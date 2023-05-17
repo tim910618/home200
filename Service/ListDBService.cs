@@ -21,9 +21,12 @@ namespace api1.Service
         {
             List<GetBookListViewModel> DataList = new List<GetBookListViewModel>();
             string sql = $@"
-                SELECT booklist.*, rental.address, rental.title, rental.img1 FROM booklist 
-                INNER JOIN rental ON booklist.rental_id = rental.rental_id 
-                WHERE (booklist.renter=@renter OR booklist.publisher=@publisher) AND booklist.IsDelete=@isDelete AND booklist.isCheck=@isCheck";
+    SELECT booklist.*, rental.address, rental.title, rental.img1 
+    FROM booklist 
+    INNER JOIN rental ON booklist.rental_id = rental.rental_id 
+    WHERE (booklist.renter=@renter OR booklist.publisher=@publisher) 
+    AND booklist.IsDelete=@isDelete AND booklist.isCheck=@isCheck
+    ORDER BY booklist.bookdate";
             try
             {
                 if (conn.State != ConnectionState.Closed)
@@ -82,9 +85,12 @@ namespace api1.Service
         {
             List<GetBookListViewModel> DataList = new List<GetBookListViewModel>();
             string sql = $@"
-                SELECT booklist.*, rental.address, rental.title, rental.img1 FROM booklist 
-                INNER JOIN rental ON booklist.rental_id = rental.rental_id 
-                WHERE (booklist.renter=@renter OR booklist.publisher=@publisher) AND booklist.IsDelete=@isDelete AND booklist.isCheck=@isCheck";
+    SELECT booklist.*, rental.address, rental.title, rental.img1 
+    FROM booklist 
+    INNER JOIN rental ON booklist.rental_id = rental.rental_id 
+    WHERE (booklist.renter=@renter OR booklist.publisher=@publisher) 
+    AND booklist.IsDelete=@isDelete AND booklist.isCheck=@isCheck
+    ORDER BY booklist.bookdate";
             try
             {
                 if (conn.State != ConnectionState.Closed)

@@ -236,8 +236,8 @@ namespace api1.Service
 
             // 建立字典儲存 X 軸和 Y 軸數據
             Dictionary<string, List<object>> chartData = new Dictionary<string, List<object>>();
-            chartData.Add("xAxisData", xAxisData.Cast<object>().ToList());
-            chartData.Add("yAxisData", yAxisData.Cast<object>().ToList());
+            chartData.Add("labels", xAxisData.Cast<object>().ToList());
+            chartData.Add("data", yAxisData.Cast<object>().ToList());
 
             return chartData;
         }
