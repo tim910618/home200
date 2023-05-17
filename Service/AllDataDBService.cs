@@ -14,49 +14,49 @@ namespace api1.Service
             conn = connection;
         }
 
-        public Dictionary<string,int> AllHomegenre()
-        {
-            Dictionary<string,int> genreConut = new Dictionary<string,int>();
-            string sql=$@"SELECT genre FROM RENTAL";
-            try
-            {
-                if (conn.State != ConnectionState.Closed)
-                {
-                    conn.Close();
-                }
-                conn.Open();
-                SqlCommand cmd=new SqlCommand(sql,conn);
-                SqlDataReader dr = cmd.ExecuteReader();
-                while(dr.Read())
-                {
-                    string genre= dr["genre"].ToString();
-                    if(genreConut.ContainsKey(genre))
-                    {
-                        genreConut[genre]++;
-                    }
-                    else
-                    {
-                        genreConut[genre]=1;
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message.ToString());
-            }
-            finally
-            {
-                conn.Close();
-            }
-            return genreConut;
-        }
+        // public Dictionary<string,int> AllHomegenre()
+        // {
+        //     Dictionary<string,int> genreConut = new Dictionary<string,int>();
+        //     string sql=$@"SELECT genre FROM RENTAL";
+        //     try
+        //     {
+        //         if (conn.State != ConnectionState.Closed)
+        //         {
+        //             conn.Close();
+        //         }
+        //         conn.Open();
+        //         SqlCommand cmd=new SqlCommand(sql,conn);
+        //         SqlDataReader dr = cmd.ExecuteReader();
+        //         while(dr.Read())
+        //         {
+        //             string genre= dr["genre"].ToString();
+        //             if(genreConut.ContainsKey(genre))
+        //             {
+        //                 genreConut[genre]++;
+        //             }
+        //             else
+        //             {
+        //                 genreConut[genre]=1;
+        //             }
+        //         }
+        //     }
+        //     catch (Exception e)
+        //     {
+        //         throw new Exception(e.Message.ToString());
+        //     }
+        //     finally
+        //     {
+        //         conn.Close();
+        //     }
+        //     return genreConut;
+        // }
         /*這裡使用了 Dictionary<string, int> 來儲存每個類型（genre）及其出現次數。
         在讀取資料時，如果 genreCount 中已經有相同的類型，則次數加一；
         如果沒有，則新增該類型到 genreCount 並設置次數為 1。*/
-        public Dictionary<string,int> AllHometype()
+        public Dictionary<string, int> AllHometype()
         {
-            Dictionary<string,int> typeConut = new Dictionary<string,int>();
-            string sql=$@"SELECT * FROM RENTAL";
+            Dictionary<string, int> typeConut = new Dictionary<string, int>();
+            string sql = $@"SELECT * FROM RENTAL";
             try
             {
                 if (conn.State != ConnectionState.Closed)
@@ -64,18 +64,18 @@ namespace api1.Service
                     conn.Close();
                 }
                 conn.Open();
-                SqlCommand cmd=new SqlCommand(sql,conn);
+                SqlCommand cmd = new SqlCommand(sql, conn);
                 SqlDataReader dr = cmd.ExecuteReader();
-                while(dr.Read())
+                while (dr.Read())
                 {
-                    string type= dr["type"].ToString();
-                    if(typeConut.ContainsKey(type))
+                    string type = dr["type"].ToString();
+                    if (typeConut.ContainsKey(type))
                     {
                         typeConut[type]++;
                     }
                     else
                     {
-                        typeConut[type]=1;
+                        typeConut[type] = 1;
                     }
                 }
             }
@@ -89,10 +89,10 @@ namespace api1.Service
             }
             return typeConut;
         }
-        public Dictionary<string,int> AllHomeaddress()
+        public Dictionary<string, int> AllHomeaddress()
         {
-            Dictionary<string,int> addressCount = new Dictionary<string,int>();
-            string sql=$@"SELECT * FROM RENTAL";
+            Dictionary<string, int> addressCount = new Dictionary<string, int>();
+            string sql = $@"SELECT * FROM RENTAL";
             try
             {
                 if (conn.State != ConnectionState.Closed)
@@ -100,19 +100,19 @@ namespace api1.Service
                     conn.Close();
                 }
                 conn.Open();
-                SqlCommand cmd=new SqlCommand(sql,conn);
+                SqlCommand cmd = new SqlCommand(sql, conn);
                 SqlDataReader dr = cmd.ExecuteReader();
-                while(dr.Read())
+                while (dr.Read())
                 {
                     string address = dr["address"].ToString();
                     string firstThreeChars = address.Substring(0, Math.Min(address.Length, 3));
-                    if(addressCount.ContainsKey(firstThreeChars))
+                    if (addressCount.ContainsKey(firstThreeChars))
                     {
                         addressCount[firstThreeChars]++;
                     }
                     else
                     {
-                        addressCount[firstThreeChars]=1;
+                        addressCount[firstThreeChars] = 1;
                     }
                     //DataList.Add(firstThreeChars);
                 }
@@ -131,7 +131,7 @@ namespace api1.Service
         public List<string> AllReason()
         {
             List<string> DataList = new List<string>();
-            string sql=$@"SELECT * FROM REPORT";
+            string sql = $@"SELECT * FROM REPORT";
             try
             {
                 if (conn.State != ConnectionState.Closed)
@@ -139,9 +139,9 @@ namespace api1.Service
                     conn.Close();
                 }
                 conn.Open();
-                SqlCommand cmd=new SqlCommand(sql,conn);
+                SqlCommand cmd = new SqlCommand(sql, conn);
                 SqlDataReader dr = cmd.ExecuteReader();
-                while(dr.Read())
+                while (dr.Read())
                 {
                     DataList.Add(dr["Reason"].ToString());
                 }
@@ -160,7 +160,7 @@ namespace api1.Service
         public List<string> Allday(string day)
         {
             List<string> DataList = new List<string>();
-            string sql=$@"SELECT {day.ToLower()} FROM BOOKTIME";
+            string sql = $@"SELECT {day.ToLower()} FROM BOOKTIME";
             try
             {
                 if (conn.State != ConnectionState.Closed)
@@ -168,9 +168,9 @@ namespace api1.Service
                     conn.Close();
                 }
                 conn.Open();
-                SqlCommand cmd=new SqlCommand(sql,conn);
+                SqlCommand cmd = new SqlCommand(sql, conn);
                 SqlDataReader dr = cmd.ExecuteReader();
-                while(dr.Read())
+                while (dr.Read())
                 {
                     DataList.Add(dr.GetString(0));
                 }
@@ -185,18 +185,18 @@ namespace api1.Service
             }
             return DataList;
         }
-        
 
-    
-        /*public class GenreData
+
+
+        public class GenreData
         {
-            public string Genre{get;set;}
-            public int Count{get;set;}
+            public string Genre { get; set; }
+            public int Count { get; set; }
         }
         public List<GenreData> AllHomegenre()
         {
             List<GenreData> genreDataList = new List<GenreData>();
-            string sql=$@"SELECT genre, COUNT(*) AS Count FROM RENTAL GROUP BY genre";
+            string sql = $@"SELECT genre, COUNT(*) AS Count FROM RENTAL GROUP BY genre";
             try
             {
                 if (conn.State != ConnectionState.Closed)
@@ -204,9 +204,9 @@ namespace api1.Service
                     conn.Close();
                 }
                 conn.Open();
-                SqlCommand cmd=new SqlCommand(sql,conn);
+                SqlCommand cmd = new SqlCommand(sql, conn);
                 SqlDataReader dr = cmd.ExecuteReader();
-                while(dr.Read())
+                while (dr.Read())
                 {
                     string genre = dr["genre"].ToString();
                     int count = Convert.ToInt32(dr["Count"]);
@@ -224,19 +224,22 @@ namespace api1.Service
             }
             return genreDataList;
         }
-        public Dictionary<string, List<int>> GetGenreDataForChart()
+        public Dictionary<string, List<object>> GetGenreDataForChart()
         {
             List<GenreData> genreDataList = AllHomegenre();
+
             // 取得 X 軸數據（Genre）
             List<string> xAxisData = genreDataList.Select(data => data.Genre).ToList();
-            // 取得 Y 軸數據（Genre）
+
+            // 取得 Y 軸數據（Count）
             List<int> yAxisData = genreDataList.Select(data => data.Count).ToList();
 
             // 建立字典儲存 X 軸和 Y 軸數據
-            Dictionary<string, List<int>> chartData = new Dictionary<string, List<int>>();
-            chartData.Add("xAxisData", xAxisData);
-            chartData.Add("yAxisData", yAxisData);
+            Dictionary<string, List<object>> chartData = new Dictionary<string, List<object>>();
+            chartData.Add("xAxisData", xAxisData.Cast<object>().ToList());
+            chartData.Add("yAxisData", yAxisData.Cast<object>().ToList());
+
             return chartData;
-        }*/
+        }
     }
 }

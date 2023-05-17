@@ -4,6 +4,7 @@ using api1.Service;
 using api1.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static api1.Service.AllDataDBService;
 
 namespace api1.Controllers
 
@@ -24,10 +25,10 @@ namespace api1.Controllers
         [HttpGet("AllDataHomegenre")]
         public IActionResult AllDataHomegenre()
         {
-            Dictionary<string,int> Data=_alldataSerivce.AllHomegenre();
-            /*Dictionary<string, int> genreCount = _alldataSerivce.AllHomegenre();
-            Dictionary<string, List<int>> chartData = GetGenreDataForChart(genreCount);*/
-            return Ok(Data);
+            //Dictionary<string,int> Data=_alldataSerivce.AllHomegenre();
+            List<GenreData> genreCount = _alldataSerivce.AllHomegenre();
+            Dictionary<string, List<object>> chartData = _alldataSerivce.GetGenreDataForChart();
+            return Ok(chartData);
         }
 
         //類型
