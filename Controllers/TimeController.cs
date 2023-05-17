@@ -217,7 +217,7 @@ public class TimeController : ControllerBase
         string[] unbookedTimes = availableTimesArray.Except(bookedTimes).ToArray();
 
         //return Ok(new { bookedTimes, unbookedTimes });
-        return Ok(new { bookedTimes, unbookedTimes });
+        return Ok(new { availableTimesArray });
     }
 
     #endregion
