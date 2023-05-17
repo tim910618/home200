@@ -107,6 +107,10 @@ namespace api1.Service
             string sql = $@" SELECT * FROM RENTAL WHERE publisher = @publisher; ";
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@publisher", publisher);

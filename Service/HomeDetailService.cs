@@ -48,6 +48,10 @@ namespace api1.Service
             string sql = $@" SELECT * FROM RENTAL; ";
             try
             {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 SqlDataReader dr = cmd.ExecuteReader();
