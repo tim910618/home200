@@ -15,7 +15,7 @@ namespace api1.Service
             conn = connection;
         }
 
-        public List<Guid> GetIdListSeePublisher(ForPaging Paging,string publisher)
+        public List<Guid> GetIdListSeePublisher(string publisher)
         {
             List<Guid> IdList = new List<Guid>();
             string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by uploadtime desc) AS sort,* FROM RENTAL WHERE publisher=@publisher AND tenant = 1 AND isDelete = 0) m WHERE m.sort > 0 ; ";
