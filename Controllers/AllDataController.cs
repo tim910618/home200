@@ -36,8 +36,10 @@ namespace api1.Controllers
         [HttpGet("AllDataHometype")]
         public IActionResult AllDataHometype()
         {
-            Dictionary<string,int> Data=_alldataSerivce.AllHometype();
-            return Ok(Data);
+            //Dictionary<string,int> Data=_alldataSerivce.AllHometype();
+            List<TypeData> typeCount = _alldataSerivce.AllHometype();
+            Dictionary<string, List<object>> chartData = _alldataSerivce.GetTypeDataForChart();
+            return Ok(chartData);
         }
 
         //地區
@@ -45,8 +47,10 @@ namespace api1.Controllers
         [HttpGet("AllDataHomeaddress")]
         public IActionResult AllDataHomeaddress()
         {
-            Dictionary<string,int> Data=_alldataSerivce.AllHomeaddress();
-            return Ok(Data);
+            //Dictionary<string,int> Data=_alldataSerivce.AllHomeaddress();
+            List<AddressData> genreCount = _alldataSerivce.AllHomeaddress();
+            Dictionary<string, List<object>> chartData = _alldataSerivce.GetAddressDataForChart();
+            return Ok(chartData);
         }
 
 
