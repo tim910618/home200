@@ -17,9 +17,8 @@ namespace api1.Service
 
         public List<Guid> GetIdListSeePublisher(ForPaging Paging,string publisher)
         {
-            SeePublisherSetMaxPaging(Paging,publisher);
             List<Guid> IdList = new List<Guid>();
-            string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by uploadtime desc) AS sort,* FROM RENTAL WHERE publisher=@publisher AND tenant = 1 AND isDelete = 0) m WHERE m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
+            string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by uploadtime desc) AS sort,* FROM RENTAL WHERE publisher=@publisher AND tenant = 1 AND isDelete = 0) m WHERE m.sort > 0 ; ";
             try
             {
                 if (conn.State != ConnectionState.Closed)
@@ -45,7 +44,7 @@ namespace api1.Service
             }
             return IdList;
         }
-        public void SeePublisherSetMaxPaging(ForPaging Paging,string publisher)
+        /*public void SeePublisherSetMaxPaging(ForPaging Paging,string publisher)
         {
             int Row=0;
             string sql=$@"SELECT * FROM RENTAL WHERE publisher=@publisher; ";
@@ -74,7 +73,7 @@ namespace api1.Service
             }
             Paging.MaxPage = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(Row) / Paging.Item));
             Paging.SetRightPage();
-        }
+        }*/
 
         public List<Guid> GetIdListDown(ForPaging Paging)
         {

@@ -31,11 +31,11 @@ public class HomeAnyController : ControllerBase
     //某個房東全部資料
     [AllowAnonymous]
     [HttpGet("HomeAnySeePublisher")]
-    public IActionResult HomeAnySeePublisher([FromQuery]string publisher,int Page = 1)
+    public IActionResult HomeAnySeePublisher([FromQuery]string publisher)
     {
         RentalListViewModel Data = new RentalListViewModel();
-        Data.Paging = new ForPaging(Page);
-        Data.IdList = _homeanyDBService.GetIdListSeePublisher(Data.Paging,publisher);
+        //Data.Paging = new ForPaging(Page);
+        Data.IdList = _homeanyDBService.GetIdListSeePublisher(publisher);
         Data.RentalBlock = new List<RentaldetailViewModel>();
         foreach (var Id in Data.IdList)
         {
