@@ -24,7 +24,9 @@ namespace api1.Controllers
         [HttpGet("AllDataHomegenre")]
         public IActionResult AllDataHomegenre()
         {
-            Dictionary<string, int> Data=_alldataSerivce.AllHomegenre();
+            Dictionary<string,int> Data=_alldataSerivce.AllHomegenre();
+            /*Dictionary<string, int> genreCount = _alldataSerivce.AllHomegenre();
+            Dictionary<string, List<int>> chartData = GetGenreDataForChart(genreCount);*/
             return Ok(Data);
         }
 

@@ -17,7 +17,7 @@ namespace api1.Service
 
         public List<Guid> GetIdListSeePublisher(ForPaging Paging,string publisher)
         {
-            SetMaxPaging(Paging);
+            SeePublisherSetMaxPaging(Paging,publisher);
             List<Guid> IdList = new List<Guid>();
             string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by uploadtime desc) AS sort,* FROM RENTAL WHERE publisher=@publisher AND tenant = 1 AND isDelete = 0) m WHERE m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
             try
@@ -44,6 +44,36 @@ namespace api1.Service
                 conn.Close();
             }
             return IdList;
+        }
+        public void SeePublisherSetMaxPaging(ForPaging Paging,string publisher)
+        {
+            int Row=0;
+            string sql=$@"SELECT * FROM RENTAL WHERE publisher=@publisher; ";
+            try
+            {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
+                conn.Open();
+                SqlCommand cmd=new SqlCommand(sql,conn);
+                cmd.Parameters.AddWithValue("@publisher", publisher);
+                SqlDataReader dr=cmd.ExecuteReader();
+                while(dr.Read())
+                {
+                    Row++;
+                }
+            }
+            catch(Exception e)
+            {
+                throw new Exception(e.Message.ToString());
+            }
+            finally
+            {
+                conn.Close();
+            }
+            Paging.MaxPage = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(Row) / Paging.Item));
+            Paging.SetRightPage();
         }
 
         public List<Guid> GetIdListDown(ForPaging Paging)
@@ -119,7 +149,7 @@ namespace api1.Service
                 conn.Open();
                 StringBuilder sqlBuilder =new StringBuilder();
                 var addressBuilder = new StringBuilder();
-                sqlBuilder.Append("SELECT rental_id FROM (SELECT row_number() OVER(order by uploadtime desc) AS sort,* FROM RENTAL WHERE tenant = 1 AND isDelete = 0) m WHERE 1=1");
+                sqlBuilder.Append("SELECT rental_id FROM (SELECT row_number() OVER(order by uploadtime desc) AS sort,* FROM RENTAL WHERE tenant = @tenant AND isDelete = 0) m WHERE 1=1");
                 if(!string.IsNullOrEmpty(search.county) || !string.IsNullOrEmpty(search.township) || !string.IsNullOrEmpty(search.street))
                 {
                     if (!string.IsNullOrEmpty(search.county))
@@ -201,6 +231,7 @@ namespace api1.Service
                 {
                     cmd.Parameters.AddWithValue("@equipmentname", $"%{search.equipmentname}%");
                 }
+                cmd.Parameters.AddWithValue("@tenant", true);
 
                 SqlDataReader dr = cmd.ExecuteReader();
                 while (dr.Read())
