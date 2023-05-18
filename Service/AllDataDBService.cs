@@ -224,6 +224,16 @@ namespace api1.Service
             }
             return DataList;
         }
+        public class LoginData
+        {
+            public string Account{get;set;}
+            public int LoginCount{get;set;}
+            public int PersonCount{get;set;}
+        }
+        public List<LoginData> AllHomeLogin() 
+        {
+            
+        }
     }
 }
 
