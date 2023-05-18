@@ -259,8 +259,8 @@ namespace api1.Service
                         }
                         imgPathList.Add(imgPath);
                     }
-                }*/
-                /*var imagePaths = imgPathList.ToArray();
+                }
+                var imagePaths = imgPathList.ToArray();
                 if (imagePaths.Length >= 1)
                 {
                     Data.img1 = imagePaths[0];
