@@ -19,6 +19,16 @@ namespace api1.Service
             public string Genre { get; set; }
             public int Count { get; set; }
         }
+        public class TypeData
+        {
+            public string Type { get; set; }
+            public int Count { get; set; }
+        }
+        public class AddressData
+        {
+            public string Address { get; set; }
+            public int Count { get; set; }
+        }
         public List<GenreData> AllHomegenre()
         {
             List<GenreData> genreDataList = new List<GenreData>();
@@ -67,11 +77,7 @@ namespace api1.Service
 
             return chartData;
         }
-        public class TypeData
-        {
-            public string Type { get; set; }
-            public int Count { get; set; }
-        }
+        
         public List<TypeData> AllHometype()
         {
             List<TypeData> typeDataList = new List<TypeData>();
@@ -110,16 +116,10 @@ namespace api1.Service
             List<string> xAxisData = typeDataList.Select(data => data.Type).ToList();
             List<int> yAxisData = typeDataList.Select(data => data.Count).ToList();
             Dictionary<string, List<object>> chartData = new Dictionary<string, List<object>>();
-            chartData.Add("xAxisData", xAxisData.Cast<object>().ToList());
-            chartData.Add("yAxisData", yAxisData.Cast<object>().ToList());
+            chartData.Add("labels", xAxisData.Cast<object>().ToList());
+            chartData.Add("data", yAxisData.Cast<object>().ToList());
 
             return chartData;
-        }
-
-        public class AddressData
-        {
-            public string Address { get; set; }
-            public int Count { get; set; }
         }
         public List<AddressData> AllHomeaddress()
         {
@@ -162,8 +162,8 @@ namespace api1.Service
             List<string> xAxisData = addressDataList.Select(data => data.Address).ToList();
             List<int> yAxisData = addressDataList.Select(data => data.Count).ToList();
             Dictionary<string, List<object>> chartData = new Dictionary<string, List<object>>();
-            chartData.Add("xAxisData", xAxisData.Cast<object>().ToList());
-            chartData.Add("yAxisData", yAxisData.Cast<object>().ToList());
+            chartData.Add("labels", xAxisData.Cast<object>().ToList());
+            chartData.Add("data", yAxisData.Cast<object>().ToList());
 
             return chartData;
         }
@@ -230,10 +230,19 @@ namespace api1.Service
             public int LoginCount{get;set;}
             public int PersonCount{get;set;}
         }
-        /*public List<LoginData> AllHomeLogin() 
+        public List<LoginData> AllHomeLogin() 
         {
-            
-        }*/
+            string sql=$@"SELECT Account, COUNT(*) AS LoginCount, COUNT(DISTINCT Account) AS PersonCount FROM RENTAL GROUP BY Account";
+            try
+            {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
+                conn.Open();
+                
+            }
+        }
     }
 }
 

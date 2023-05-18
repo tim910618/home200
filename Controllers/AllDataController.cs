@@ -36,7 +36,6 @@ namespace api1.Controllers
         [HttpGet("AllDataHometype")]
         public IActionResult AllDataHometype()
         {
-            //Dictionary<string,int> Data=_alldataSerivce.AllHometype();
             List<TypeData> typeCount = _alldataSerivce.AllHometype();
             Dictionary<string, List<object>> chartData = _alldataSerivce.GetTypeDataForChart();
             return Ok(chartData);
@@ -47,7 +46,6 @@ namespace api1.Controllers
         [HttpGet("AllDataHomeaddress")]
         public IActionResult AllDataHomeaddress()
         {
-            //Dictionary<string,int> Data=_alldataSerivce.AllHomeaddress();
             List<AddressData> genreCount = _alldataSerivce.AllHomeaddress();
             Dictionary<string, List<object>> chartData = _alldataSerivce.GetAddressDataForChart();
             return Ok(chartData);
@@ -86,19 +84,11 @@ namespace api1.Controllers
                     //這行程式碼將 result 的值設定給 Data 物件的對應屬性，使用 property.SetValue 方法。
                     property.SetValue(Data, result);
                 }
+                /*簡單來說就是鎖定AllDataDBService，
+                然後選擇_alldataSerivce.Allday再帶值day給_alldataSerivce.Allday*/
             }
             return Ok(Data);
         }
-        /*簡單來說就是鎖定AllDataDBService，
-        然後選擇_alldataSerivce.Allday再帶值day給_alldataSerivce.Allday*/
     }
 
 }
-
-            /*Data.Mon=_alldataSerivce.Allmon();
-            Data.Tue=_alldataSerivce.Alltue();
-            Data.Wed=_alldataSerivce.Allwed();
-            Data.Thu=_alldataSerivce.Allthu();
-            Data.Fri=_alldataSerivce.Allfri();
-            Data.Sat=_alldataSerivce.Allsat();
-            Data.Sun=_alldataSerivce.Allsun();*/
