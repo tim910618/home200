@@ -75,6 +75,7 @@ public class HomeAnyController : ControllerBase
         {
             RentaldetailViewModel newBlock = new RentaldetailViewModel();
             newBlock.AllData = _homeDBService.GetDataById(Id);
+            newBlock.Image=_homeDBService.GetImgById(Id);
             if (newBlock.AllData != null)
             {
                 bool isRenter = User.IsInRole("renter");

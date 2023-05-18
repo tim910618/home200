@@ -8,5 +8,6 @@ namespace api1.ViewModel
     {
         public Rental AllData { get; set; } 
         public bool IsCollected {get;set;}
+        public string[] Image{get;set;} 
     }
 }
