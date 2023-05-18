@@ -235,6 +235,8 @@ namespace api1.Service
                 Data.Member.phone = dr["phone"].ToString();
                 Data.Member.isBlock = Convert.ToBoolean(dr["isBlock"]);
                 Data.Member.email = dr["email"].ToString();
+                Data.Member.img = dr["img"].ToString();
+
                 var imgPathtitledeed = dr["titledeed"].ToString();
                 if (!string.IsNullOrEmpty(imgPathtitledeed))
                 {
@@ -245,6 +247,18 @@ namespace api1.Service
                     else
                     {
                         Data.titledeed = $"http://localhost:5190/Image/{imgPathtitledeed.Replace("\\", "/")}";
+                    }
+                }
+                var ImgPath = dr["img"].ToString();
+                if (!string.IsNullOrEmpty(ImgPath))
+                {
+                    if (ImgPath.StartsWith("http://"))
+                    {
+                        Data.Member.img = ImgPath;
+                    }
+                    else
+                    {
+                        Data.Member.img = $"http://localhost:5190/MembersImg/{ImgPath.Replace("\\", "/")}";
                     }
                 }
                 var imgPathList = new List<string>();

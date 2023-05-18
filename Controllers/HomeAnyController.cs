@@ -41,6 +41,7 @@ public class HomeAnyController : ControllerBase
         {
             RentaldetailViewModel newBlock = new RentaldetailViewModel();
             newBlock.AllData = _homeDBService.GetDataById(Id);
+            newBlock.Image=_homeDBService.GetImgById(Id);
             if (newBlock.AllData != null)
             {
                 bool isRenter = User.IsInRole("renter");
@@ -108,6 +109,7 @@ public class HomeAnyController : ControllerBase
         {
             RentaldetailViewModel newBlock = new RentaldetailViewModel();
             newBlock.AllData = _homeDBService.GetDataById(Id);
+            newBlock.Image=_homeDBService.GetImgById(Id);
             if (newBlock.AllData != null)
             {
                 bool isRenter = User.IsInRole("renter");
@@ -141,6 +143,7 @@ public class HomeAnyController : ControllerBase
         {
             RentaldetailViewModel newBlock = new RentaldetailViewModel();
             newBlock.AllData = _homeDBService.GetDataById(Id);
+            newBlock.Image=_homeDBService.GetImgById(Id);
             if (newBlock.AllData != null)
             {
                 bool isRenter = User.IsInRole("renter");
@@ -174,6 +177,7 @@ public class HomeAnyController : ControllerBase
         {
             RentaldetailViewModel newBlock = new RentaldetailViewModel();
             newBlock.AllData = _homeDBService.GetDataById(Id);
+            newBlock.Image=_homeDBService.GetImgById(Id);
             if (newBlock.AllData != null)
             {
                 bool isRenter = User.IsInRole("renter");
@@ -203,6 +207,7 @@ public class HomeAnyController : ControllerBase
             //Rental Data = _homeDBService.GetDataById(Id);
             RentaldetailViewModel newBlock = new RentaldetailViewModel();
             newBlock.AllData=_homeDBService.GetDataById(Id);
+            newBlock.Image=_homeDBService.GetImgById(Id);
             if (newBlock.AllData != null)
             {
                 if(newBlock.AllData.isDelete==true || newBlock.AllData.tenant==false)
@@ -246,6 +251,7 @@ public class HomeAnyController : ControllerBase
         {
             RentaldetailViewModel newBlock = new RentaldetailViewModel();
             newBlock.AllData = _homeDBService.GetDataById(Id);
+            newBlock.Image=_homeDBService.GetImgById(Id);
             if (newBlock.AllData != null)
             {
                 bool isCollected = _homeanyDBService.CheckCollect(collect.renter, Id);
