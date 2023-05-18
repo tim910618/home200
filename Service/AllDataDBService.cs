@@ -230,7 +230,7 @@ namespace api1.Service
             public int LoginCount{get;set;}
             public int PersonCount{get;set;}
         }
-        public List<LoginData> AllHomeLogin() 
+        /*public List<LoginData> AllHomeLogin() 
         {
             string sql=$@"SELECT Account, COUNT(*) AS LoginCount, COUNT(DISTINCT Account) AS PersonCount FROM RENTAL GROUP BY Account";
             try
@@ -240,9 +240,18 @@ namespace api1.Service
                     conn.Close();
                 }
                 conn.Open();
-                
+                SqlCommand cmd=new SqlCommand(sql,conn);
+                SqlDataReader dr=cmd.ExecuteReader();
+                while(dr.Read())
+                {
+                    string Account=dr["Account"].ToString();
+                    int LoginCount=Convert.ToInt32(dr["LoginCount"]);
+                    int PersonCount=Convert.ToInt32(dr["PersonCount"]);
+
+                    
+                }
             }
-        }
+        }*/
     }
 }
 
