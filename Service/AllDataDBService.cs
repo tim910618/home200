@@ -230,9 +230,10 @@ namespace api1.Service
             public int LoginCount{get;set;}
             public int PersonCount{get;set;}
         }
-        /*public List<LoginData> AllHomeLogin() 
+        public List<LoginData> AllHomeLogin() 
         {
-            string sql=$@"SELECT Account, COUNT(*) AS LoginCount, COUNT(DISTINCT Account) AS PersonCount FROM RENTAL GROUP BY Account";
+            List<LoginData> LoginDataList=new List<LoginData>();
+            string sql=$@"SELECT Account, COUNT(*) AS LoginCount, COUNT(DISTINCT Account) AS PersonCount FROM MEMBERS GROUP BY Account";
             try
             {
                 if (conn.State != ConnectionState.Closed)
@@ -248,10 +249,25 @@ namespace api1.Service
                     int LoginCount=Convert.ToInt32(dr["LoginCount"]);
                     int PersonCount=Convert.ToInt32(dr["PersonCount"]);
 
-                    
+                    LoginData loginData=new LoginData
+                    {
+                        Account=Account,
+                        LoginCount=LoginCount,
+                        PersonCount=PersonCount
+                    };
+                    LoginDataList.Add(loginData);
                 }
             }
-        }*/
+            catch(Exception e)
+            {
+                throw new Exception(e.Message.ToString());
+            }
+            finally
+            {
+                conn.Close();
+            }
+            return LoginDataList;
+        }
     }
 }
 

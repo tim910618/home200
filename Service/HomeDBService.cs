@@ -218,11 +218,11 @@ namespace api1.Service
                 Data.area = Convert.ToInt32(dr["area"]);
                 Data.content = dr["content"].ToString();
                 Data.equipmentname = dr["equipmentname"].ToString();
-                /*Data.img1 = dr["img1"].ToString();
+                Data.img1 = dr["img1"].ToString();
                 Data.img2 = dr["img2"].ToString();
                 Data.img3 = dr["img3"].ToString();
                 Data.img4 = dr["img4"].ToString();
-                Data.img5 = dr["img5"].ToString();*/
+                Data.img5 = dr["img5"].ToString();
                 Data.titledeed=dr["titledeed"].ToString();
                 Data.check = Convert.ToInt32(dr["check"]);
                 Data.tenant = Convert.ToBoolean(dr["tenant"]);
@@ -247,7 +247,7 @@ namespace api1.Service
                         Data.titledeed = $"http://localhost:5190/Image/{imgPathtitledeed.Replace("\\", "/")}";
                     }
                 }
-                /*var imgPathList = new List<string>();
+                var imgPathList = new List<string>();
                 for (int i = 1; i <= 5; i++)
                 {
                     var imgPath = dr[$"img{i}"].ToString();
@@ -280,7 +280,7 @@ namespace api1.Service
                 if (imagePaths.Length >= 5)
                 {
                     Data.img5 = imagePaths[4];
-                }*/
+                }
 
             }
             catch (Exception)
