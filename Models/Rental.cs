@@ -39,6 +39,10 @@ namespace api1.Models
         public bool? tenant { get; set; }
         public DateTime? uploadtime { get; set; }
 
+        public string? titledeed { get; set; }
+        [JsonIgnore]
+        public IFormFile? titledeed_1 { get; set; }
+
 
         public string? reason{get;set;}
         public bool? isDelete{get;set;}

@@ -230,10 +230,10 @@ namespace api1.Service
             public int LoginCount{get;set;}
             public int PersonCount{get;set;}
         }
-        public List<LoginData> AllHomeLogin() 
+        /*public List<LoginData> AllHomeLogin() 
         {
             
-        }
+        }*/
     }
 }
 

@@ -223,6 +223,7 @@ namespace api1.Service
                 Data.img3 = dr["img3"].ToString();
                 Data.img4 = dr["img4"].ToString();
                 Data.img5 = dr["img5"].ToString();
+                Data.titledeed=dr["titledeed"].ToString();
                 Data.check = Convert.ToInt32(dr["check"]);
                 Data.tenant = Convert.ToBoolean(dr["tenant"]);
                 Data.uploadtime = Convert.ToDateTime(dr["uploadtime"]);
@@ -234,11 +235,24 @@ namespace api1.Service
                 Data.Member.phone = dr["phone"].ToString();
                 Data.Member.isBlock = Convert.ToBoolean(dr["isBlock"]);
                 Data.Member.email = dr["email"].ToString();
-                var MemimgPath = dr["img"].ToString();
+                var imgPathtitledeed = dr["titledeed"].ToString();
+                if (!string.IsNullOrEmpty(imgPathtitledeed))
+                {
+                    if (imgPathtitledeed.StartsWith("http://"))
+                    {
+                        Data.titledeed = imgPathtitledeed;
+                    }
+                    else
+                    {
+                        Data.titledeed = $"http://localhost:5190/Image/{imgPathtitledeed.Replace("\\", "/")}";
+                    }
+                }
+                /*var MemimgPath = dr["img"].ToString();
                 if (!string.IsNullOrEmpty(MemimgPath))
                 {
                     Data.Member.img = $"http://localhost:5190/MembersImg/{MemimgPath.Replace("\\", "/")}";
-                }
+                }*/
+
                 var imgPathList = new List<string>();
                 for (int i = 1; i <= 5; i++)
                 {
@@ -300,7 +314,7 @@ namespace api1.Service
         {
 
             string sql = $@"UPDATE RENTAL SET genre=@genre, pattern=@pattern, type=@type, title=@title, address=@address, rent=@rent, waterfee=@waterfee, electricitybill=@electricitybill, adminfee=@adminfee, floor=@floor, area=@area,
-                equipmentname=@equipmentname, content=@content, img1=@img1, img2=@img2,img3=@img3,img4=@img4,img5=@img5,uploadtime=@uploadtime ,[check]=@check,tenant=@tenant
+                equipmentname=@equipmentname, content=@content, img1=@img1, img2=@img2,img3=@img3,img4=@img4,img5=@img5,titledeed=@titledeed,uploadtime=@uploadtime ,[check]=@check,tenant=@tenant
                 WHERE rental_id = @Id;";
             try
             {
@@ -329,6 +343,7 @@ namespace api1.Service
                 cmd.Parameters.AddWithValue("@img3", string.IsNullOrEmpty(UpdateData.img3) ? DBNull.Value : (object)UpdateData.img3);
                 cmd.Parameters.AddWithValue("@img4", string.IsNullOrEmpty(UpdateData.img4) ? DBNull.Value : (object)UpdateData.img4);
                 cmd.Parameters.AddWithValue("@img5", string.IsNullOrEmpty(UpdateData.img5) ? DBNull.Value : (object)UpdateData.img5);
+                cmd.Parameters.AddWithValue("@titledeed", string.IsNullOrEmpty(UpdateData.titledeed) ? DBNull.Value : (object)UpdateData.titledeed);
                 cmd.Parameters.AddWithValue("@rental_id", UpdateData.rental_id);
                 cmd.Parameters.AddWithValue("@uploadtime", DateTime.Now);
                 cmd.Parameters.AddWithValue("@check", 0);
@@ -373,8 +388,8 @@ namespace api1.Service
 
         public void InsertHouse_Rental(Rental newData)
         {
-            string sql = @"INSERT INTO RENTAL(publisher,genre,pattern,type,title,address,rent,waterfee,electricitybill,adminfee,floor,area,equipmentname,content,img1,img2,img3,img4,img5,[check],tenant,uploadtime,isDelete) 
-                        VALUES (@publisher,@genre, @pattern, @type, @title, @address, @rent, @waterfee, @electricitybill, @adminfee, @floor, @area, @equipmentname, @content, @img1, @img2, @img3, @img4, @img5, 0, 0, @uploadtime, 0)";
+            string sql = @"INSERT INTO RENTAL(publisher,genre,pattern,type,title,address,rent,waterfee,electricitybill,adminfee,floor,area,equipmentname,content,img1,img2,img3,img4,img5,titledeed,[check],tenant,uploadtime,isDelete) 
+                        VALUES (@publisher,@genre, @pattern, @type, @title, @address, @rent, @waterfee, @electricitybill, @adminfee, @floor, @area, @equipmentname, @content, @img1, @img2, @img3, @img4, @img5, @titledeed, 0, 0, @uploadtime, 0)";
             try
             {
                 if (conn.State != ConnectionState.Closed)
@@ -402,6 +417,7 @@ namespace api1.Service
                 cmd.Parameters.AddWithValue("@img3", newData.img3 ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@img4", newData.img4 ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@img5", newData.img5 ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@titledeed", newData.titledeed ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@uploadtime", DateTime.Now);
 
                 cmd.ExecuteNonQuery();

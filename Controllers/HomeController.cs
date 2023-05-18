@@ -131,6 +131,8 @@ public class HomeController : ControllerBase
             // 檢查檔案是否存在
             if (Data.img1_1 == null || Data.img1_1.Length == 0)
                 return BadRequest("請選擇一張照片");
+            if (Data.titledeed_1== null || Data.img1_1.Length == 0)
+                return BadRequest("請選擇一張照片");
 
             string uploadPath = _configuration.GetSection("UploadPath").Value;
             string uploadFolderPath = Path.Combine(uploadPath, "Uploads");
@@ -143,7 +145,21 @@ public class HomeController : ControllerBase
             if (!Data.img1_1.ContentType.StartsWith("image/"))
                 return BadRequest("檔案格式不正確，請上傳圖片檔案");
 
-            // 產生檔名，以避免重複
+
+            // 一張地契
+            if (Data.titledeed_1!=null && Data.titledeed_1.Length>0)
+            {
+                string filename = Guid.NewGuid().ToString() + Path.GetExtension(Data.titledeed_1.FileName);
+                // 儲存檔案
+                var path = Path.Combine(uploadPath, filename);
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    Data.titledeed_1.CopyTo(stream);
+                }
+                Data.titledeed = filename;
+            }
+
+            // 很多張圖片
             List<string> filenames = new List<string>();
             IFormFile[] files = { Data.img1_1, Data.img1_2, Data.img1_3, Data.img1_4, Data.img1_5 };
             for (int i = 0; i < files.Length; i++)
@@ -254,6 +270,14 @@ public class HomeController : ControllerBase
         }
         else
             updateData.img5=data.img5;
+        //地契
+        if(updateData.titledeed_1 != null)
+        {
+            _homeDBService.OldFileCheck(data.titledeed);
+            updateData.titledeed = _homeDBService.CreateOneImage(updateData.titledeed_1);
+        }
+        else
+            updateData.titledeed=data.titledeed;
 
         updateData.rental_id = Id;
         _homeDBService.UpdateImgData(updateData);
