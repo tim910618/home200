@@ -41,6 +41,7 @@ public class HomeController : ControllerBase
         {
             HomeViewModel newBlock = new HomeViewModel();
             newBlock.AllData = _homeDBService.GetDataById(Id);
+            newBlock.Image=_homeDBService.GetImgById(Id);
             if (newBlock.AllData.isDelete == false || newBlock.AllData.tenant == true)
             {
                 Data.RentalBlock.Add(newBlock);
@@ -65,6 +66,7 @@ public class HomeController : ControllerBase
         {
             HomeViewModel newBlock = new HomeViewModel();
             newBlock.AllData = _homeDBService.GetDataById(Id);
+            newBlock.Image=_homeDBService.GetImgById(Id);
             if (newBlock.AllData.isDelete == false || newBlock.AllData.check != 0 && newBlock.AllData.tenant == false)
             {
                 Data.RentalBlock.Add(newBlock);
@@ -89,6 +91,7 @@ public class HomeController : ControllerBase
         {
             HomeViewModel newBlock = new HomeViewModel();
             newBlock.AllData = _homeDBService.GetDataById(Id);
+            newBlock.Image=_homeDBService.GetImgById(Id);
             if (newBlock.AllData.isDelete == false || (newBlock.AllData.check == 0) && newBlock.AllData.tenant == false)
             {
                 Data.RentalBlock.Add(newBlock);

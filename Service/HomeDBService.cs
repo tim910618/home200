@@ -235,6 +235,8 @@ namespace api1.Service
                 Data.Member.phone = dr["phone"].ToString();
                 Data.Member.isBlock = Convert.ToBoolean(dr["isBlock"]);
                 Data.Member.email = dr["email"].ToString();
+                Data.Member.img = dr["img"].ToString();
+
                 var imgPathtitledeed = dr["titledeed"].ToString();
                 if (!string.IsNullOrEmpty(imgPathtitledeed))
                 {
@@ -247,12 +249,18 @@ namespace api1.Service
                         Data.titledeed = $"http://localhost:5190/Image/{imgPathtitledeed.Replace("\\", "/")}";
                     }
                 }
-                /*var MemimgPath = dr["img"].ToString();
-                if (!string.IsNullOrEmpty(MemimgPath))
+                var ImgPath = dr["img"].ToString();
+                if (!string.IsNullOrEmpty(ImgPath))
                 {
-                    Data.Member.img = $"http://localhost:5190/MembersImg/{MemimgPath.Replace("\\", "/")}";
-                }*/
-
+                    if (ImgPath.StartsWith("http://"))
+                    {
+                        Data.Member.img = ImgPath;
+                    }
+                    else
+                    {
+                        Data.Member.img = $"http://localhost:5190/MembersImg/{ImgPath.Replace("\\", "/")}";
+                    }
+                }
                 var imgPathList = new List<string>();
                 for (int i = 1; i <= 5; i++)
                 {
@@ -265,10 +273,6 @@ namespace api1.Service
                         }
                         imgPathList.Add(imgPath);
                     }
-                    /*if (!string.IsNullOrEmpty(imgPath))
-                    {
-                        imgPathList.Add($"http://localhost:5190/Image/{imgPath.Replace("\\", "/")}");
-                    }*/
                 }
                 var imagePaths = imgPathList.ToArray();
                 if (imagePaths.Length >= 1)
@@ -308,6 +312,58 @@ namespace api1.Service
             else
             {
                 return Data;
+            }
+        }
+        public string[] GetImgById(Guid Id)
+        {
+            Rental Data = new Rental();
+            string sql = $@"SELECT m.*,d.* FROM RENTAL m INNER JOIN MEMBERS d ON m.publisher = d.Account WHERE m.rental_id = @Id;";
+            try
+            {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@Id", Id);
+                SqlDataReader dr = cmd.ExecuteReader();
+                dr.Read();
+                Data.img1 = dr["img1"].ToString();
+                Data.img2 = dr["img2"].ToString();
+                Data.img3 = dr["img3"].ToString();
+                Data.img4 = dr["img4"].ToString();
+                Data.img5 = dr["img5"].ToString();
+                Data.Member.isBlock = Convert.ToBoolean(dr["isBlock"]);
+                var imgPathList = new List<string>();
+                for (int i = 1; i <= 5; i++)
+                {
+                    var imgPath = dr[$"img{i}"].ToString();
+                    if (!string.IsNullOrEmpty(imgPath))
+                    {
+                        if (!imgPath.Contains("http://"))
+                        {
+                            imgPath = $"http://localhost:5190/Image/{imgPath.Replace("\\", "/")}";
+                        }
+                        imgPathList.Add(imgPath);
+                    }
+                }
+                if (Data == null || Data.Member.isBlock == true)
+                {
+                    return null;
+                }
+                else
+                {
+                    return imgPathList.ToArray();
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+            finally
+            {
+                conn.Close();
             }
         }
         public void UpdateImgData(Rental UpdateData)

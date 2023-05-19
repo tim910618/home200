@@ -51,6 +51,18 @@ namespace api1.Controllers
             return Ok(chartData);
         }
 
+        //登入使用率
+        [AllowAnonymous]
+        [HttpGet("AllDataLogin")]
+        public IActionResult AllDataLogin()
+        {
+            List<LoginData> LoginCount=_alldataSerivce.AllHomeLogin();
+            return Ok(LoginCount);
+        }
+
+
+
+
 
         /*檢舉*/
         [AllowAnonymous]
@@ -60,7 +72,6 @@ namespace api1.Controllers
             List<string> Data=_alldataSerivce.AllReason();
             return Ok(Data);
         }
-
         /*房東時間*/
         [AllowAnonymous]
         [HttpGet("AllDataDay")]
