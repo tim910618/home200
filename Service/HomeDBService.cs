@@ -101,7 +101,7 @@ namespace api1.Service
             }
             return IdList;
         }
-        public void SetMaxPaging(ForPaging Paging, string publisher)
+        /*public void SetMaxPaging(ForPaging Paging, string publisher)
         {
             int Row = 0;
             string sql = $@" SELECT * FROM RENTAL WHERE publisher = @publisher; ";
@@ -130,7 +130,7 @@ namespace api1.Service
             }
             Paging.MaxPage = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(Row) / Paging.Item));
             Paging.SetRightPage();
-        }
+        }*/
 
 
         public void UpToDown(Rental UpToDownData)
