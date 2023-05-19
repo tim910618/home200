@@ -29,6 +29,51 @@ namespace api1.Service
             public string Address { get; set; }
             public int Count { get; set; }
         }
+
+        #region 取得預約清單陣列
+        public List<BookList> GetBookTimeById(string Account,DateOnly date)
+        {
+            List<BookList> Data = new List<BookList>();
+            string sql = $@"SELECT * FROM booklist WHERE isDelete=@IsDelete and IsCheck=@IsCheck and bookdate=@Date and publisher=@Account";
+            try
+            {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@IsDelete", '0');
+                cmd.Parameters.AddWithValue("@IsCheck", '1');
+                cmd.Parameters.AddWithValue("@Account", Account);
+                cmd.Parameters.AddWithValue("@Date", date);
+                SqlDataReader dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    BookList Data2=new BookList();
+                    Data2.renter = dr["renter"].ToString();
+                    Data2.publisher = dr["publisher"].ToString();
+                    Data2.bookdate = DateOnly.FromDateTime(Convert.ToDateTime(dr["bookdate"]));
+                    Data2.booktime = dr["booktime"].ToString();
+                    Data2.rental_id = (Guid)dr["rental_id"];
+                    Data2.booklist_id = (Guid)dr["booklist_id"];
+                    Data2.isDelete = Convert.ToBoolean(dr["isDelete"]);
+                    Data2.isCheck = Convert.ToBoolean(dr["isCheck"]);
+                    Data.Add(Data2);
+                }
+            }
+            catch
+            {
+                Data = null;
+            }
+            finally
+            {
+                conn.Close();
+            }
+            return (Data);
+        }
+        #endregion
+
         public List<GenreData> AllHomegenre()
         {
             List<GenreData> genreDataList = new List<GenreData>();

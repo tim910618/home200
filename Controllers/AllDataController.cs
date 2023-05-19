@@ -1,5 +1,6 @@
 
 using System.Reflection;
+using api1.Models;
 using api1.Service;
 using api1.ViewModel;
 using Microsoft.AspNetCore.Authorization;
@@ -51,25 +52,42 @@ namespace api1.Controllers
             return Ok(chartData);
         }
 
-        //登入使用率
+        // //登入使用率
+        // [AllowAnonymous]
+        // [HttpGet("AllDataLogin")]
+        // public IActionResult AllDataLogin()
+        // {
+        //     List<LoginData> LoginCount=_alldataSerivce.AllHomeLogin();
+        //     return Ok(LoginCount);
+        // }
+
         [AllowAnonymous]
-        [HttpGet("AllDataLogin")]
-        public IActionResult AllDataLogin()
+        [HttpGet("DataFromBooked")]
+        public IActionResult DataFromBooked([FromQuery] string account, DateOnly date)
         {
-            List<LoginData> LoginCount=_alldataSerivce.AllHomeLogin();
-            return Ok(LoginCount);
+            List<BookList> data = _alldataSerivce.GetBookTimeById(account, date);
+
+            List<object> extractedData = new List<object>();
+            foreach (var item in data)
+            {
+                var extractedItem = new
+                {
+                    renter = item.renter,
+                    booktime = item.booktime,
+                    bookdate = item.bookdate
+                };
+                extractedData.Add(extractedItem);
+            }
+
+            return Ok(extractedData);
         }
-
-
-
-
 
         /*檢舉*/
         [AllowAnonymous]
         [HttpGet("AllDataReason")]
         public IActionResult AllDataReason()
         {
-            List<string> Data=_alldataSerivce.AllReason();
+            List<string> Data = _alldataSerivce.AllReason();
             return Ok(Data);
         }
         /*房東時間*/
@@ -77,7 +95,7 @@ namespace api1.Controllers
         [HttpGet("AllDataDay")]
         public IActionResult AllDataDay()
         {
-            AllDayViewModel Data=new AllDayViewModel();
+            AllDayViewModel Data = new AllDayViewModel();
             List<string> daysOfWeek = new List<string> { "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday" };
             foreach (string day in daysOfWeek)
             {
