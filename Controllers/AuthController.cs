@@ -28,7 +28,7 @@ namespace api1.Controllers
         private readonly IWebHostEnvironment _env;
 
 
-        public AuthController(IConfiguration configuration, MembersDBService membersDBService,HomeDBService homeDBService, JwtService jwtService, MailService mailService, IWebHostEnvironment env)
+        public AuthController(IConfiguration configuration, MembersDBService membersDBService, HomeDBService homeDBService, JwtService jwtService, MailService mailService, IWebHostEnvironment env)
         {
             _configuration = configuration;
             _membersSerivce = membersDBService;
@@ -51,6 +51,13 @@ namespace api1.Controllers
                     // Save profile image
                     if (registerMember.ProfileImage != null && registerMember.ProfileImage.Length > 0)
                     {
+                        // 設定圖片檔案大小上限（單位：位元組）
+                        int maxSizeInBytes = 5 * 1024 * 1024; // 5MB
+
+                        if (registerMember.ProfileImage.Length > maxSizeInBytes)
+                        {
+                            return Ok(new { message = "圖片檔案大小超過限制" });
+                        }
                         var fileName = Guid.NewGuid().ToString() + Path.GetExtension(registerMember.ProfileImage.FileName);
                         var path = Path.Combine("wwwroot/MembersImg", fileName);
                         using (var stream = new FileStream(path, FileMode.Create))
@@ -170,7 +177,7 @@ namespace api1.Controllers
         {
             Members memberForget = _membersSerivce.GetDataByAccount(Data.Account);
             string isAccount = _membersSerivce.ForgetPasswordAccount(Data.Account);
-            if(memberForget==null)
+            if (memberForget == null)
             {
                 return Ok("帳號不存在");
             }
@@ -232,18 +239,18 @@ namespace api1.Controllers
                 Members Data = _membersSerivce.GetDataByAccount(User.Identity.Name);
                 Data.name = UpdateData.name;
 
-                if(UpdateData.img_upload != null)
+                if (UpdateData.img_upload != null)
                 {
                     _homeDBService.MembersImgOldFileCheck(Data.img);
                     UpdateData.img = _homeDBService.MembersImgCreateOneImage(UpdateData.img_upload);
                 }
                 else
                 {
-                    UpdateData.img=Data.img;
+                    UpdateData.img = Data.img;
                 }
                 Data.phone = UpdateData.phone;
-                Data.img=UpdateData.img;
-                Data.name=UpdateData.name;
+                Data.img = UpdateData.img;
+                Data.name = UpdateData.name;
                 _membersSerivce.UpdatePro(Data);
                 Members memberData = _membersSerivce.GetDataByAccount(User.Identity.Name);
                 return Ok(memberData.img);
@@ -266,52 +273,52 @@ namespace api1.Controllers
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
-    /*#region 編輯資料
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [HttpPost("EditProfile")]
-        public async Task<IActionResult> EditProfileAsync([FromForm] EditMembersViewModel UpdateData)
+/*#region 編輯資料
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [HttpPost("EditProfile")]
+    public async Task<IActionResult> EditProfileAsync([FromForm] EditMembersViewModel UpdateData)
+    {
+        if (User.Identity.IsAuthenticated)
         {
-            if (User.Identity.IsAuthenticated)
-            {
-                Members Data = _membersSerivce.GetDataByAccount(User.Identity.Name);
-                Data.name = UpdateData.name;
+            Members Data = _membersSerivce.GetDataByAccount(User.Identity.Name);
+            Data.name = UpdateData.name;
 
-                // 如果使用者有上傳新照片，則更新資料庫中的照片欄位
-                if (UpdateData.img_upload != null && UpdateData.img_upload.Length > 0)
+            // 如果使用者有上傳新照片，則更新資料庫中的照片欄位
+            if (UpdateData.img_upload != null && UpdateData.img_upload.Length > 0)
+            {
+                // 刪除原有的照片檔案
+                if (!string.IsNullOrEmpty(Data.img))
                 {
-                    // 刪除原有的照片檔案
-                    if (!string.IsNullOrEmpty(Data.img))
+                    var imagePath = Path.Combine("wwwroot/MembersImg", Data.img);
+                    if (System.IO.File.Exists(imagePath))
                     {
-                        var imagePath = Path.Combine("wwwroot/MembersImg", Data.img);
-                        if (System.IO.File.Exists(imagePath))
-                        {
-                            System.IO.File.Delete(imagePath);
-                        }
+                        System.IO.File.Delete(imagePath);
                     }
-
-                    // 儲存新的照片檔案
-                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(UpdateData.img_upload.FileName);
-                    var path = Path.Combine("wwwroot/MembersImg", fileName);
-                    using (var stream = new FileStream(path, FileMode.Create))
-                    {
-                        await UpdateData.img_upload.CopyToAsync(stream);
-                    }
-                    //registerMember.newMember.img = path;
-                    Data.img = fileName;
                 }
-                //else
-                //{
-                //return BadRequest(new { message = "請上傳照片" });
-                //}
-                Data.phone = UpdateData.phone;
-                _membersSerivce.UpdatePro(Data);
-                Members memberData = _membersSerivce.GetDataByAccount(User.Identity.Name);
-                return Ok("修改成功" + "," + memberData.img);
-            }
-            else
-            {
-                return BadRequest("請登入");
-            }
 
+                // 儲存新的照片檔案
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(UpdateData.img_upload.FileName);
+                var path = Path.Combine("wwwroot/MembersImg", fileName);
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    await UpdateData.img_upload.CopyToAsync(stream);
+                }
+                //registerMember.newMember.img = path;
+                Data.img = fileName;
+            }
+            //else
+            //{
+            //return BadRequest(new { message = "請上傳照片" });
+            //}
+            Data.phone = UpdateData.phone;
+            _membersSerivce.UpdatePro(Data);
+            Members memberData = _membersSerivce.GetDataByAccount(User.Identity.Name);
+            return Ok("修改成功" + "," + memberData.img);
         }
-    #endregion*/
+        else
+        {
+            return BadRequest("請登入");
+        }
+
+    }
+#endregion*/
