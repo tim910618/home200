@@ -230,19 +230,19 @@ namespace api1.Service
             public int LoginCount{get;set;}
             public int PersonCount{get;set;}
         }
-        public List<LoginData> AllHomeLogin() 
-        {
-            string sql=$@"SELECT Account, COUNT(*) AS LoginCount, COUNT(DISTINCT Account) AS PersonCount FROM RENTAL GROUP BY Account";
-            try
-            {
-                if (conn.State != ConnectionState.Closed)
-                {
-                    conn.Close();
-                }
-                conn.Open();
+        // public List<LoginData> AllHomeLogin() 
+        // {
+        //     string sql=$@"SELECT Account, COUNT(*) AS LoginCount, COUNT(DISTINCT Account) AS PersonCount FROM RENTAL GROUP BY Account";
+        //     try
+        //     {
+        //         if (conn.State != ConnectionState.Closed)
+        //         {
+        //             conn.Close();
+        //         }
+        //         conn.Open();
                 
-            }
-        }
+        //     }
+        // }
     }
 }
 
