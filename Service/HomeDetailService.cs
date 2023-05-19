@@ -15,7 +15,8 @@ namespace api1.Service
 
         public List<Guid> GetIdList(ForPaging Paging)
         {
-            SetMaxPaging(Paging);
+            //SetMaxPaging(Paging);
+            int Count=0;
             List<Guid> IdList = new List<Guid>();
             string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by uploadtime desc) AS sort,* FROM RENTAL WHERE tenant = 0 AND isDelete = 0 AND [check] = 0 ) m WHERE m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
             try
@@ -30,7 +31,10 @@ namespace api1.Service
                 while (dr.Read())
                 {
                     IdList.Add(Guid.Parse(dr["rental_id"].ToString()));
+                    Count++;
                 }
+                Paging.MaxPage = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(Count) / Paging.Item));
+                Paging.SetRightPage();
             }
             catch (Exception e)
             {
@@ -42,7 +46,7 @@ namespace api1.Service
             }
             return IdList;
         }
-        public void SetMaxPaging(ForPaging Paging)
+        /*public void SetMaxPaging(ForPaging Paging)
         {
             int Row = 0;
             string sql = $@" SELECT * FROM RENTAL; ";
@@ -70,7 +74,7 @@ namespace api1.Service
             }
             Paging.MaxPage = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(Row) / Paging.Item));
             Paging.SetRightPage();
-        }
+        }*/
 
         public void CheckHome(Rental CheckData)
         {
