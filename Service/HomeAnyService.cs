@@ -196,9 +196,9 @@ namespace api1.Service
                 {
                     sqlBuilder.Append(" AND m.equipmentname LIKE @equipmentname");
                 }
-                //string sql=$@"{sqlBuilder.ToString()} AND m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
+                string sql=$@"{sqlBuilder.ToString()} AND m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
                 
-                SqlCommand cmd = new SqlCommand(sqlBuilder.ToString(), conn);
+                SqlCommand cmd = new SqlCommand(sql, conn);
                 if(!string.IsNullOrEmpty(search.county) || !string.IsNullOrEmpty(search.township) || !string.IsNullOrEmpty(search.street))
                 {
                     cmd.Parameters.AddWithValue("@address",$"%{addressBuilder.ToString()}%");
@@ -241,11 +241,49 @@ namespace api1.Service
                     //IdList.Add(Guid.Parse(dr["rental_id"].ToString()));
                     Count++;
                 }
+                dr.Close();
                 Paging.MaxPage = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(Count) / Paging.Item));
                 Paging.SetRightPage();
 
-                string sql=$@"{sqlBuilder.ToString()} AND m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
+                sql=$@"{sqlBuilder.ToString()} AND m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
+                conn.Close();
+                conn.Open();
                 cmd=new SqlCommand(sql,conn);
+                if(!string.IsNullOrEmpty(search.county) || !string.IsNullOrEmpty(search.township) || !string.IsNullOrEmpty(search.street))
+                {
+                    cmd.Parameters.AddWithValue("@address",$"%{addressBuilder.ToString()}%");
+                }
+                if(search.rent1.HasValue && search.rent2.HasValue)
+                {
+                    cmd.Parameters.AddWithValue("@rent1", search.rent1.Value);
+                    cmd.Parameters.AddWithValue("@rent2", search.rent2.Value);
+                }
+                else if(search.rent1.HasValue)
+                {
+                    cmd.Parameters.AddWithValue("@rent1", search.rent1.Value);
+                }
+                else if(search.rent2.HasValue)
+                {
+                    cmd.Parameters.AddWithValue("@rent2", search.rent2.Value);
+                }
+                
+                if (!string.IsNullOrEmpty(search.genre))
+                {
+                    cmd.Parameters.AddWithValue("@genre", $"%{search.genre}%");
+                }
+                if (!string.IsNullOrEmpty(search.pattern))
+                {
+                    cmd.Parameters.AddWithValue("@pattern", $"%{search.pattern}%");
+                }
+                if (!string.IsNullOrEmpty(search.type))
+                {
+                    cmd.Parameters.AddWithValue("@type", $"%{search.type}%");
+                }
+                if (!string.IsNullOrEmpty(search.equipmentname))
+                {
+                    cmd.Parameters.AddWithValue("@equipmentname", $"%{search.equipmentname}%");
+                }
+                cmd.Parameters.AddWithValue("@tenant", true);
                 dr=cmd.ExecuteReader();
                 while(dr.Read())
                 {
@@ -323,9 +361,9 @@ namespace api1.Service
                 {
                     sqlBuilder.Append(" AND m.equipmentname LIKE @equipmentname");
                 }
-                //string sql=$@"{sqlBuilder.ToString()} AND m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
+                string sql=$@"{sqlBuilder.ToString()} AND m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
                 
-                SqlCommand cmd = new SqlCommand(sqlBuilder.ToString(), conn);
+                SqlCommand cmd = new SqlCommand(sql, conn);
                 if(!string.IsNullOrEmpty(search.county) || !string.IsNullOrEmpty(search.township) || !string.IsNullOrEmpty(search.street))
                 {
                     cmd.Parameters.AddWithValue("@address",$"%{addressBuilder.ToString()}%");
@@ -364,14 +402,50 @@ namespace api1.Service
                 SqlDataReader dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
-                    //IdList.Add(Guid.Parse(dr["rental_id"].ToString()));
                     Count++;
                 }
+                dr.Close();
                 Paging.MaxPage = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(Count) / Paging.Item));
                 Paging.SetRightPage();
 
-                string sql=$@"{sqlBuilder.ToString()} AND m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
+                sql=$@"{sqlBuilder.ToString()} AND m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
+                conn.Close();
+                conn.Open();
                 cmd=new SqlCommand(sql,conn);
+                if(!string.IsNullOrEmpty(search.county) || !string.IsNullOrEmpty(search.township) || !string.IsNullOrEmpty(search.street))
+                {
+                    cmd.Parameters.AddWithValue("@address",$"%{addressBuilder.ToString()}%");
+                }
+                if(search.rent1.HasValue && search.rent2.HasValue)
+                {
+                    cmd.Parameters.AddWithValue("@rent1", search.rent1.Value);
+                    cmd.Parameters.AddWithValue("@rent2", search.rent2.Value);
+                }
+                else if(search.rent1.HasValue)
+                {
+                    cmd.Parameters.AddWithValue("@rent1", search.rent1.Value);
+                }
+                else if(search.rent2.HasValue)
+                {
+                    cmd.Parameters.AddWithValue("@rent2", search.rent2.Value);
+                }
+                
+                if (!string.IsNullOrEmpty(search.genre))
+                {
+                    cmd.Parameters.AddWithValue("@genre", $"%{search.genre}%");
+                }
+                if (!string.IsNullOrEmpty(search.pattern))
+                {
+                    cmd.Parameters.AddWithValue("@pattern", $"%{search.pattern}%");
+                }
+                if (!string.IsNullOrEmpty(search.type))
+                {
+                    cmd.Parameters.AddWithValue("@type", $"%{search.type}%");
+                }
+                if (!string.IsNullOrEmpty(search.equipmentname))
+                {
+                    cmd.Parameters.AddWithValue("@equipmentname", $"%{search.equipmentname}%");
+                }
                 dr=cmd.ExecuteReader();
                 while(dr.Read())
                 {
