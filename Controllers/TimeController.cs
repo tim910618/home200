@@ -221,4 +221,65 @@ public class TimeController : ControllerBase
     }
 
     #endregion
+
+    [AllowAnonymous]
+    #region 取得單天的預約時間 取得房東 修改帶入方式再改抓資料
+    [HttpPost("BookOfDayTool")]
+    public IActionResult BookOfDayTool([FromForm] BookOfDay Data)
+    {
+        string guidString = Data.rental_id;
+
+        // 再查詢 SpecialTime 有沒有特殊時間
+        SpecialTime specialTime = _timeService.GetSpecialTime(Data.account, Data.date);
+        string availableTimes;
+
+        //判斷有沒有特殊天資料
+        if (specialTime != null)
+        {
+            availableTimes = specialTime.newtime;
+        }
+        else
+        {
+            BookTime bookTime = _timeService.GetBookOfDay(Data.account);
+            switch (Data.date.DayOfWeek)
+            {
+                case DayOfWeek.Monday:
+                    availableTimes = bookTime.mon;
+                    break;
+                case DayOfWeek.Tuesday:
+                    availableTimes = bookTime.tue;
+                    break;
+                case DayOfWeek.Wednesday:
+                    availableTimes = bookTime.wed;
+                    break;
+                case DayOfWeek.Thursday:
+                    availableTimes = bookTime.thu;
+                    break;
+                case DayOfWeek.Friday:
+                    availableTimes = bookTime.fri;
+                    break;
+                case DayOfWeek.Saturday:
+                    availableTimes = bookTime.sat;
+                    break;
+                case DayOfWeek.Sunday:
+                    availableTimes = bookTime.sun;
+                    break;
+                default:
+                    throw new ArgumentException("請選擇正確的日期格式");
+            }
+        }
+        // 將DateTime轉換為date跟time
+        //DateOnly date = DateOnly.FromDateTime(datetime);
+        // 將當天所有可預約的時段轉成陣列
+        string[] availableTimesArray = availableTimes.Split(';');
+        // 抓取已被預約的時段轉成陣列
+        string[] bookedTimes = _timeService.GetBookedTimes(Data.account, Data.date, availableTimesArray);
+        // 取得未被預約的時段
+        string[] unbookedTimes = availableTimesArray.Except(bookedTimes).ToArray();
+
+        //return Ok(new { bookedTimes, unbookedTimes });
+        return Ok(new { availableTimesArray });
+    }
+
+    #endregion
 }
