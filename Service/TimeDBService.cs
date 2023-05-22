@@ -191,6 +191,10 @@ namespace api1.Service
         // 取得當天可預約的時段
         private string GetAvailableTimes(string account, DateTime date)
         {
+            if (conn.State != ConnectionState.Closed)
+            {
+                conn.Close();
+            }
             // 先取得屋主帳號的BookTime資料
             BookTime bookTime = GetBookOfDay(account);
 
