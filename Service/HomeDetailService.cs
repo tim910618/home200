@@ -18,7 +18,7 @@ namespace api1.Service
             //SetMaxPaging(Paging);
             int Count=0;
             List<Guid> IdList = new List<Guid>();
-            string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by uploadtime desc) AS sort,* FROM RENTAL WHERE tenant = 0 AND isDelete = 0 AND [check] = 0 ) m; ";
+            string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by uploadtime desc) AS sort,* FROM RENTAL WHERE tenant = 0 AND isDelete = 0 AND [check] = 0 ) m ";
             //string sql = $@" SELECT rental_id FROM (SELECT row_number() OVER(order by uploadtime desc) AS sort,* FROM RENTAL WHERE tenant = 0 AND isDelete = 0 AND [check] = 0 ) m WHERE m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
             try
             {
@@ -31,11 +31,11 @@ namespace api1.Service
                 SqlDataReader dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
-                    //IdList.Add(Guid.Parse(dr["rental_id"].ToString()));
-                    Count++;
+                    IdList.Add(Guid.Parse(dr["rental_id"].ToString()));
+                    //Count++;
                 }
                 dr.Close();
-                Paging.MaxPage = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(Count) / Paging.Item));
+                /*Paging.MaxPage = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(Count) / Paging.Item));
                 Paging.SetRightPage();
 
                 sql = $@"{sql} WHERE m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}";
@@ -46,7 +46,7 @@ namespace api1.Service
                 while(dr.Read())
                 {
                     IdList.Add(Guid.Parse(dr["rental_id"].ToString()));
-                }
+                }*/
             }
             catch (Exception e)
             {

@@ -196,9 +196,9 @@ namespace api1.Service
                 {
                     sqlBuilder.Append(" AND m.equipmentname LIKE @equipmentname");
                 }
-                string sql=$@"{sqlBuilder.ToString()} AND m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
+                //string sql=$@"{sqlBuilder.ToString()} AND m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
                 
-                SqlCommand cmd = new SqlCommand(sql, conn);
+                SqlCommand cmd = new SqlCommand(sqlBuilder.ToString(), conn);
                 if(!string.IsNullOrEmpty(search.county) || !string.IsNullOrEmpty(search.township) || !string.IsNullOrEmpty(search.street))
                 {
                     cmd.Parameters.AddWithValue("@address",$"%{addressBuilder.ToString()}%");
@@ -245,7 +245,7 @@ namespace api1.Service
                 Paging.MaxPage = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(Count) / Paging.Item));
                 Paging.SetRightPage();
 
-                sql=$@"{sqlBuilder.ToString()} AND m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
+                string sql=$@"{sqlBuilder.ToString()} AND m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
                 conn.Close();
                 conn.Open();
                 cmd=new SqlCommand(sql,conn);
@@ -361,9 +361,9 @@ namespace api1.Service
                 {
                     sqlBuilder.Append(" AND m.equipmentname LIKE @equipmentname");
                 }
-                string sql=$@"{sqlBuilder.ToString()} AND m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
+                //string sql=$@"{sqlBuilder.ToString()} AND m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
                 
-                SqlCommand cmd = new SqlCommand(sql, conn);
+                SqlCommand cmd = new SqlCommand(sqlBuilder.ToString(), conn);
                 if(!string.IsNullOrEmpty(search.county) || !string.IsNullOrEmpty(search.township) || !string.IsNullOrEmpty(search.street))
                 {
                     cmd.Parameters.AddWithValue("@address",$"%{addressBuilder.ToString()}%");
@@ -408,7 +408,7 @@ namespace api1.Service
                 Paging.MaxPage = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(Count) / Paging.Item));
                 Paging.SetRightPage();
 
-                sql=$@"{sqlBuilder.ToString()} AND m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
+                string sql=$@"{sqlBuilder.ToString()} AND m.sort BETWEEN {(Paging.NowPage - 1) * Paging.Item + 1} AND {Paging.NowPage * Paging.Item}; ";
                 conn.Close();
                 conn.Open();
                 cmd=new SqlCommand(sql,conn);
