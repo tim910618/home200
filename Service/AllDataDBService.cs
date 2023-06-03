@@ -284,7 +284,12 @@ namespace api1.Service
             try
             {
                 int totalPersonCount = 0;
-                string sql=$@"SELECT [identity], COUNT(*) AS LoginCount, COUNT(DISTINCT Account) AS PersonCount FROM Login_Record WHERE [identity]=1 GROUP BY [identity]" ;
+                //string sql=$@"SELECT [identity], COUNT(*) AS LoginCount FROM Login_Record WHERE [identity]=1 GROUP BY [identity]" ;
+                string sql=$@"SELECT CONVERT(data,LoginTime) AS LoginData, COUNT(*) AS LoginCount
+                            FROM Login_Record
+                            WHERE [identity] = 1 AND LoginTime >= DATEADD(DAY,-7,GETDATE())
+                            GROUP BY CONVERT(date,LoginTime)
+                            ORDER BY CONVERT(date,LoginTime)";
                 if (conn.State != ConnectionState.Closed)
                 {
                     conn.Close();
@@ -296,10 +301,8 @@ namespace api1.Service
                 {
                     int identity = Convert.ToInt32(dr["identity"]); 
                     int loginCount=Convert.ToInt32(dr["LoginCount"]);
-                    int personCount = Convert.ToInt32(dr["PersonCount"]);
 
                     identity1Count = loginCount;
-                    totalPersonCount +=personCount;
 
                 }
                 loginDataList.Add(new LoginData
@@ -321,7 +324,7 @@ namespace api1.Service
             try
             {
                 int totalPersonCount = 0;
-                string sql=$@"SELECT [identity], COUNT(*) AS LoginCount, COUNT(DISTINCT Account) AS PersonCount FROM Login_Record WHERE [identity]=2 GROUP BY [identity]" ;
+                string sql=$@"SELECT [identity], COUNT(*) AS LoginCount FROM Login_Record WHERE [identity]=2 GROUP BY [identity]" ;
                 if (conn.State != ConnectionState.Closed)
                 {
                     conn.Close();
@@ -333,11 +336,8 @@ namespace api1.Service
                 {
                     int identity = Convert.ToInt32(dr["identity"]); 
                     int loginCount=Convert.ToInt32(dr["LoginCount"]);
-                    int personCount = Convert.ToInt32(dr["PersonCount"]);
 
                     identity2Count = loginCount;
-                    totalPersonCount +=personCount;
-
                     
                 }
                 loginDataList.Add(new LoginData
