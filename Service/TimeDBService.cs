@@ -238,10 +238,6 @@ namespace api1.Service
 
         public SpecialTime GetSpecialTime(string publisher, DateTime date)
         {
-            if (conn.State != ConnectionState.Closed)
-            {
-                conn.Close();
-            }
             SpecialTime data = null;
             string sql = "SELECT * FROM SpecialTime WHERE publisher=@publisher AND Date=@date";
             try
