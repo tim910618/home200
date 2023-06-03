@@ -79,6 +79,7 @@ namespace api1.Service
                 {
                     IdList.Add(Guid.Parse(dr["rental_id"].ToString()));
                 }
+                dr.Close();
             }
             catch (Exception e)
             {
@@ -123,6 +124,7 @@ namespace api1.Service
                 {
                     IdList.Add(Guid.Parse(dr["rental_id"].ToString()));
                 }
+                dr.Close();
             }
             catch (Exception e)
             {
@@ -289,6 +291,7 @@ namespace api1.Service
                 {
                     IdList.Add(Guid.Parse(dr["rental_id"].ToString()));
                 }
+                dr.Close();
             }
             catch (Exception e)
             {
@@ -451,6 +454,7 @@ namespace api1.Service
                 {
                     IdList.Add(Guid.Parse(dr["rental_id"].ToString()));
                 }
+                dr.Close();
             }
             catch (Exception e)
             {
@@ -512,6 +516,7 @@ namespace api1.Service
                 {
                     IdList.Add(Guid.Parse(dr["rental_id"].ToString()));
                 }
+                dr.Close();
             }
             catch (Exception e)
             {
@@ -541,6 +546,7 @@ namespace api1.Service
                 {
                     Row++;
                 }
+                dr.Close();
             }
             catch (Exception e)
             {

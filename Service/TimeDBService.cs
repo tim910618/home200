@@ -176,6 +176,7 @@ namespace api1.Service
                 Data.fri = dr["friday"].ToString();
                 Data.sat = dr["saturday"].ToString();
                 Data.sun = dr["sunday"].ToString();
+                dr.Close();
             }
             catch (Exception e)
             {
@@ -262,6 +263,7 @@ namespace api1.Service
                     data.oldtime = dr["oldtime"].ToString();
                     data.newtime = dr["newtime"].ToString();
                 }
+                dr.Close();
             }
             catch (Exception e)
             {
@@ -416,6 +418,7 @@ namespace api1.Service
                     string time = reader.GetString(0);
                     bookedTimes.Add(time);
                 }
+                reader.Close();
             }
             catch (Exception ex)
             {
@@ -457,6 +460,7 @@ namespace api1.Service
                     Data.booklist_id = (Guid)dr["booklist_id"];
                     bookedTimes.Add(Data);
                 }
+                dr.Close();
             }
             catch (Exception e)
             {

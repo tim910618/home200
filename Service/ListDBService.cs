@@ -65,8 +65,9 @@ namespace api1.Service
                         }
                         Data.img1 = imgPath;
                     }
+                    
                 }
-
+                dr.Close();
             }
             catch (Exception e)
             {
@@ -130,7 +131,7 @@ namespace api1.Service
                         Data.img1 = imgPath;
                     }
                 }
-
+                dr.Close();
             }
             catch (Exception e)
             {

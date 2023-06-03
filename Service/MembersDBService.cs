@@ -81,7 +81,7 @@ namespace api1.Service
         public Members GetDataByAccount(string Account)
         {
             Members Data = new Members();
-            string sql = $@"SELECT * FROM MEMBERS WHERE account='{Account}' ";
+            string sql = $@"SELECT * FROM MEMBERS WHERE BINARY_CHECKSUM(account) = BINARY_CHECKSUM ('{Account}') ";
             try
             {
                 if (conn.State != ConnectionState.Closed)
