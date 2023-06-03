@@ -52,14 +52,14 @@ namespace api1.Controllers
             return Ok(chartData);
         }
 
-        // //登入使用率
-        // [AllowAnonymous]
-        // [HttpGet("AllDataLogin")]
-        // public IActionResult AllDataLogin()
-        // {
-        //     List<LoginData> LoginCount=_alldataSerivce.AllHomeLogin();
-        //     return Ok(LoginCount);
-        // }
+        //登入使用率
+        [AllowAnonymous]
+        [HttpGet("AllDataLogin")]
+        public IActionResult AllDataLogin()
+        {
+            List<LoginData> LoginCount=_alldataSerivce.AllHomeLogin();
+            return Ok(LoginCount);
+        }
 
         [AllowAnonymous]
         [HttpGet("DataFromBooked")]

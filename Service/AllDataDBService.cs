@@ -271,23 +271,109 @@ namespace api1.Service
         }
         public class LoginData
         {
-            public string Account{get;set;}
+            //身分
+            public int Identity{get;set;}
+            //登入次數
             public int LoginCount{get;set;}
+            //總人數
             public int PersonCount{get;set;}
         }
-        // public List<LoginData> AllHomeLogin() 
-        // {
-        //     string sql=$@"SELECT Account, COUNT(*) AS LoginCount, COUNT(DISTINCT Account) AS PersonCount FROM RENTAL GROUP BY Account";
-        //     try
-        //     {
-        //         if (conn.State != ConnectionState.Closed)
-        //         {
-        //             conn.Close();
-        //         }
-        //         conn.Open();
-                
-        //     }
-        // }
+        public List<LoginData> AllHomeLogin() 
+        {
+            List<LoginData> loginDataList=new List<LoginData>();
+            int identity1Count=0;
+            int identity2Count=0;
+            int total=0;
+            try
+            {
+                int totalPersonCount = 0;
+                string sql=$@"SELECT [identity], COUNT(*) AS LoginCount, COUNT(DISTINCT Account) AS PersonCount FROM LOGIN_RECORDS WHERE [identity]=1 GROUP BY [identity]" ;
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
+                conn.Open();
+                SqlCommand cmd=new SqlCommand(sql,conn);
+                SqlDataReader dr=cmd.ExecuteReader();
+                while(dr.Read())
+                {
+                    int identity = Convert.ToInt32(dr["identity"]); 
+                    int loginCount=Convert.ToInt32(dr["LoginCount"]);
+                    int personCount = Convert.ToInt32(dr["PersonCount"]);
+
+                    identity1Count = loginCount;
+                    totalPersonCount +=personCount;
+
+                    /*else if(identity == 2)
+                    {
+                        identity2Count = loginCount;
+                        totalPersonCount +=personCount;
+                    }*/
+                    //totalPersonCount += personCount;
+                }
+                loginDataList.Add(new LoginData
+                {
+                    Identity=1,
+                    LoginCount=identity1Count,
+                    PersonCount=totalPersonCount
+                });
+                total +=totalPersonCount;
+            }
+            catch(Exception e)
+            {
+                throw new Exception(e.Message.ToString());
+            }
+            finally
+            {
+                conn.Close();
+            }
+            
+
+            try
+            {
+                int totalPersonCount = 0;
+                string sql=$@"SELECT [identity], COUNT(*) AS LoginCount, COUNT(DISTINCT Account) AS PersonCount FROM LOGIN_RECORDS WHERE [identity]=2 GROUP BY [identity]" ;
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
+                conn.Open();
+                SqlCommand cmd=new SqlCommand(sql,conn);
+                SqlDataReader dr=cmd.ExecuteReader();
+                while(dr.Read())
+                {
+                    int identity = Convert.ToInt32(dr["identity"]); 
+                    int loginCount=Convert.ToInt32(dr["LoginCount"]);
+                    int personCount = Convert.ToInt32(dr["PersonCount"]);
+
+                    identity2Count = loginCount;
+                    totalPersonCount +=personCount;
+
+                    
+                }
+                loginDataList.Add(new LoginData
+                {
+                    Identity=2,
+                    LoginCount=identity2Count,
+                    PersonCount=totalPersonCount
+                });
+                total +=totalPersonCount;
+            }
+            catch(Exception e)
+            {
+                throw new Exception(e.Message.ToString());
+            }
+            finally
+            {
+                conn.Close();
+            }
+            loginDataList.Add(new LoginData
+            {
+                PersonCount=total
+            });
+
+            return loginDataList;
+        }
     }
 }
 
