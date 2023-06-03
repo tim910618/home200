@@ -275,19 +275,16 @@ namespace api1.Service
             public int Identity{get;set;}
             //登入次數
             public int LoginCount{get;set;}
-            //總人數
-            public int PersonCount{get;set;}
         }
         public List<LoginData> AllHomeLogin() 
         {
             List<LoginData> loginDataList=new List<LoginData>();
             int identity1Count=0;
             int identity2Count=0;
-            int total=0;
             try
             {
                 int totalPersonCount = 0;
-                string sql=$@"SELECT [identity], COUNT(*) AS LoginCount, COUNT(DISTINCT Account) AS PersonCount FROM LOGIN_RECORDS WHERE [identity]=1 GROUP BY [identity]" ;
+                string sql=$@"SELECT [identity], COUNT(*) AS LoginCount, COUNT(DISTINCT Account) AS PersonCount FROM Login_Record WHERE [identity]=1 GROUP BY [identity]" ;
                 if (conn.State != ConnectionState.Closed)
                 {
                     conn.Close();
@@ -304,20 +301,12 @@ namespace api1.Service
                     identity1Count = loginCount;
                     totalPersonCount +=personCount;
 
-                    /*else if(identity == 2)
-                    {
-                        identity2Count = loginCount;
-                        totalPersonCount +=personCount;
-                    }*/
-                    //totalPersonCount += personCount;
                 }
                 loginDataList.Add(new LoginData
                 {
                     Identity=1,
-                    LoginCount=identity1Count,
-                    PersonCount=totalPersonCount
+                    LoginCount=identity1Count
                 });
-                total +=totalPersonCount;
             }
             catch(Exception e)
             {
@@ -332,7 +321,7 @@ namespace api1.Service
             try
             {
                 int totalPersonCount = 0;
-                string sql=$@"SELECT [identity], COUNT(*) AS LoginCount, COUNT(DISTINCT Account) AS PersonCount FROM LOGIN_RECORDS WHERE [identity]=2 GROUP BY [identity]" ;
+                string sql=$@"SELECT [identity], COUNT(*) AS LoginCount, COUNT(DISTINCT Account) AS PersonCount FROM Login_Record WHERE [identity]=2 GROUP BY [identity]" ;
                 if (conn.State != ConnectionState.Closed)
                 {
                     conn.Close();
@@ -354,10 +343,8 @@ namespace api1.Service
                 loginDataList.Add(new LoginData
                 {
                     Identity=2,
-                    LoginCount=identity2Count,
-                    PersonCount=totalPersonCount
+                    LoginCount=identity2Count
                 });
-                total +=totalPersonCount;
             }
             catch(Exception e)
             {
@@ -367,10 +354,6 @@ namespace api1.Service
             {
                 conn.Close();
             }
-            loginDataList.Add(new LoginData
-            {
-                PersonCount=total
-            });
 
             return loginDataList;
         }

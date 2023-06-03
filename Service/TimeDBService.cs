@@ -138,6 +138,7 @@ namespace api1.Service
                 Data.fri = dr["friday"].ToString();
                 Data.sat = dr["saturday"].ToString();
                 Data.sun = dr["sunday"].ToString();
+                dr.Close();
             }
             catch (Exception e)
             {
