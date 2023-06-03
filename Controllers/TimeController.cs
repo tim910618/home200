@@ -37,7 +37,7 @@ public class TimeController : ControllerBase
     {
         if (!User.Identity.IsAuthenticated)
         {
-            return BadRequest("請登入");
+            return Ok("請登入");
         }
         Data.publisher = User.Identity.Name;
         Data.booktime_id = _timeService.GetBookTime_Id(Data.publisher);
@@ -54,7 +54,7 @@ public class TimeController : ControllerBase
         string account = User.Identity.Name;
         if (!User.Identity.IsAuthenticated)
         {
-            return BadRequest("請登入");
+            return Ok("請登入");
         }
         BookTime Data = _timeService.GetBookTime(account);
         return Ok(Data);
@@ -68,7 +68,7 @@ public class TimeController : ControllerBase
     {
         if (!User.Identity.IsAuthenticated)
         {
-            return BadRequest("請登入");
+            return Ok("請登入");
         }
         // 檢查使用者是否有權限新增 SpecialTime 資料
         Data.publisher = User.Identity.Name;
@@ -80,7 +80,7 @@ public class TimeController : ControllerBase
 
         if (_timeService.IsReserved(Data.date, Data.newtime, Data.publisher))
         {
-            return BadRequest("此時段有被預約，若要修改請先至預約總表取消預約");
+            return Ok("此時段有被預約，若要修改請先至預約總表取消預約");
         }
 
         switch (Data.date.DayOfWeek)
