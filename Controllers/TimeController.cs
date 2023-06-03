@@ -150,8 +150,8 @@ public class TimeController : ControllerBase
         }
         // 新增 SpecialTime 資料
         _timeService.AddSpecialTime(Data);
-
-        return Ok("新增單一時段成功");
+        SpecialTime specialTime = _timeService.GetSpecialTime(Data.publisher, Data.date);
+        return Ok(specialTime);
     }
     #endregion
     [AllowAnonymous]
