@@ -42,8 +42,9 @@ public class TimeController : ControllerBase
         Data.publisher = User.Identity.Name;
         Data.booktime_id = _timeService.GetBookTime_Id(Data.publisher);
 
-        _timeService.SetBookTime(Data.publisher, Data);
-        return Ok("時間設定成功");
+
+        string validate=_timeService.SetBookTime(Data.publisher, Data);
+        return Ok(validate);
     }
     #endregion
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "publisher")]
@@ -163,7 +164,8 @@ public class TimeController : ControllerBase
         Guid guid = Guid.Parse(guidString);
         // 取得房東是誰，因為要抓房東的時間
         Rental rental = _HomeDBService.GetDataById(guid);
-        if(rental==null){
+        if (rental == null)
+        {
             return Ok("查無資訊");
         }
         string account = rental.publisher;

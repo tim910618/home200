@@ -17,7 +17,7 @@ namespace api1.Service
         }
 
         #region 設定可預約時間
-        public void SetBookTime(string account, BookTime bookTime)
+        public string SetBookTime(string account, BookTime bookTime)
         {
             // 將可預約時間轉成陣列
             string[] monTime = !string.IsNullOrEmpty(bookTime.mon) ? bookTime.mon.Split(';') : new string[0];
@@ -43,6 +43,32 @@ namespace api1.Service
             if (!isValidFormat)
             {
                 throw new ArgumentException(errorMessage);
+            }
+
+            // 檢查時間衝突
+            string[][] allTimeArrays = new string[][] { monTime, tueTime, wedTime, thuTime, friTime, satTime, sunTime };
+            for (int i = 0; i < allTimeArrays.Length; i++)
+            {
+                string[] timeArray = allTimeArrays[i];
+
+                for (int j = 0; j < timeArray.Length - 1; j++)
+                {
+                    string[] time1 = timeArray[j].Split('-');
+                    DateTime startTime1 = DateTime.ParseExact(time1[0], "HH:mm", CultureInfo.InvariantCulture);
+                    DateTime endTime1 = DateTime.ParseExact(time1[1], "HH:mm", CultureInfo.InvariantCulture);
+
+                    for (int k = j + 1; k < timeArray.Length; k++)
+                    {
+                        string[] time2 = timeArray[k].Split('-');
+                        DateTime startTime2 = DateTime.ParseExact(time2[0], "HH:mm", CultureInfo.InvariantCulture);
+                        DateTime endTime2 = DateTime.ParseExact(time2[1], "HH:mm", CultureInfo.InvariantCulture);
+
+                        if (startTime1 <= endTime2 && startTime2 <= endTime1)
+                        {
+                            return ("時間有衝突");
+                        }
+                    }
+                }
             }
 
             // 新增至資料庫
@@ -108,8 +134,8 @@ namespace api1.Service
             {
                 conn.Close();
             }
+            return ("時間設定成功");
         }
-
 
         #endregion
 
