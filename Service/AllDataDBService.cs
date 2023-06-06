@@ -61,6 +61,7 @@ namespace api1.Service
                     Data2.isCheck = Convert.ToBoolean(dr["isCheck"]);
                     Data.Add(Data2);
                 }
+                dr.Close();
             }
             catch
             {
@@ -94,6 +95,7 @@ namespace api1.Service
                     GenreData genreData = new GenreData { Genre = genre, Count = count };
                     genreDataList.Add(genreData);
                 }
+                dr.Close();
             }
             catch (Exception e)
             {
@@ -143,6 +145,7 @@ namespace api1.Service
                     TypeData typeData = new TypeData { Type = type, Count = count };
                     typeDataList.Add(typeData);
                 }
+                dr.Close();
             }
             catch (Exception e)
             {
@@ -190,6 +193,7 @@ namespace api1.Service
                     AddressData addressData = new AddressData { Address = address, Count = count };
                     addressDataList.Add(addressData);
                 }
+                dr.Close();
             }
             catch (Exception e)
             {
@@ -229,6 +233,7 @@ namespace api1.Service
                 {
                     DataList.Add(dr["Reason"].ToString());
                 }
+                dr.Close();
             }
             catch (Exception e)
             {
@@ -258,6 +263,7 @@ namespace api1.Service
                 {
                     DataList.Add(dr.GetString(0));
                 }
+                dr.Close();
             }
             catch (Exception e)
             {
