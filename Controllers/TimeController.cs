@@ -81,7 +81,7 @@ public class TimeController : ControllerBase
 
         if (_timeService.IsReserved(Data.date, Data.newtime, Data.publisher))
         {
-            return Ok("此時段有被預約，若要修改請先至預約總表取消預約");
+            return Ok(Data.date);
         }
 
         switch (Data.date.DayOfWeek)
