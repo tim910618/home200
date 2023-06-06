@@ -41,9 +41,9 @@ public class TimeController : ControllerBase
         }
         Data.publisher = User.Identity.Name;
         Data.booktime_id = _timeService.GetBookTime_Id(Data.publisher);
-        
 
-        string validate=_timeService.SetBookTime(Data.publisher, Data);
+
+        string validate = _timeService.SetBookTime(Data.publisher, Data);
         return Ok(validate);
     }
     #endregion
@@ -172,7 +172,7 @@ public class TimeController : ControllerBase
 
         // 再查詢 SpecialTime 有沒有特殊時間
         SpecialTime specialTime = _timeService.GetSpecialTime(account, Data.date);
-        string availableTimes;
+        string availableTimes = null;
 
         //判斷有沒有特殊天資料
         if (specialTime != null)
@@ -212,14 +212,19 @@ public class TimeController : ControllerBase
         // 將DateTime轉換為date跟time
         //DateOnly date = DateOnly.FromDateTime(datetime);
         // 將當天所有可預約的時段轉成陣列
-        string[] availableTimesArray = availableTimes.Split(';');
-        // 抓取已被預約的時段轉成陣列
-        string[] bookedTimes = _timeService.GetBookedTimes(rental.publisher, Data.date, availableTimesArray);
-        // 取得未被預約的時段
-        string[] unbookedTimes = availableTimesArray.Except(bookedTimes).ToArray();
+        if (availableTimes != null)
+        {
+            string[] availableTimesArray = availableTimes.Split(';');
+            // 抓取已被預約的時段轉成陣列
+            string[] bookedTimes = _timeService.GetBookedTimes(rental.publisher, Data.date, availableTimesArray);
+            // 取得未被預約的時段
+            string[] unbookedTimes = availableTimesArray.Except(bookedTimes).ToArray();
+            return Ok(new { availableTimesArray });
+        }
+
 
         //return Ok(new { bookedTimes, unbookedTimes });
-        return Ok(new { availableTimesArray });
+        return Ok(null);
     }
 
     #endregion

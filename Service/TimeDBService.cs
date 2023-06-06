@@ -193,21 +193,23 @@ namespace api1.Service
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@publisher", account);
                 SqlDataReader dr = cmd.ExecuteReader();
-                dr.Read();
-                Data.booktime_id = (Guid)dr["booktime_id"];
-                Data.publisher = dr["publisher"].ToString();
-                Data.mon = dr["monday"].ToString();
-                Data.tue = dr["tuesday"].ToString();
-                Data.wed = dr["wednesday"].ToString();
-                Data.thu = dr["thursday"].ToString();
-                Data.fri = dr["friday"].ToString();
-                Data.sat = dr["saturday"].ToString();
-                Data.sun = dr["sunday"].ToString();
+                while (dr.Read())
+                {
+                    Data.booktime_id = (Guid)dr["booktime_id"];
+                    Data.publisher = dr["publisher"].ToString();
+                    Data.mon = dr["monday"].ToString();
+                    Data.tue = dr["tuesday"].ToString();
+                    Data.wed = dr["wednesday"].ToString();
+                    Data.thu = dr["thursday"].ToString();
+                    Data.fri = dr["friday"].ToString();
+                    Data.sat = dr["saturday"].ToString();
+                    Data.sun = dr["sunday"].ToString();
+                }
                 dr.Close();
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message.ToString());
+                Data=null;
             }
             finally
             {
