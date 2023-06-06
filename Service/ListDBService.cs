@@ -65,7 +65,7 @@ namespace api1.Service
                         }
                         Data.img1 = imgPath;
                     }
-                    
+
                 }
                 dr.Close();
             }
@@ -358,6 +358,7 @@ namespace api1.Service
                     Data.rental_id = (Guid)dr["rental_id"];
                     Data.booklist_id = (Guid)dr["booklist_id"];
                     Data.isDelete = Convert.ToBoolean(dr["isDelete"]);
+                    Data.isCheck = Convert.ToBoolean(dr["isCheck"]);
                 }
             }
             catch
@@ -375,6 +376,7 @@ namespace api1.Service
         #region 房東確認是否預約
         public string CheckBooking(Guid Book_Id, string state)
         {
+
             if (state == "1")
             {
                 string sql = $@"update booklist set isCheck=@state where booklist_Id=@Id";

@@ -41,7 +41,7 @@ public class TimeController : ControllerBase
         }
         Data.publisher = User.Identity.Name;
         Data.booktime_id = _timeService.GetBookTime_Id(Data.publisher);
-
+        
 
         string validate=_timeService.SetBookTime(Data.publisher, Data);
         return Ok(validate);

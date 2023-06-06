@@ -192,6 +192,9 @@ public class ListController : ControllerBase
             Data.state = "0";
             return Ok("請於前一日確認，已自動取消預約");
         }
+        if(BookData.isCheck==true){
+            return Ok("已確認預約資訊");
+        }
         string CheckString = _ListService.CheckBooking(Data.Book_Id, Data.state);
         Members renter = _membersSerivce.GetDataByAccount(BookData.renter);
         Rental rental = new Rental();
